@@ -82,13 +82,12 @@
     <Compile Include="AddAuthor.xaml.cs">
       <DependentUpon>AddAuthor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CommandCancel.cs" />
+    <Compile Include="ClosingWindow.cs" />
     <Compile Include="AddBook.xaml.cs">
       <DependentUpon>AddBook.xaml</DependentUpon>
     </Compile>
     <Compile Include="CommandAddAuthor.cs" />
     <Compile Include="CommandAddBook.cs" />
-    <Compile Include="CommandExit.cs" />
     <Compile Include="CommandToSearch.cs" />
     <Compile Include="Design\DesignDataService.cs" />
     <Compile Include="Model\DataItem.cs" />

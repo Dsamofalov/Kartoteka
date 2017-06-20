@@ -1,4 +1,5 @@
 ﻿<Controls:MetroWindow x:Class="Kartoteka.AddAuthor"
+        x:Name="AuthorAdd"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
