@@ -9,10 +9,10 @@
         GlowBrush="{DynamicResource AccentColorBrush}"
         BorderThickness="2"
         Height="500"
-        Width="800"
+        Width="500"
         Title="Kartoteka Application"
         DataContext="{Binding Main, Source={StaticResource Locator}}">
-    
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -21,16 +21,19 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-
-    <Grid x:Name="LayoutRoot">
-
+    <StackPanel HorizontalAlignment="Center" >
         <TextBlock FontSize="36"
                    FontWeight="Bold"
-                   Foreground="Purple"
-                   Text="{Binding WelcomeTitle}"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   TextWrapping="Wrap" />
+                   Foreground="#FFC716C7"
+                   Text="Books and authors"  />
+        <Button Command="{Binding AddNewAuthor}" CommandParameter="{Binding}"
+                Style="{StaticResource ButtonStyle}" Content="Add author" Margin="0,50,0,0" >  </Button>
+        <Button Command="{Binding AddNewBook}" CommandParameter="{Binding}"
+            Style="{StaticResource ButtonStyle}" Content="Add book" Margin="0,50,0,0" ></Button>
+        <Button Command="{Binding StartNewSearch}" CommandParameter="{Binding}"
+            Style="{StaticResource ButtonStyle}" Content="Search" Margin="0,50,0,0" ></Button>
+        <Button Command="{Binding Exit}" CommandParameter="{Binding}"
+            Style="{StaticResource ButtonStyle}" Content="Exit" Margin="0,50,0,0" ></Button>
 
-    </Grid>
+    </StackPanel>
 </Controls:MetroWindow>

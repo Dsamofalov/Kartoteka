@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using Kartoteka.Model;
+using System.Windows.Input;
 
 namespace Kartoteka.ViewModel
 {
@@ -11,6 +12,11 @@ namespace Kartoteka.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
+       
+        public ICommand AddNewAuthor { get; set; }
+        public ICommand AddNewBook { get; set; }
+        public ICommand StartNewSearch { get; set; }
+        public ICommand Exit { get; set; }
         private readonly IDataService _dataService;
 
         /// <summary>
@@ -39,22 +45,17 @@ namespace Kartoteka.ViewModel
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
+
         public MainViewModel(IDataService dataService)
         {
-            _dataService = dataService;
-            _dataService.GetData(
-                (item, error) =>
-                {
-                    if (error != null)
-                    {
-                        // Report error here
-                        return;
-                    }
+            AddNewAuthor = new CommandAddAuthor();
+            AddNewBook = new CommandAddBook();
+            StartNewSearch = new CommandToSearch();
+            Exit = new CommandExit();
 
-                    WelcomeTitle = item.Title;
-                });
+      
         }
-
+        
         ////public override void Cleanup()
         ////{
         ////    // Clean up if needed
