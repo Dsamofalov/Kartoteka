@@ -82,6 +82,10 @@
     <Compile Include="AddAuthor.xaml.cs">
       <DependentUpon>AddAuthor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\BookViewModel.cs" />
+    <Compile Include="Model\BookModel.cs" />
+    <Compile Include="Model\AuthorModel.cs" />
+    <Compile Include="ViewModel\AuthorViewModel.cs" />
     <Compile Include="ClosingWindow.cs" />
     <Compile Include="AddBook.xaml.cs">
       <DependentUpon>AddBook.xaml</DependentUpon>

@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         GlowBrush="{DynamicResource AccentColorBrush}"
         Title="New Author" Height="500" Width="500"
-        DataContext="{Binding Main, Source={StaticResource Locator}}">
+        DataContext="{Binding Author, Source={StaticResource Locator}}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -36,7 +36,7 @@
         <TextBlock VerticalAlignment="Center"   FontSize="20" Grid.Row="1" Grid.Column="0" Margin="10,0,0,0" Height="25" >
             Name
         </TextBlock>
-        <TextBox  Grid.Row="1" Grid.Column="1"  BorderThickness="3" 
+        <TextBox  Grid.Row="1" Grid.Column="1"  BorderThickness="3"  Text="{Binding SelectedAuthor.Name}"
                  BorderBrush="Black" Height="30" Margin="0,0,10,0" FontSize="14" />
         <TextBlock VerticalAlignment="Center"  FontSize="20" Grid.Row="2" Grid.Column="0" Margin="10,0,0,0" Height="25" >
             Surname
@@ -47,12 +47,13 @@
         <TextBlock VerticalAlignment="Center" Text="List of books"  
                    Width="140" FontSize="20" Grid.Row="3" Grid.Column="0" Margin="10,0,0,0" Height="25" >
         </TextBlock>
-        <TextBox  Grid.Row="2" Grid.Column="1"  BorderThickness="3" 
+        <TextBox  Grid.Row="2" Grid.Column="1"  BorderThickness="3" Text="{Binding SelectedAuthor.Surname}"
                  BorderBrush="Black" Height="30" Margin="0,0,10,0" FontSize="14" />
-        <Button Style="{StaticResource ButtonStyle}"  Content="Cancel"  Command="{Binding Cancel}" CommandParameter="{Binding}" Grid.Row="4" Grid.Column="0" IsCancel="True"
+        <Button Style="{StaticResource ButtonStyle}" Command="{Binding CloseWindowCommand, Mode=OneWay}"  CommandParameter="{Binding ElementName=AuthorAdd}"
+                Content="Cancel"   Grid.Row="4" Grid.Column="0" IsCancel="True"
                  HorizontalAlignment="Left" Margin="10,0,0,10"  VerticalAlignment="Bottom" Width="120" Height="40"  FontSize="20" >
         </Button>
-        <Button Style="{StaticResource ButtonStyle}" Content="Save"  Command="{Binding Save}" CommandParameter="{Binding}" Grid.Row="4" Grid.Column="1" IsDefault="True"
+        <Button Style="{StaticResource ButtonStyle}" Content="Save"  Grid.Row="4" Grid.Column="1" IsDefault="True"
                   VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10.4,10" Width="120" Height="40" FontSize="20" />
     </Grid>
 </Controls:MetroWindow>

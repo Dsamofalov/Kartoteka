@@ -39,6 +39,7 @@ namespace Kartoteka.ViewModel
             }
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<AuthorViewModel>();
         }
 
         /// <summary>
@@ -52,6 +53,13 @@ namespace Kartoteka.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
+            }
+        }
+        public AuthorViewModel Author
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<AuthorViewModel>();
             }
         }
 
