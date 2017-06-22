@@ -9,7 +9,7 @@
         GlowBrush="{DynamicResource AccentColorBrush}"
         mc:Ignorable="d"
         Title="New Book" Height="500" Width="500"
-        DataContext="{Binding Main, Source={StaticResource Locator}}">
+        DataContext="{Binding Book, Source={StaticResource Locator}}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -42,8 +42,18 @@
         </TextBlock>
         <TextBox  Grid.Row="2" Grid.Column="1"  BorderThickness="3"  Text="{Binding SelectedBook.Genre}"
                  BorderBrush="Black" Height="30" Margin="0,0,10,0" FontSize="14" />
-        <ListBox Grid.Row="3" Grid.Column="1">
-
+        <ListBox x:Name="AuthorsList"  Margin="10,0,20,0"  BorderThickness="2"  ItemContainerStyle="{StaticResource myLBStyle}"
+                 ItemsSource="{Binding Path =Authors}" SelectionMode="Multiple" Grid.Row="3" Grid.Column="1">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <TextBlock FontSize="16" Text="Name:" Margin="0,0,5,0" />
+                        <TextBlock FontSize="16" Text="{Binding Path=Name}" Margin="0,0,10,0"    />
+                        <TextBlock FontSize="16" Text="Surname:" Margin="0,0,5,0" />
+                        <TextBlock FontSize="16" Text="{Binding Path=Surname}"  />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
         <TextBlock VerticalAlignment="Center" Text="List of authors"  
                    Width="140" FontSize="20" Grid.Row="3" Grid.Column="0" Margin="10,0,0,0" Height="25" >

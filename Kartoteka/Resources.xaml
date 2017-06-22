@@ -10,6 +10,16 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
     </ResourceDictionary.MergedDictionaries>
+    <Style x:Key="myLBStyle" TargetType="{x:Type ListBoxItem}">
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True" >
+                <Setter Property="Foreground" Value="Black" />
+                    </Trigger>
+                </Style.Triggers>
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+            </Style.Resources>
+        </Style>
     <Style x:Key="ButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Azure"></Setter>
         <Setter Property="FontSize" Value="24"></Setter>

@@ -25,7 +25,7 @@ namespace Kartoteka.ViewModel
             AddNewAuthor = new CommandAddAuthor();
             AddNewBook = new CommandAddBook();
             StartNewSearch = new CommandToSearch();
-            this.CloseWindowCommand = new RelayCommand<Window>(ClosingWindow.CloseWindow);
+            this.CloseWindowCommand = new RelayCommand<Window>(CustomCommands.CloseWindow);
         }
         
         ////public override void Cleanup()

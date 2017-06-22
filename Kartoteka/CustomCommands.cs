@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace Kartoteka
 {
-   public static class ClosingWindow
+   public static class CustomCommands
     {
          public static void CloseWindow(Window window)
         {
@@ -16,5 +16,6 @@ namespace Kartoteka
                 window.Close();
             }
         }
+
     }
 }

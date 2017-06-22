@@ -13,7 +13,7 @@ namespace Kartoteka
     public class BookViewModel:ViewModelBase
     {
         public RelayCommand<Window> CloseWindowCommand { get; private set; }
-        private ObservableCollection<BookModel> books;
+        private ObservableCollection<AuthorModel> authors;
         private BookModel selectedBook;
         public BookModel SelectedBook
         {
@@ -27,9 +27,40 @@ namespace Kartoteka
                 RaisePropertyChanged("SelectedBook");
             }
         }
+        public ObservableCollection<AuthorModel> Authors
+        {
+            get
+            {
+                return authors;
+            }
+
+            set
+            {
+                authors = value;
+                RaisePropertyChanged("Authors");
+            }
+        }
         public BookViewModel()
         {
-            this.CloseWindowCommand = new RelayCommand<Window>(ClosingWindow.CloseWindow);
+            this.CloseWindowCommand = new RelayCommand<Window>(CustomCommands.CloseWindow);
+            authors = new ObservableCollection<AuthorModel>
+            {
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" },
+                new AuthorModel {ID=1, Name="dsg", Surname="dgshhhh" }
+            };
+            SelectedBook = new BookModel();
         }
     }
 }

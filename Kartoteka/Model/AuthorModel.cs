@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace Kartoteka
         private int id;
         private string name;
         private string surname;
+        private ObservableCollection<BookModel> books;
 
         public int ID
         {
@@ -48,5 +50,18 @@ namespace Kartoteka
                 Set<string>(() => this.Surname, ref surname, value);
             }
         }
+        public ObservableCollection<BookModel> Books
+        {
+            get
+            {
+                return books;
+            }
+
+            set
+            {
+                Set<ObservableCollection<BookModel>>(() => this.Books, ref books, value);
+            }
+        }
+
     }
 }

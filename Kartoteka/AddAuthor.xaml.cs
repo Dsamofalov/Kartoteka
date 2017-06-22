@@ -20,6 +20,7 @@ namespace Kartoteka
     /// </summary>
     public partial class AddAuthor : MetroWindow
     {
+      
         public AddAuthor()
         {
             InitializeComponent();
