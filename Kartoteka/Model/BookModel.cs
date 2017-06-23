@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,58 +11,15 @@ namespace Kartoteka
 {
     public class BookModel : ObservableObject
     {
-        private int id;
-        private string title;
-        private string genre;
-        private ObservableCollection<AuthorModel> authors;
+        [Required]
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Genre { get; set; }
+        public virtual ICollection<AuthorModel> authors { get; set; }
 
-        public int ID
+        public BookModel()
         {
-            get
-            {
-                return id;
-            }
-            set
-            {
-                Set<int>(() => this.ID, ref id, value);
-            }
-        }
-
-        public string Title
-        {
-            get
-            {
-                return title;
-            }
-            set
-            {
-                Set<string>(() => this.Title, ref title, value);
-            }
-        }
-
-        public string Genre
-        {
-            get
-            {
-                return genre;
-            }
-            set
-            {
-                Set<string>(() => this.Genre, ref genre, value);
-            }
-        }
-
-        public ObservableCollection<AuthorModel> Authors
-        {
-            get
-            {
-                return authors;
-            }
-
-            set
-            {
-                Set<ObservableCollection<AuthorModel>>(() => this.Authors, ref authors, value);
-            }
+            this.authors = new HashSet<AuthorModel>();
         }
     }
 }

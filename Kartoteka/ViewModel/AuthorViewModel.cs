@@ -18,8 +18,8 @@ namespace Kartoteka
         public RelayCommand<object> SaveListCommand { get; private set; }
 
         private ObservableCollection<BookModel> books;
-        private static AuthorModel selectedAuthor;
-        public static AuthorModel SelectedAuthor
+        private  AuthorModel selectedAuthor;
+        public  AuthorModel SelectedAuthor
         {
             get
             {
@@ -28,6 +28,7 @@ namespace Kartoteka
             set
             {
                 selectedAuthor = value;
+                RaisePropertyChanged("SelectedAuthor");
             }
         }
 
@@ -44,34 +45,44 @@ namespace Kartoteka
                 RaisePropertyChanged("Books");
             }
         }
-        private void SaveAuthor(object parameter)
+        private void GetFromList(object parameter)
         {
             IList selection = (IList)parameter;
             List<BookModel> newbooks = selection.Cast<BookModel>().ToList();
-            foreach (BookModel item in newbooks)
+            SaveAuthor(newbooks);
+        }
+        private void SaveAuthor(List<BookModel> newbooks)
+        {
+            using (DataBaseModel db1 = new DataBaseModel())
             {
-                SelectedAuthor.Books.Add(item);
+                foreach (BookModel newbook in newbooks)
+                {
+                    SelectedAuthor.books.Add(db1.books.Find(newbook.Id));
+                }
+                db1.authors.Add(SelectedAuthor);
+                db1.SaveChanges();
+                db1.Dispose();
             }
+            MessageBox.Show("Saved succsessfully");
+            SelectedAuthor.Name = null;
+            SelectedAuthor.Surname = null;
+            SelectedAuthor.books.Clear();
         }
 
         public AuthorViewModel()
-        {
-            
+        {         
             this.CloseWindowCommand = new RelayCommand<Window>(CustomCommands.CloseWindow);
-            this.SaveListCommand = new RelayCommand<object>(SaveAuthor);
-            books = new ObservableCollection<BookModel>
+            this.SaveListCommand = new RelayCommand<object>(GetFromList);
+            this.SelectedAuthor = new AuthorModel();
+            books = new ObservableCollection<BookModel>();
+            using (DataBaseModel db = new DataBaseModel())
             {
-                new BookModel {ID=1, Title="dsg", Genre="dgshhhh" },
-                new BookModel {ID=1, Title="dsg", Genre="dgshhhh" },
-                new BookModel {ID=1, Title="dsg", Genre="dgshhhh" },
-                new BookModel {ID=1, Title="dsg", Genre="dgshhhh" },
-                new BookModel {ID=1, Title="dsg", Genre="dgshhhh" },
-                new BookModel {ID=1, Title="dsg", Genre="dgshhhh" },
-                new BookModel {ID=1, Title="dsg", Genre="dgshhhh" },
-                new BookModel {ID=1, Title="dsg", Genre="dgshhhh" },
-                new BookModel {ID=1, Title="dsg", Genre="dgshhhh" },
-                new BookModel {ID=1, Title="dsg", Genre="dgshhhh" },
-            };
+                foreach(BookModel newbook in db.books)
+                {
+                    books.Add(newbook);
+                }
+                db.Dispose();
+            }
         }
     }
 }
