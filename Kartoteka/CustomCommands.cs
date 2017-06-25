@@ -16,6 +16,13 @@ namespace Kartoteka
                 window.Close();
             }
         }
-
+        public static bool IsFilled(string firststring, string secondstring)
+        {
+            if ((String.IsNullOrWhiteSpace(firststring)) || (String.IsNullOrEmpty(secondstring)))
+            {
+                return false;
+            }
+            else return true;
+        }
     }
 }

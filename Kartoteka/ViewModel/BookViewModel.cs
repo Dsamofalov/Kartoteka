@@ -42,34 +42,47 @@ namespace Kartoteka
                 RaisePropertyChanged("Authors");
             }
         }
-        private void SaveBook(object parameter)
+        private void GetFromList(object parameter)
         {
             IList selection = (IList)parameter;
             List<AuthorModel> newauthors = selection.Cast<AuthorModel>().ToList();
-            MessageBox.Show(newauthors.Count.ToString());
+            if (CustomCommands.IsFilled(SelectedBook.Title, SelectedBook.Genre) == true)
+            {
+                SaveBook(newauthors);
+            }
+            else MessageBox.Show("Fill in the title and genre fields");
+        }
+        private void SaveBook(List<AuthorModel> newauthors)
+        {
+            using (DataBaseModel db1 = new DataBaseModel())
+            {
+                foreach (AuthorModel newauthor in newauthors)
+                {
+                    SelectedBook.authors.Add(db1.authors.Find(newauthor.Id));
+                }
+                db1.books.Add(SelectedBook);
+                db1.SaveChanges();
+                db1.Dispose();
+            }
+            MessageBox.Show("Saved succsessfully");
+            SelectedBook.Genre = null;
+            SelectedBook.Title = null;
+            SelectedBook.authors.Clear();
         }
         public BookViewModel()
         {
             this.CloseWindowCommand = new RelayCommand<Window>(CustomCommands.CloseWindow);
-            this.SaveListCommand = new RelayCommand<object>(SaveBook);
-            authors = new ObservableCollection<AuthorModel>
+            this.SaveListCommand = new RelayCommand<object>(GetFromList);
+            authors = new ObservableCollection<AuthorModel>();
+            this.SelectedBook = new BookModel();
+            using (DataBaseModel db = new DataBaseModel())
             {
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" },
-                new AuthorModel {Id=1, Name="dsg", Surname="dgshhhh" }
-            };
-            SelectedBook = new BookModel();
+                foreach (AuthorModel newauthor in db.authors)
+                {
+                    authors.Add(newauthor);
+                }
+                db.Dispose();
+            }
         }
     }
 }

@@ -49,7 +49,11 @@ namespace Kartoteka
         {
             IList selection = (IList)parameter;
             List<BookModel> newbooks = selection.Cast<BookModel>().ToList();
-            SaveAuthor(newbooks);
+            if (CustomCommands.IsFilled(SelectedAuthor.Name, SelectedAuthor.Surname) == true)
+            {
+                SaveAuthor(newbooks);
+            }
+            else MessageBox.Show("Fill in the name and surname fields");
         }
         private void SaveAuthor(List<BookModel> newbooks)
         {
