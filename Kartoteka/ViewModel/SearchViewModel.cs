@@ -16,13 +16,17 @@ namespace Kartoteka
         public RelayCommand FindCommand { get; private set; }
         public RelayCommand ViewAuthorCommand { get; private set; }
         public RelayCommand ViewBookCommand { get; private set; }
+        public RelayCommand EditAuthorCommand { get; private set; }
         private ObservableCollection<AuthorModel> authors;
         private ObservableCollection<BookModel> books;
+        private ObservableCollection<BookModel> allbooks;
         private  bool isAuthor = true;
         private bool isBook = true;
         private string wordToFind;
         private BookModel selectedBook;
         private AuthorModel selectedAuthor;
+        private DataBaseModel db = new DataBaseModel();
+
         public BookModel SelectedBook
         {
             get
@@ -71,6 +75,19 @@ namespace Kartoteka
             {
                 books = value;
                 RaisePropertyChanged("Books");
+            }
+        }
+        public ObservableCollection<BookModel> Allbooks
+        {
+            get
+            {
+                return allbooks;
+            }
+
+            set
+            {
+                allbooks = value;
+                RaisePropertyChanged("Allbooks");
             }
         }
         public bool IsAuthor
@@ -131,11 +148,9 @@ namespace Kartoteka
         }
         private void GetFromDb()
         {
-            using (DataBaseModel db = new DataBaseModel())
-            {
                 foreach (AuthorModel newauthor in db.authors)
                 {
-                    if ((newauthor.Name.Contains(WordToFind))||(newauthor.Surname.Contains(WordToFind)))
+                    if ((newauthor.Name.Contains(WordToFind)) || (newauthor.Surname.Contains(WordToFind)))
                     {
                         authors.Add(newauthor);
                     }
@@ -148,29 +163,52 @@ namespace Kartoteka
                         books.Add(newbook);
                     }
                 }
-
-                db.Dispose();
                 MessageBox.Show("Search was succsessfully performed");
-            }
         }
         private void ViewAuthor()
         {
-            AuthorProfile AuthorP = new AuthorProfile();
-            AuthorP.Show();
+                AuthorProfile AuthorP = new AuthorProfile();
+                AuthorP.Show();
+        }
+        private void EditAuthor()
+        {
+            EditAuthor AuthorEd = new EditAuthor();
+            AuthorEd.Show();
+            foreach (BookModel newbook in db.books)
+            {
+                if(SelectedAuthor.books.Contains(newbook))
+                {
+                    
+                }
+                else
+                {
+                    allbooks.Add(newbook);
+                }
+
+            }
         }
         private void ViewBook()
         {
             MessageBox.Show(SelectedBook.Id.ToString());
         }
+        public  void CloseWinAndDb(Window window)
+        {
+            if (window != null)
+            {
+                window.Close();
+            }
+            db.Dispose();
+        }
         public SearchViewModel()
         {
-            this.CloseWindowCommand = new RelayCommand<Window>(CustomCommands.CloseWindow);
+            this.CloseWindowCommand = new RelayCommand<Window>(CloseWinAndDb);
             this.FindCommand = new RelayCommand(ToFind);
             this.ViewAuthorCommand = new RelayCommand(ViewAuthor);
             this.ViewBookCommand = new RelayCommand(ViewBook);
+            this.EditAuthorCommand = new RelayCommand(EditAuthor);
             authors = new ObservableCollection<AuthorModel>();
             books = new ObservableCollection<BookModel>();
-            
+            allbooks = new ObservableCollection<BookModel>();
         }
         
     }

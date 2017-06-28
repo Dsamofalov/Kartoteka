@@ -97,6 +97,9 @@
       <DependentUpon>AuthorProfile.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataBaseModel.cs" />
+    <Compile Include="EditAuthor.xaml.cs">
+      <DependentUpon>EditAuthor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\SearchViewModel.cs" />
     <Compile Include="SearchWindow.xaml.cs">
       <DependentUpon>SearchWindow.xaml</DependentUpon>
@@ -127,6 +130,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AuthorProfile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditAuthor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
