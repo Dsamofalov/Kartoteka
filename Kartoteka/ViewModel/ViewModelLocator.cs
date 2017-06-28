@@ -41,6 +41,7 @@ namespace Kartoteka.ViewModel
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<AuthorViewModel>();
             SimpleIoc.Default.Register<BookViewModel>();
+            SimpleIoc.Default.Register<SearchViewModel>();
         }
 
         /// <summary>
@@ -68,6 +69,13 @@ namespace Kartoteka.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<BookViewModel>();
+            }
+        }
+        public SearchViewModel Search
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<SearchViewModel>();
             }
         }
 

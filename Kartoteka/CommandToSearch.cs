@@ -18,7 +18,8 @@ namespace Kartoteka
 
         public void Execute(object parameter)
         {
-
+            SearchWindow SearchWin = new Kartoteka.SearchWindow();
+            SearchWin.Show();
         }
     }
 }
