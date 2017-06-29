@@ -84,6 +84,8 @@ namespace Kartoteka.ViewModel
         /// </summary>
         public static void Cleanup()
         {
+            var search = SimpleIoc.Default.GetInstance<SearchViewModel>();
+            search.Dispose();
         }
     }
 }

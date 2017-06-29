@@ -44,11 +44,9 @@ namespace Kartoteka
         }
         private void GetFromList(object parameter)
         {
-            IList selection = (IList)parameter;
-            List<AuthorModel> newauthors = selection.Cast<AuthorModel>().ToList();
             if (CustomCommands.IsFilled(SelectedBook.Title, SelectedBook.Genre) == true)
             {
-                SaveBook(newauthors);
+                SaveBook(CustomCommands.GetAuthorsFromList(parameter));
             }
             else MessageBox.Show("Fill in the title and genre fields");
         }
@@ -56,13 +54,9 @@ namespace Kartoteka
         {
             using (DataBaseModel db1 = new DataBaseModel())
             {
-                foreach (AuthorModel newauthor in newauthors)
-                {
-                    SelectedBook.authors.Add(db1.authors.Find(newauthor.Id));
-                }
+                CustomCommands.AddAuthors(SelectedBook, newauthors, db1);
                 db1.books.Add(SelectedBook);
                 db1.SaveChanges();
-                db1.Dispose();
             }
             MessageBox.Show("Saved succsessfully");
             SelectedBook.Genre = null;
@@ -81,7 +75,6 @@ namespace Kartoteka
                 {
                     authors.Add(newauthor);
                 }
-                db.Dispose();
             }
         }
     }

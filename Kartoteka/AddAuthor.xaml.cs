@@ -24,6 +24,7 @@ namespace Kartoteka
         public AddAuthor()
         {
             InitializeComponent();
+            this.ShowCloseButton = false;
         }
     }
 }

@@ -23,6 +23,7 @@ namespace Kartoteka
         public EditAuthor()
         {
             InitializeComponent();
+            this.ShowCloseButton = false;
         }
     }
 }
