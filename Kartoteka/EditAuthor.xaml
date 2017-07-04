@@ -41,7 +41,7 @@
                 <ColumnDefinition Width="0.5*" />
             </Grid.ColumnDefinitions>
             <ListBox x:Name="BooksList"  Margin="10,0,20,0" SelectionMode="Multiple"  BorderThickness="2"  ItemContainerStyle="{StaticResource myLBStyle}"
-                 ItemsSource="{Binding Path =SelectedAuthor.books}"   >
+                 ItemsSource="{Binding Path =SelectedAuthor.books, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"   >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="5">
@@ -52,7 +52,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-            <Button Style="{StaticResource ButtonStyle}"  Content="Remove" Command="{Binding RemoveBooksCommand}" 
+            <Button Style="{StaticResource ButtonStyle}"  Content="Remove" Command="{Binding RemoveBooksCommand}"
     CommandParameter="{Binding ElementName=BooksList, Path=SelectedItems}"  Grid.Column="1"  IsDefault="True"
                   VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10.4,10" Width="120" Height="40" FontSize="20" />
         </Grid>
@@ -65,7 +65,7 @@
                 <ColumnDefinition Width="0.5*" />
             </Grid.ColumnDefinitions>
             <ListBox x:Name="NewBooksList"  Margin="10,0,19.8,0.4" SelectionMode="Multiple"  BorderThickness="2"  ItemContainerStyle="{StaticResource myLBStyle}"
-                 ItemsSource="{Binding Path =Allbooks}"   >
+                 ItemsSource="{Binding Path =Allbooks ,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"   >
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="5">

@@ -45,7 +45,7 @@
                    Width="140" FontSize="20" Grid.Row="3" Grid.Column="0" Margin="10,0,0,0" Height="25" >
         </TextBlock>
         <ListBox x:Name="AuthorsList"  Margin="10,0,20,0"  BorderThickness="2"  ItemContainerStyle="{StaticResource myLBStyle}"
-                 ItemsSource="{Binding Path =SelectedBook.authors}"  Grid.Row="3" Grid.Column="1">
+                 ItemsSource="{Binding Path =SelectedBook.authors , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Grid.Row="3" Grid.Column="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="5">

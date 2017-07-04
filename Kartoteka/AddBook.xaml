@@ -42,7 +42,7 @@
         <TextBox  Grid.Row="2" Grid.Column="1"  BorderThickness="3"  Text="{Binding SelectedBook.Genre}"
                  BorderBrush="Black" Height="30" Margin="0,0,10,0" FontSize="14" />
         <ListBox x:Name="AuthorsList"  Margin="10,0,20,0"  BorderThickness="2"  ItemContainerStyle="{StaticResource myLBStyle}"
-                 ItemsSource="{Binding Path =Authors}" SelectionMode="Multiple" Grid.Row="3" Grid.Column="1">
+                 ItemsSource="{Binding Path =Authors , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Multiple" Grid.Row="3" Grid.Column="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="5">

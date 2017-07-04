@@ -41,7 +41,7 @@
                 <ColumnDefinition Width="0.5*" />
             </Grid.ColumnDefinitions>
             <ListBox x:Name="AuthorsList"  Margin="10,0,20,0" SelectionMode="Multiple"  BorderThickness="2"  ItemContainerStyle="{StaticResource myLBStyle}"
-                 ItemsSource="{Binding Path =SelectedBook.authors}"   >
+                 ItemsSource="{Binding Path =SelectedBook.authors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"   >
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="5">
@@ -65,7 +65,7 @@
                 <ColumnDefinition Width="0.5*" />
             </Grid.ColumnDefinitions>
             <ListBox x:Name="NewAuthorsList"  Margin="10,0,19.8,0.4" SelectionMode="Multiple"  BorderThickness="2"  ItemContainerStyle="{StaticResource myLBStyle}"
-                 ItemsSource="{Binding Path =Allauthors}"   >
+                 ItemsSource="{Binding Path =Allauthors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"   >
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="5">

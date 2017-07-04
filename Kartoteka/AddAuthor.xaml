@@ -41,7 +41,7 @@
             Surname
         </TextBlock>
         <ListBox x:Name="BooksList"  Margin="10,0,20,0"  BorderThickness="2"  ItemContainerStyle="{StaticResource myLBStyle}"
-                 ItemsSource="{Binding Path =Books}" SelectionMode="Multiple" Grid.Row="3" Grid.Column="1">
+                 ItemsSource="{Binding Path =Books, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Multiple" Grid.Row="3" Grid.Column="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="5">

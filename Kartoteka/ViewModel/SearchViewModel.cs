@@ -227,7 +227,6 @@ namespace Kartoteka
                 {
                     allauthors.Add(newauthor);
                 }
-
             }
         }
         private void CloseWinAndDb(Window window)
