@@ -212,8 +212,12 @@
     <Folder Include="Skins\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Kartoteka.DAL\Kartoteka.DAL.csproj">
+      <Project>{130c11f5-d4fb-4d09-9fde-d9dbd08f1b11}</Project>
+      <Name>Kartoteka.DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Kartoteka.Domain\Kartoteka.Domain.csproj">
-      <Project>{ced04315-1020-4d2f-b4be-25208d125c27}</Project>
+      <Project>{83a729eb-abbc-41fe-b4e1-6ef94e98b31e}</Project>
       <Name>Kartoteka.Domain</Name>
     </ProjectReference>
   </ItemGroup>

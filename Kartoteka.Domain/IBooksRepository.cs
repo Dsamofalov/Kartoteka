@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Kartoteka.Domain
 {
-    public interface IBooksRepository
+    public interface IBooksRepository : IDisposable
     {
         List<Book> GetAllBooks();
-        void RegisterNewBook(Book NewBook);
-        void EditBook(int ID);
+        int RegisterNewBook(Book NewBook);
+        void EditBook(Book BookToEdit);
         void DeleteBook(int ID);
         Book GetBookByID(int ID);
+        void Save();
     }
 }

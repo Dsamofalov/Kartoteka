@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("Kartoteka.Domain")]
+[assembly: AssemblyTitle("Kartoteka.DAL")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Kartoteka.Domain")]
+[assembly: AssemblyProduct("Kartoteka.DAL")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
-[assembly: Guid("83a729eb-abbc-41fe-b4e1-6ef94e98b31e")]
+[assembly: Guid("130c11f5-d4fb-4d09-9fde-d9dbd08f1b11")]
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //

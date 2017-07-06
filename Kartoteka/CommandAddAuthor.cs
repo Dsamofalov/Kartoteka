@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows;
+using Kartoteka.Domain;
+using Kartoteka.DAL;
 
 namespace Kartoteka
 {
@@ -18,8 +21,8 @@ namespace Kartoteka
 
         public void Execute(object parameter)
         {
-            AddAuthor NewAuthor = new AddAuthor();
-            NewAuthor.Show();
+            AddAuthor newauthor = new AddAuthor();
+            newauthor.Show();
         }
     }
 }

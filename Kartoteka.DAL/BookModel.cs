@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kartoteka.Domain
+namespace Kartoteka.DAL
 {
-    public class Book
+    public class BookModel
     {
+        [Required]
         public int Id { get; set; }
         public int Year { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<Author> authors { get; set; }
+        public virtual ICollection<AuthorModel> authors { get; set; }
+        public BookModel()
+        {
+            this.authors = new HashSet<AuthorModel>();
+        }
     }
 }

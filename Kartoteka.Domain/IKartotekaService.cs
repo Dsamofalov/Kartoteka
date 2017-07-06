@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace Kartoteka.Domain
 {
-    public interface IKartotekaService
+    public interface IKartotekaService : IDisposable
     {
         List<Author> GetAllAuthors();
         List<Book> GetAllBooks();
-        void RegisterNewAuthor(Author NewAuthor);
-        void RegisterNewBook(Book NewBook);
-        void EditAuthor(int ID);
-        void EditBook(int ID);
+        int RegisterNewAuthor(Author NewAuthor);
+        int RegisterNewBook(Book NewBook);
+        void EditAuthor(Author AuthorToEdit);
+        void EditBook(Book BookToEdit);
         void DeleteAuthor(int ID);
         void DeleteBook(int ID);
         Author GetAuthorByID(int ID);
         Book GetBookByID(int ID);
+        void Save();
     }
 }

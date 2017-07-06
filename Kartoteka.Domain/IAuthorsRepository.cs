@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Kartoteka.Domain
 {
-    public interface IAuthorsRepository
+    public interface IAuthorsRepository : IDisposable
     {
         List<Author> GetAllAuthors();
-        void RegisterNewAuthor(Author NewAuthor);
-        void EditAuthor(int ID);
+        int RegisterNewAuthor(Author NewAuthor);
+        void EditAuthor(Author AuthorToEdit);
         void DeleteAuthor(int ID);
         Author GetAuthorByID(int ID);
+        void Save();
     }
 }
