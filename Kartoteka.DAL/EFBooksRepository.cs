@@ -1,4 +1,5 @@
-﻿using Kartoteka.Domain;
+﻿using AutoMapper;
+using Kartoteka.Domain;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -14,36 +15,28 @@ namespace Kartoteka.DAL
         private KartotekaModel db;
         public EFBooksRepository()
         {
-            this.db = new KartotekaModel();
+            db = new KartotekaModel();
+            Mapper.Initialize(cfg => {
+                cfg.CreateMap<Book, BookModel>().MaxDepth(3);
+                cfg.CreateMap<BookModel, Book>().MaxDepth(3);
+                cfg.CreateMap<Author, AuthorModel>().MaxDepth(3);
+                cfg.CreateMap<AuthorModel, Author>().MaxDepth(3);
+            });
         }
-        private Book BookModelToBook(BookModel bookmodel)
-        {
-            Book book = new Book()
-            { Id = bookmodel.Id, Description = bookmodel.Description, Name=bookmodel.Name, Year = bookmodel.Year };
-            if (bookmodel.authors != null)
-            {
-                foreach (AuthorModel author in bookmodel.authors)
-                {
-                    book.authors.Add(new Author()
-                    { Id = author.Id, FirstName = author.FirstName, SecondName = author.SecondName, LastName = author.LastName });
-                }
-            }
-            return book;
-        }
+
         public void DeleteBook(int ID)
         {
             BookModel book = db.books.Find(ID);
             if (book != null)
             db.books.Remove(book);
         }
-
         public void EditBook(Book BookToEdit)
         {
-                BookModel book = db.books.Find(BookToEdit.Id);
-                book.Description = BookToEdit.Description;
-                book.Name = BookToEdit.Name;
-                book.Year = BookToEdit.Year;
-                book.authors.Clear();
+            BookModel book = db.books.Find(BookToEdit.Id);
+            book.Description = BookToEdit.Description;
+            book.Name = BookToEdit.Name;
+            book.Year = BookToEdit.Year;
+            book.authors.Clear();
             if (BookToEdit.authors != null)
             {
                 foreach (Author author in BookToEdit.authors)
@@ -51,7 +44,6 @@ namespace Kartoteka.DAL
                     book.authors.Add(db.authors.Find(author.Id));
                 }
             }
-                db.Entry(book).State = EntityState.Modified;
         }
 
         public List<Book> GetAllBooks()
@@ -67,21 +59,13 @@ namespace Kartoteka.DAL
         public Book GetBookByID(int ID)
         {
             BookModel book = db.books.Find(ID);
-            Book BookToReturn = BookModelToBook(book);
+            Book BookToReturn = Mapper.Map<BookModel, Book>(book);
             return BookToReturn;
         }
 
         public int RegisterNewBook(Book NewBook)
         {
-            BookModel bookmodel = new BookModel()
-            { Name = NewBook.Name, Description = NewBook.Description, Year = NewBook.Year };
-            if(NewBook.authors!=null)
-            { 
-                foreach (Author author in NewBook.authors)
-                {
-                    bookmodel.authors.Add(db.authors.Find(author.Id));
-                }
-            }
+            BookModel bookmodel = Mapper.Map<Book, BookModel>(NewBook);
             db.books.Add(bookmodel);
             db.SaveChanges();
             return bookmodel.Id;

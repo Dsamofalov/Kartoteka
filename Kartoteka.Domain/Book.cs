@@ -12,6 +12,6 @@ namespace Kartoteka.Domain
         public int Year { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<Author> authors { get; set; }
+        public virtual ICollection<Author> authors { get; set; }
     }
 }

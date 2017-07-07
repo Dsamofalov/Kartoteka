@@ -12,6 +12,10 @@ namespace Kartoteka.Domain
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string SecondName { get; set; }
-        public List<Book> books { get; set; }
+        public virtual ICollection<Book> books { get; set; }
+        public Author()
+        {
+            this.books = new HashSet<Book>();
+        }
     }
 }
