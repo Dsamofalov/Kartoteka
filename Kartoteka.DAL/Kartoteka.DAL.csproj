@@ -58,7 +58,9 @@
   <ItemGroup>
     <Compile Include="AuthorModel.cs" />
     <Compile Include="BookModel.cs" />
+    <Compile Include="EFAuthorsRepository.cs" />
     <Compile Include="EFBooksRepository.cs" />
+    <Compile Include="EFKartotekaService.cs" />
     <Compile Include="KartotekaModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

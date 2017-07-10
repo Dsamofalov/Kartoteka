@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Kartoteka.Domain
 {
-    public interface IKartotekaService : IDisposable
+    public interface IKartotekaService
     {
         List<Author> GetAllAuthors();
         List<Book> GetAllBooks();
@@ -18,6 +18,5 @@ namespace Kartoteka.Domain
         void DeleteBook(int ID);
         Author GetAuthorByID(int ID);
         Book GetBookByID(int ID);
-        void Save();
     }
 }

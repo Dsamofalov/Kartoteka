@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Author.cs" />
     <Compile Include="Book.cs" />
+    <Compile Include="DefaultKartotekaService.cs" />
     <Compile Include="IAuthorsRepository.cs" />
     <Compile Include="IBooksRepository.cs" />
     <Compile Include="IKartotekaService.cs" />
