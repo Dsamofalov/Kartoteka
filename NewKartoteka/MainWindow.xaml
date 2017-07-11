@@ -23,5 +23,7 @@
 
     <Grid x:Name="LayoutRoot">
 
+        
+
     </Grid>
 </Controls:MetroWindow>

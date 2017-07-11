@@ -40,7 +40,6 @@ namespace NewKartoteka.ViewModel
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<IAuthorsRepository, EFAuthorsRepository>();
             SimpleIoc.Default.Register<IBooksRepository, EFBooksRepository>();
-            SimpleIoc.Default.Register<IKartotekaService, EFKartotekaService >();
         }
 
         public MainViewModel Main
