@@ -17,7 +17,15 @@ namespace Kartoteka.Domain
             if (booksRep == null) throw new ArgumentNullException("booksRep", "booksRep is null");
             else _booksRep = booksRep;
         }
+        public List<Author> GetAllAuthors()
+        {
+            return _authorsRep.GetAllAuthors();
+        }
 
+        public List<Book> GetAllBooks()
+        {
+            return _booksRep.GetAllBooks();
+        }
         public void DeleteAuthor(int ID)
         {
             throw new NotImplementedException();
@@ -38,15 +46,6 @@ namespace Kartoteka.Domain
             throw new NotImplementedException();
         }
 
-        public List<Author> GetAllAuthors()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Book> GetAllBooks()
-        {
-            throw new NotImplementedException();
-        }
 
         public Author GetAuthorByID(int ID)
         {
