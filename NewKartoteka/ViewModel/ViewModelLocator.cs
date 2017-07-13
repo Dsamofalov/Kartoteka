@@ -38,6 +38,7 @@ namespace NewKartoteka.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<AddBookViewModel>();
             SimpleIoc.Default.Register<IAuthorsRepository, EFAuthorsRepository>();
             SimpleIoc.Default.Register<IBooksRepository, EFBooksRepository>();
             SimpleIoc.Default.Register<IKartotekaService, EFKartotekaService>();
@@ -48,6 +49,13 @@ namespace NewKartoteka.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
+            }
+        }
+        public AddBookViewModel AddBook
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<AddBookViewModel>();
             }
         }
         public static void Cleanup()

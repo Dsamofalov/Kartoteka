@@ -5,14 +5,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ignore="http://www.galasoft.ch/ignore"
+        xmlns:local="clr-namespace:NewKartoteka"
         mc:Ignorable="d ignore"
         GlowBrush="{DynamicResource AccentColorBrush}"
         BorderThickness="2"
-        Height="500"
-        Width="500"
+        Height="700"
+        Width="700"
         Title="Kartoteka Application"
         DataContext="{Binding Main, Source={StaticResource Locator}}">
-    
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -20,10 +20,86 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+    <TabControl>
+        <TabItem Header="Книги" >
+            <TabItem.Content>
+                <Grid Margin="0,13,0,-12.4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.15*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Button  Content="+ Добавить"   Grid.Row="0"  Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding OpenAddBookWinCommand, Mode=OneWay}"
+                  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10.4,0" Width="120" Height="40" FontSize="18" />
+                    <Controls:Flyout BorderThickness="2" BorderBrush="{DynamicResource AccentColorBrush}" Panel.ZIndex="1" Theme="Adapt"  Width="480"
+                                     IsOpen="{Binding IsNewBookOpen}" Grid.RowSpan="3" Grid.ColumnSpan="2"
+                                      Grid.Row="0"  Header="Добавление новой книги" Position="Left"  >
+                        <Grid   >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="0.3*" />
+                                <RowDefinition Height="0.3*" />
+                                <RowDefinition Height="0.7*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="0.3*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.1*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center"   FontSize="20" Grid.Row="0" Grid.Column="0" Margin="10,19,13.4,18.4" Height="25" > Год написания</TextBlock>
+                            <TextBox x:Name="YearTextBox" Grid.Row="0" Grid.Column="1"  BorderThickness="3"  Controls:TextBoxHelper.ClearTextButton="True"
+                 BorderBrush="Black" Margin="0,17,10,15" FontSize="14" Grid.ColumnSpan="2" >
+                                <Binding Path="AddBookVM.NewBook.Year" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:YearTextBoxValidationRule></local:YearTextBoxValidationRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox>
+                            <TextBlock VerticalAlignment="Center"   FontSize="20" Grid.Row="1" Grid.Column="0" Margin="10,18.6,13.4,19.6" Height="25" > Название</TextBlock>
+                            <TextBox x:Name="NameTextBox" Controls:TextBoxHelper.Watermark="Добавьте название книги"  Controls:TextBoxHelper.ClearTextButton="True"
+                                     Grid.Row="1" Grid.Column="1"  BorderThickness="3" 
+                 BorderBrush="Black" Margin="0,17,10,15" FontSize="14" Grid.ColumnSpan="2" >
+                                <Binding Path="AddBookVM.NewBook.Name" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxIsEmptyValidationRule></local:TextBoxIsEmptyValidationRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox>
+                            <TextBlock VerticalAlignment="Center"  FontSize="20" Grid.Row="2" Grid.Column="0" Margin="10,60.4,13.4,61.2" Height="24" >Описание</TextBlock>
+                            <TextBox x:Name="DescriptionTextBox"  Controls:TextBoxHelper.Watermark="Введите описание книги" Grid.Row="2" Grid.Column="1"  BorderThickness="3" 
+                                     Controls:TextBoxHelper.ClearTextButton="True"
+                                     BorderBrush="Black" Margin="0,17,10,15" FontSize="14" Grid.ColumnSpan="2" >
+                                <Binding Path="AddBookVM.NewBook.Description" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxIsEmptyValidationRule></local:TextBoxIsEmptyValidationRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox>
+                            <ListBox x:Name="AuthorsList" Margin="0,17,10,15" BorderThickness="3"  
+                 ItemsSource="{Binding Path =AddBookVM.Authors , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Multiple" 
+                                     Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Margin="5">
+                                            <TextBlock FontSize="16" Text="{Binding Path=Id}" Margin="0,0,5,0" />
+                                            <TextBlock FontSize="16" Text="{Binding Path=FirstName}" Margin="0,0,10,0"    />
+                                            <TextBlock FontSize="16" Text="{Binding Path=SecondName}" Margin="0,0,10,0"    />
+                                            <TextBlock FontSize="16" Text="{Binding Path=LastName}"  />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <TextBlock VerticalAlignment="Center" Text="Список авторов" FontSize="20" Grid.Row="3" Grid.Column="0" Margin="10,91.8,10.4,91.2" Height="25" />
+                            <Button  Content="Зарегистрировать" Grid.Row="4" Grid.Column="0" Style="{StaticResource RegisterBookButtonStyle}"
+                Command="{Binding SaveListCommand}"   CommandParameter="{Binding ElementName=AuthorsList, Path=SelectedItems}"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"  Width="200" FontSize="20" Grid.ColumnSpan="2" />
+                        </Grid>
+                    </Controls:Flyout>
+                    <DataGrid Grid.Row="1"  ItemsSource="{Binding Books}" AutoGenerateColumns="True" Style="{StaticResource AzureDataGrid}">
 
-    <Grid x:Name="LayoutRoot">
-
-        
-
-    </Grid>
+                    </DataGrid>
+                </Grid>
+            </TabItem.Content>
+        </TabItem>
+        <TabItem Header="Авторы"></TabItem>
+    </TabControl>
 </Controls:MetroWindow>

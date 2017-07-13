@@ -13,9 +13,10 @@ namespace Kartoteka.Domain
         public DefaultKartotekaService(IAuthorsRepository authorsRep, IBooksRepository booksRep)
         {
             if (authorsRep == null) throw new ArgumentNullException("authorsRep", "authorsRep is null");
-            else _authorsRep = authorsRep;
             if (booksRep == null) throw new ArgumentNullException("booksRep", "booksRep is null");
-            else _booksRep = booksRep;
+
+            _authorsRep = authorsRep;
+            _booksRep = booksRep;
         }
         public List<Author> GetAllAuthors()
         {
