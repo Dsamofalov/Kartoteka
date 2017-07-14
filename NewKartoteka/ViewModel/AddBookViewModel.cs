@@ -9,12 +9,14 @@ using System.Threading.Tasks;
 
 namespace NewKartoteka
 {
-   public class AddBookViewModel:ViewModelBase
+    //Валидация должна быть реализована с помощью IDataErrorInfo ищи пример в инете
+    public class AddBookViewModel:ViewModelBase
     {
         private readonly IKartotekaService _service;
         private Book _newbook;
         private ObservableCollection<Author> _authors;
-
+        
+        //Нельзя просто так отдавать класс бизнес логики для редактирования, его свойства могут быть только на чтение 
         public Book NewBook
         {
             get
@@ -28,6 +30,11 @@ namespace NewKartoteka
                 RaisePropertyChanged("NewBook");
             }
         }
+        //Правильная конструкция и так двех его свойств
+        private string _name;
+
+        public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
+
 
         public ObservableCollection<Author> Authors
         {

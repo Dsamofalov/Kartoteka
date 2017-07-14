@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using MahApps.Metro.Controls;
 using System.Windows;
 using Microsoft.Practices.ServiceLocation;
+using System.Windows.Input;
 
 namespace NewKartoteka.ViewModel
 {
@@ -15,7 +16,24 @@ namespace NewKartoteka.ViewModel
         private readonly IKartotekaService _service;
         private ObservableCollection<Book> _books;
         private bool _isNewBookOpen =false;
-        public RelayCommand OpenAddBookWinCommand { get; private set; }
+        //public RelayCommand OpenAddBookWinCommand { get; private set; }
+
+        //Лучше писать так все в одном месте
+        private RelayCommand _openAddBookWinCommand;
+        public ICommand OpenAddBookWinCommand
+        {
+            get
+            {
+                if (_openAddBookWinCommand == null) _openAddBookWinCommand = new RelayCommand(() =>
+                 {
+                     IsNewBookOpen = !IsNewBookOpen;
+                 });
+
+                return _openAddBookWinCommand;
+            }
+        }
+
+
         public ObservableCollection<Book> Books
         {
             get
@@ -49,6 +67,7 @@ namespace NewKartoteka.ViewModel
         {
             IsNewBookOpen = !IsNewBookOpen;
         }
+        //Это можно сделать в xmal-e  DataContext="{Binding AddBook, Source={StaticResource Locator}}" 
         public AddBookViewModel AddBookVM
         {
             get
@@ -60,7 +79,7 @@ namespace NewKartoteka.ViewModel
         {
             if (service == null) throw new ArgumentNullException("service", "service is null");
             _service = service;
-            this.OpenAddBookWinCommand = new RelayCommand(OpenAddBookWin);
+         //   this.OpenAddBookWinCommand = new RelayCommand(OpenAddBookWin);
         }
 
     }
