@@ -16,9 +16,7 @@ namespace NewKartoteka.ViewModel
         private readonly IKartotekaService _service;
         private ObservableCollection<Book> _books;
         private bool _isNewBookOpen =false;
-        //public RelayCommand OpenAddBookWinCommand { get; private set; }
-
-        //Лучше писать так все в одном месте
+        private bool _isTabControlVisible = true;
         private RelayCommand _openAddBookWinCommand;
         public ICommand OpenAddBookWinCommand
         {
@@ -27,6 +25,7 @@ namespace NewKartoteka.ViewModel
                 if (_openAddBookWinCommand == null) _openAddBookWinCommand = new RelayCommand(() =>
                  {
                      IsNewBookOpen = !IsNewBookOpen;
+                     IsTabControlVisible = !IsTabControlVisible;
                  });
 
                 return _openAddBookWinCommand;
@@ -62,24 +61,24 @@ namespace NewKartoteka.ViewModel
             }
         }
 
-
-        private void OpenAddBookWin()
-        {
-            IsNewBookOpen = !IsNewBookOpen;
-        }
-        //Это можно сделать в xmal-e  DataContext="{Binding AddBook, Source={StaticResource Locator}}" 
-        public AddBookViewModel AddBookVM
+        public bool IsTabControlVisible
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<AddBookViewModel>();
+                return _isTabControlVisible;
+            }
+
+            set
+            {
+                _isTabControlVisible = value;
+                RaisePropertyChanged("IsTabControlVisible");
             }
         }
+
         public MainViewModel(IKartotekaService service)
         {
             if (service == null) throw new ArgumentNullException("service", "service is null");
             _service = service;
-         //   this.OpenAddBookWinCommand = new RelayCommand(OpenAddBookWin);
         }
 
     }

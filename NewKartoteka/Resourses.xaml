@@ -11,7 +11,8 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    <Style x:Key="RegisterBookButtonStyle" TargetType="Button" BasedOn="{StaticResource AccentedSquareButtonStyle}">
+    <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+    <Style x:Key="RegisterBookButtonStyle" TargetType="Button" BasedOn="{StaticResource SquareButtonStyle}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=(Validation.HasError), ElementName=YearTextBox }" Value="True">
                 <Setter Property="IsEnabled" Value="False" />

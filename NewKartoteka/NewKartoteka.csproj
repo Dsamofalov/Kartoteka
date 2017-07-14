@@ -83,6 +83,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddBookControl.xaml.cs">
+      <DependentUpon>AddBookControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TextBoxIsEmptyValidationRule.cs" />
     <Compile Include="ViewModel\AddBookViewModel.cs" />
     <Compile Include="Design\DesignDataService.cs" />
@@ -92,6 +95,10 @@
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="YearTextBoxValidationRule.cs" />
+    <Page Include="AddBookControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
