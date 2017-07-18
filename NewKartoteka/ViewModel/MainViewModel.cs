@@ -16,7 +16,6 @@ namespace NewKartoteka.ViewModel
         private readonly IKartotekaService _service;
         private ObservableCollection<Book> _books;
         private bool _isNewBookOpen =false;
-        private bool _isTabControlVisible = true;
         private RelayCommand _openAddBookWinCommand;
         public ICommand OpenAddBookWinCommand
         {
@@ -25,7 +24,6 @@ namespace NewKartoteka.ViewModel
                 if (_openAddBookWinCommand == null) _openAddBookWinCommand = new RelayCommand(() =>
                  {
                      IsNewBookOpen = !IsNewBookOpen;
-                     IsTabControlVisible = !IsTabControlVisible;
                  });
 
                 return _openAddBookWinCommand;
@@ -58,20 +56,6 @@ namespace NewKartoteka.ViewModel
             {
                 _isNewBookOpen  = value;
                 RaisePropertyChanged("IsNewBookOpen");
-            }
-        }
-
-        public bool IsTabControlVisible
-        {
-            get
-            {
-                return _isTabControlVisible;
-            }
-
-            set
-            {
-                _isTabControlVisible = value;
-                RaisePropertyChanged("IsTabControlVisible");
             }
         }
 

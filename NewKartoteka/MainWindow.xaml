@@ -19,8 +19,8 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <TabControl SelectedIndex="2" Controls:TabControlHelper.IsUnderlined="True">
-        <TabItem Header="Книги"  TabIndex="2" Visibility="{Binding IsTabControlVisible, Converter={StaticResource BoolToVisConverter}}" >
+    <TabControl  SelectedIndex="2" Controls:TabControlHelper.IsUnderlined="True">
+        <TabItem Header="Книги"  TabIndex="2" Visibility="{Binding IsNewBookOpen ,Converter={StaticResource BooleanToVisibilityConverter}}" >
             <TabItem.Content>
                 <Grid>
                     <Grid.RowDefinitions>
@@ -29,7 +29,7 @@
                     </Grid.RowDefinitions>
                     <Button  Content="+ Добавить"   Grid.Row="0" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding OpenAddBookWinCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10.4,0" Width="120" FontSize="18" />
-                    <Controls:Flyout  Margin="0,-73,0,0" Panel.ZIndex="1" Width="500" IsOpen="{Binding IsNewBookOpen}" Grid.RowSpan="2"  
+                    <Controls:Flyout  Margin="0,-75,0,0" Panel.ZIndex="1" Width="500" IsOpen="{Binding IsNewBookOpen}" Grid.RowSpan="2"  
                                       Grid.Row="0"  Header="Добавление новой книги" Position="Left"  >
                         <local:AddBookControl x:Name="AddBookContr"></local:AddBookControl>
                     </Controls:Flyout>
@@ -39,6 +39,6 @@
                 </Grid>
             </TabItem.Content>
         </TabItem>
-        <TabItem Header="Авторы" Visibility="{Binding IsTabControlVisible, Converter={StaticResource BoolToVisConverter}}"></TabItem>
+        <TabItem Header="Авторы" Visibility="{Binding IsNewBookOpen, Converter={StaticResource BooleanToVisibilityConverter}}"></TabItem>
     </TabControl>
 </Controls:MetroWindow>

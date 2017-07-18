@@ -86,6 +86,8 @@
     <Compile Include="AddBookControl.xaml.cs">
       <DependentUpon>AddBookControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Conventers\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Conventers\BooleanConverter.cs" />
     <Compile Include="TextBoxIsEmptyValidationRule.cs" />
     <Compile Include="ViewModel\AddBookViewModel.cs" />
     <Compile Include="Design\DesignDataService.cs" />

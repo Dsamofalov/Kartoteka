@@ -33,18 +33,16 @@
         </TextBox>
         <TextBlock VerticalAlignment="Center"   FontSize="20" Grid.Row="1" Grid.Column="0" Margin="10,18.6,13.4,19.6" > Название</TextBlock>
 
-        <!--Привязку лучше написать так Text="{Binding AddBookVM.NewBook.Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, Mode=TwoWay}"-->
-
         <TextBox x:Name="NameTextBox" Controls:TextBoxHelper.Watermark="Добавьте название книги"  Controls:TextBoxHelper.ClearTextButton="True"
                          Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, Mode=TwoWay}"
                  Grid.Row="1" Grid.Column="1" Margin="0,17,10,15" FontSize="14" Grid.ColumnSpan="2" >
         </TextBox>
         <TextBlock VerticalAlignment="Center"  FontSize="20" Grid.Row="2" Grid.Column="0" Margin="10,19,13.4,19"  >Описание</TextBlock>
-        <TextBox x:Name="DescriptionTextBox" Height="170" Controls:TextBoxHelper.Watermark="Введите описание книги" Grid.Row="2" Grid.Column="1"  
+        <TextBox x:Name="DescriptionTextBox" Height="190" Controls:TextBoxHelper.Watermark="Введите описание книги" Grid.Row="2" Grid.Column="1"  
                  Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, Mode=TwoWay}"
                  Controls:TextBoxHelper.ClearTextButton="True" Margin="0,17,10,15" FontSize="14" Grid.ColumnSpan="2" >
         </TextBox>
-        <ListBox x:Name="AuthorsList" Height="250" Margin="0,17,10,15" ItemsSource="{Binding Path=AllAuthors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+        <ListBox x:Name="AuthorsList" Height="280" Margin="0,17,10,15" ItemsSource="{Binding Path=AllAuthors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                      SelectionMode="Multiple"  Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -60,6 +58,6 @@
         <TextBlock VerticalAlignment="Center" Text="Список авторов" FontSize="20" Grid.Row="3" Grid.Column="0" Margin="10,19,10.4,19"  />
         <Button  Content="Зарегистрировать" Grid.Row="4" Grid.Column="0" Style="{StaticResource RegisterBookButtonStyle}"
                 Command="{Binding SaveListCommand}"   CommandParameter="{Binding ElementName=AuthorsList, Path=SelectedItems}"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"  Width="200" FontSize="20" Grid.ColumnSpan="2" />
+                   HorizontalAlignment="Center" VerticalAlignment="Bottom"  Width="200" FontSize="20" Grid.ColumnSpan="2" />
     </Grid>
 </UserControl>
