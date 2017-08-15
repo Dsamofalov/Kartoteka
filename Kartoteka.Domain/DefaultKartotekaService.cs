@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Kartoteka.Domain
 {
-    class DefaultKartotekaService:IKartotekaService
+    public class DefaultKartotekaService:IKartotekaService
     {
         private readonly IAuthorsRepository _authorsRep;
         private readonly IBooksRepository _booksRep;

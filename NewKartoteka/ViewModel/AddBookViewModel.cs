@@ -1,6 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using Kartoteka.DAL;
 using Kartoteka.Domain;
+using MahApps.Metro.Controls.Dialogs;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,13 +12,15 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
 namespace NewKartoteka 
 {
-    //Валидация должна быть реализована с помощью IDataErrorInfo ищи пример в инете
     public class AddBookViewModel:ViewModelBase, IDataErrorInfo
     {
         private readonly IKartotekaService _service;
+        private IDialogCoordinator dialogCoordinator;
         private string _name;
         public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
 
@@ -29,6 +35,33 @@ namespace NewKartoteka
 
         private ObservableCollection<Author> _allauthors;
         public ObservableCollection<Author> AllAuthors { get { return _allauthors; } set { _allauthors = value; RaisePropertyChanged("AllAuthors"); } }
+
+        private RelayCommand<object> _saveBookCommand;
+        public ICommand SaveBookCommand
+        {
+            get
+            {
+                if (_saveBookCommand == null) _saveBookCommand = new RelayCommand<object>(async (object parameter) =>
+                {
+                    IList selection = (IList)parameter;
+                    List<Author> newauthors = selection.Cast<Author>().ToList();
+                    Book book = new Book()
+                    {
+                        Name = Name,
+                        Year = Year,
+                        Description = Description,
+                        authors = new ObservableCollection<Author>()
+                    };
+                    foreach (Author author in newauthors)
+                    {
+                        book.authors.Add(_service.GetAuthorByID(author.Id));
+                    }
+                    await dialogCoordinator.ShowMessageAsync(this, "Книга добавлена", String.Concat("ID добавленной книги: ", _service.RegisterNewBook(book).ToString()));
+                });
+
+                return _saveBookCommand;
+            }
+        }
 
         public string Error
         {
@@ -70,9 +103,10 @@ namespace NewKartoteka
 
         public AddBookViewModel(IKartotekaService service)
         {
+            dialogCoordinator = DialogCoordinator.Instance;
             if (service == null) throw new ArgumentNullException("service", "service is null");
             _service = service;
-            this.AllAuthors = new ObservableCollection<Author>();
+            this.AllAuthors = new ObservableCollection<Author>(_service.GetAllAuthors());
         }
     }
 }
