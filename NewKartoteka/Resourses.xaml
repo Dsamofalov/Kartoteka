@@ -11,10 +11,6 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    <local:BooleanToVisibilityConverter 
-        x:Key="BooleanToVisibilityConverter" 
-        True="Hidden" 
-        False="Visible" />
     <Style x:Key="RegisterBookButtonStyle" TargetType="Button" BasedOn="{StaticResource SquareButtonStyle}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=(Validation.HasError), ElementName=YearTextBox }" Value="True">
@@ -24,6 +20,19 @@
                 <Setter Property="IsEnabled" Value="False" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=(Validation.HasError), ElementName=DescriptionTextBox }" Value="True">
+                <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="RegisterAuthorButtonStyle" TargetType="Button" BasedOn="{StaticResource SquareButtonStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=(Validation.HasError), ElementName=FirstNameTextBox }" Value="True">
+                <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=(Validation.HasError), ElementName=LastNameTextBox }" Value="True">
+                <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=(Validation.HasError), ElementName=SecondNameTextBox }" Value="True">
                 <Setter Property="IsEnabled" Value="False" />
             </DataTrigger>
         </Style.Triggers>

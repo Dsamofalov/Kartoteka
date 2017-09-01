@@ -1,5 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Kartoteka.DAL;
 using Kartoteka.Domain;
 using MahApps.Metro.Controls.Dialogs;
@@ -54,9 +56,11 @@ namespace NewKartoteka
                     };
                     foreach (Author author in newauthors)
                     {
-                        book.authors.Add(_service.GetAuthorByID(author.Id));
+                        book.authors.Add(author);
                     }
-                    await dialogCoordinator.ShowMessageAsync(this, "Книга добавлена", String.Concat("ID добавленной книги: ", _service.RegisterNewBook(book).ToString()));
+                    int id = _service.RegisterNewBook(book);
+                    await dialogCoordinator.ShowMessageAsync(this, "Книга добавлена", String.Concat("ID добавленной книги: ", id.ToString()));
+                    MessengerInstance.Send(new NotificationMessage(id.ToString()));
                 });
 
                 return _saveBookCommand;
@@ -100,7 +104,6 @@ namespace NewKartoteka
                 return string.Empty;
             }
         }
-
         public AddBookViewModel(IKartotekaService service)
         {
             dialogCoordinator = DialogCoordinator.Instance;

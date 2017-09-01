@@ -12,6 +12,7 @@
 using AutoMapper;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Kartoteka.DAL;
 using Kartoteka.Domain;
 using Microsoft.Practices.ServiceLocation;
@@ -39,6 +40,8 @@ namespace NewKartoteka.ViewModel
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<AddBookViewModel>();
+            SimpleIoc.Default.Register<AddAuthorViewModel>();
+            SimpleIoc.Default.Register<EditBookViewModel>();
             SimpleIoc.Default.Register<IAuthorsRepository, EFAuthorsRepository>();
             SimpleIoc.Default.Register<IBooksRepository, EFBooksRepository>();
             SimpleIoc.Default.Register<IKartotekaService, EFKartotekaService>();
@@ -56,6 +59,20 @@ namespace NewKartoteka.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<AddBookViewModel>();
+            }
+        }
+        public EditBookViewModel EditBook
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<EditBookViewModel>();
+            }
+        }
+        public AddAuthorViewModel AddAuthor
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<AddAuthorViewModel>();
             }
         }
         public static void Cleanup()

@@ -71,6 +71,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.5.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -92,14 +94,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddAuthorControl.xaml.cs">
+      <DependentUpon>AddAuthorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\AddAuthorViewModel.cs" />
     <Compile Include="AddBookControl.xaml.cs">
       <DependentUpon>AddBookControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Conventers\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Conventers\BooleanConverter.cs" />
     <Compile Include="EditBookControl.xaml.cs">
       <DependentUpon>EditBookControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\EditBookViewModel.cs" />
     <Compile Include="TextBoxIsEmptyValidationRule.cs" />
     <Compile Include="ViewModel\AddBookViewModel.cs" />
     <Compile Include="Design\DesignDataService.cs" />
@@ -109,6 +114,10 @@
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="YearTextBoxValidationRule.cs" />
+    <Page Include="AddAuthorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddBookControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
