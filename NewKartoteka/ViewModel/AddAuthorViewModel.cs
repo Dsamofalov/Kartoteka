@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 
@@ -18,10 +19,11 @@ namespace NewKartoteka
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class AddAuthorViewModel : ViewModelBase
+    public class AddAuthorViewModel : ViewModelBase, IDataErrorInfo
     {
         private readonly IKartotekaService _service;
         private IDialogCoordinator dialogCoordinator;
+        public static readonly Guid Token = Guid.NewGuid();
         private string _firstName;
         public string FirstName { get { return _firstName; } set { _firstName = value; RaisePropertyChanged("FirstName"); } }
 
@@ -57,8 +59,9 @@ namespace NewKartoteka
                     {
                         author.books.Add(book);
                     }
-                    await dialogCoordinator.ShowMessageAsync(this, "Автор добавлен", String.Concat("ID добавленного автора: ", _service.RegisterNewAuthor(author).ToString()));
-                    MessengerInstance.Send(new NotificationMessage("RefreshListOfAuthors"));
+                    string id = _service.RegisterNewAuthor(author).ToString();
+                    await dialogCoordinator.ShowMessageAsync(this, "Автор добавлен", String.Concat("ID добавленного автора: ", id ));
+                    MessengerInstance.Send(new NotificationMessage(id),Token);
                 });
 
                 return _saveAuthorCommand;

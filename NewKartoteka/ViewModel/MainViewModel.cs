@@ -250,19 +250,19 @@ namespace NewKartoteka.ViewModel
             BooksDataGridCollection.Filter = new Predicate<object>(FilterBooks);
             AuthorsDataGridCollection = CollectionViewSource.GetDefaultView(Authors);
             AuthorsDataGridCollection.Filter = new Predicate<object>(FilterAuthors);
-            MessengerInstance.Register<NotificationMessage>(this,message =>
-            {
-                if(message.Notification == "RefreshListOfBooks")
-                FilterBooksCollection();
-            });
-            MessengerInstance.Register<NotificationMessage>(this, message =>
-            {
-                if (message.Notification == "RefreshListOfAuthors")
-                    FilterBooksCollection();
-            });
             _editBookMessenger = new Messenger();
             SimpleIoc.Default.Register(() => _editBookMessenger,
               "EditBookMessenger");
+            MessengerInstance.Register<NotificationMessage>( this, AddAuthorViewModel.Token, message =>
+            {
+                Authors.Add(_service.GetAuthorByID(int.Parse(message.Notification)));
+                FilterAuthorsCollection();
+            });
+            MessengerInstance.Register<NotificationMessage>(this, AddBookViewModel.Token, message =>
+            {
+                Books.Add(_service.GetBookByID(int.Parse(message.Notification)));
+                FilterBooksCollection();
+            });
         }
 
     }

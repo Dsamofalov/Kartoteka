@@ -17,6 +17,7 @@ using Kartoteka.DAL;
 using Kartoteka.Domain;
 using Microsoft.Practices.ServiceLocation;
 using NewKartoteka.Model;
+using System;
 
 namespace NewKartoteka.ViewModel
 {
@@ -37,7 +38,6 @@ namespace NewKartoteka.ViewModel
                 IsInit = true;
             }
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<AddBookViewModel>();
             SimpleIoc.Default.Register<AddAuthorViewModel>();

@@ -23,6 +23,7 @@ namespace NewKartoteka
     {
         private readonly IKartotekaService _service;
         private IDialogCoordinator dialogCoordinator;
+        public static readonly Guid Token = Guid.NewGuid();
         private string _name;
         public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
 
@@ -58,9 +59,9 @@ namespace NewKartoteka
                     {
                         book.authors.Add(author);
                     }
-                    int id = _service.RegisterNewBook(book);
-                    await dialogCoordinator.ShowMessageAsync(this, "Книга добавлена", String.Concat("ID добавленной книги: ", id.ToString()));
-                    MessengerInstance.Send(new NotificationMessage(id.ToString()));
+                    string id = _service.RegisterNewBook(book).ToString();
+                    await dialogCoordinator.ShowMessageAsync(this, "Книга добавлена", String.Concat("ID добавленной книги: ", id));
+                    MessengerInstance.Send(new NotificationMessage(id),Token);
                 });
 
                 return _saveBookCommand;
