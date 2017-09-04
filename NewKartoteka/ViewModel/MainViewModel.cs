@@ -250,9 +250,13 @@ namespace NewKartoteka.ViewModel
             BooksDataGridCollection.Filter = new Predicate<object>(FilterBooks);
             AuthorsDataGridCollection = CollectionViewSource.GetDefaultView(Authors);
             AuthorsDataGridCollection.Filter = new Predicate<object>(FilterAuthors);
+            
+            // выноси это в сервайс локатор тут ему нечего делать
             _editBookMessenger = new Messenger();
-            SimpleIoc.Default.Register(() => _editBookMessenger,
-              "EditBookMessenger");
+            // такие ключи как "EditBookMessenger" лучше вынести в отдельный класс например KartotekaConstants см. ниже
+            SimpleIoc.Default.Register(() => _editBookMessenger, KartotekaConstants.EditBookMessagerKey); //"EditBookMessenger"); 
+        
+
             MessengerInstance.Register<NotificationMessage>( this, AddAuthorViewModel.Token, message =>
             {
                 Authors.Add(_service.GetAuthorByID(int.Parse(message.Notification)));
@@ -263,6 +267,12 @@ namespace NewKartoteka.ViewModel
                 Books.Add(_service.GetBookByID(int.Parse(message.Notification)));
                 FilterBooksCollection();
             });
+        }
+
+        //пример, но надо вынести это отсюда
+        public class KartotekaConstants
+        {
+            public const string EditBookMessagerKey = "EditBookMessenger";
         }
 
     }

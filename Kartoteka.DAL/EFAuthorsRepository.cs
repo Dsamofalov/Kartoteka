@@ -48,7 +48,13 @@ namespace Kartoteka.DAL
                 List<Author> AllAuthors = new List<Author>();
                 foreach (AuthorModel aut in db.authors)
                 {
-                    AllAuthors.Add(GetAuthorByID(aut.Id));
+                    //Зачем делать еще один запрос в базу и получать запись по ID
+                    //AllAuthors.Add(GetAuthorByID(aut.Id)); 
+
+
+                    //Можно сделать так
+                    Author AuthorToReturn = Mapper.Map<AuthorModel, Author>(aut); //локальные переменные не должны начинаться с заглавной буквы т.е. AuthorToReturn правильно - authorToReturn
+                    AllAuthors.Add(AuthorToReturn);
                 }
                 return AllAuthors;
             }
@@ -59,7 +65,7 @@ namespace Kartoteka.DAL
             using (KartotekaModel db = new KartotekaModel())
             {
                 AuthorModel author = db.authors.Find(ID);
-                Author AuthorToReturn = Mapper.Map<AuthorModel, Author>(author);
+                Author AuthorToReturn = Mapper.Map<AuthorModel, Author>(author); //  и тут AuthorToReturn
                 return AuthorToReturn;
             }
         }

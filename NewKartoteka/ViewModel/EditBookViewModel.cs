@@ -60,7 +60,7 @@ namespace NewKartoteka
         {
             if (service == null) throw new ArgumentNullException("service", "service is null");
             _service = service;
-            var messenger = SimpleIoc.Default.GetInstance<Messenger>("EditBookMessenger");
+            var messenger = SimpleIoc.Default.GetInstance<Messenger>("EditBookMessenger"); //используй ключ см MainViewModel строка 273
             messenger.Register<NotificationMessage>(this,FillListsOfAutors );
         }
     }

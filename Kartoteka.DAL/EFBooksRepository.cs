@@ -50,7 +50,12 @@ namespace Kartoteka.DAL
                 List<Book> AllBooks = new List<Book>();
                 foreach (BookModel bk in db.books)
                 {
-                    AllBooks.Add(GetBookByID(bk.Id));
+                    //Тут тоже самое см. EFAuthorsRepository строка 51
+                    //AllBooks.Add(GetBookByID(bk.Id));
+
+                    
+                    Book BookToReturn = Mapper.Map<BookModel, Book>(bk); //тоже самое см. EFAuthorsRepository строка 56
+                    AllBooks.Add(BookToReturn);
                 }
                 return AllBooks;
             }
@@ -61,7 +66,7 @@ namespace Kartoteka.DAL
             using (KartotekaModel db = new KartotekaModel())
             {
                 BookModel book = db.books.Find(ID);
-                Book BookToReturn = Mapper.Map<BookModel, Book>(book);
+                Book BookToReturn = Mapper.Map<BookModel, Book>(book); //тоже самое см. EFAuthorsRepository строка 56
                 return BookToReturn;
             }
         }
@@ -70,7 +75,7 @@ namespace Kartoteka.DAL
         {
             using (KartotekaModel db = new KartotekaModel())
             {
-                BookModel bookmodel = Mapper.Map<Book, BookModel>(NewBook);
+                BookModel bookmodel = Mapper.Map<Book, BookModel>(NewBook); 
                 db.books.Add(bookmodel);
                 db.SaveChanges();
                 return bookmodel.Id;
