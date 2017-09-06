@@ -22,15 +22,16 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <Controls:Flyout  Panel.ZIndex="1" Width="500" IsOpen="{Binding IsNewBookOpen}" Grid.RowSpan="2"  
+        <Controls:Flyout  Panel.ZIndex="1" CloseCommand="{Binding ClearAddBookFlyoutCommand, Mode=OneWay}" Width="500" IsOpen="{Binding IsNewBookOpen}" Grid.RowSpan="2"  
                                         Header="Добавление новой книги" Position="Left"  >
             <local:AddBookControl x:Name="AddBookContr"></local:AddBookControl>
         </Controls:Flyout>
-        <Controls:Flyout  Panel.ZIndex="1"  Width="350" IsOpen="{Binding IsEditBookOpen}" Grid.RowSpan="2"  
+        <Controls:Flyout  Panel.ZIndex="1"  Width="500" IsOpen="{Binding IsEditBookOpen}" Grid.RowSpan="2"  
                                        Header="Редактирование книги" Position="Right"  >
-            <local:EditBookControl x:Name="EditBook"></local:EditBookControl>
+            <local:EditBookControl x:Name="EditBookContr"></local:EditBookControl>
         </Controls:Flyout>
-        <Controls:Flyout  Panel.ZIndex="1" Width="500" IsOpen="{Binding IsNewAuthorOpen}" Grid.RowSpan="2"  
+        <Controls:Flyout  Panel.ZIndex="1" CloseCommand="{Binding ClearAddAuthorFlyoutCommand, Mode=OneWay}" 
+                          Width="500" IsOpen="{Binding IsNewAuthorOpen}" Grid.RowSpan="2"  
                                         Header="Добавление нового автора" Position="Left"  >
             <local:AddAuthorControl x:Name="AddAuthorContr"></local:AddAuthorControl>
         </Controls:Flyout>
@@ -53,15 +54,15 @@
                             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                 <Button  Content="+ Добавить" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding OpenAddBookWinCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" Width="150" FontSize="18" />
-                                <Button  Content="- Удалить" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding RemoveBookWinCommand, Mode=OneWay}"
+                                <Button  Content="- Удалить" Style="{StaticResource RemoveAndEditBookButtonStyle}" Command="{Binding RemoveBookWinCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" Width="150" FontSize="18" 
                                        CommandParameter="{Binding ElementName=BooksDataGrid, Path=SelectedItem}"  />
-                                <Button  Content="Редактировать" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding OpenEditBookWinCommand, Mode=OneWay}"
+                                <Button  Content="Редактировать" Style="{StaticResource RemoveAndEditBookButtonStyle}" Command="{Binding OpenEditBookWinCommand, Mode=OneWay}"
                                  CommandParameter="{Binding ElementName=BooksDataGrid, Path=SelectedItem}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Width="150" FontSize="18" />
                             </StackPanel>
                         </Grid>
-                        <DataGrid x:Name="BooksDataGrid" Grid.Row="1" ItemsSource="{Binding BooksDataGridCollection}" AutoGenerateColumns="False" Style="{StaticResource AzureDataGrid}">
+                        <DataGrid x:Name="BooksDataGrid" IsReadOnly="True" Grid.Row="1" ItemsSource="{Binding BooksDataGridCollection}" AutoGenerateColumns="False" Style="{StaticResource AzureDataGrid}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID"
                                     Binding="{Binding Id}" />
@@ -95,12 +96,12 @@
                             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                 <Button  Content="+ Добавить" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding OpenAddAuthorWinCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" Width="150" FontSize="18" />
-                                <Button  Content="- Удалить" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding RemoveAuthorWinCommand, Mode=OneWay}"
+                                <Button  Content="- Удалить" Style="{StaticResource RemoveAndEditAuthorButtonStyle}" Command="{Binding RemoveAuthorWinCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" Width="150" FontSize="18" 
                                        CommandParameter="{Binding ElementName=AuthorsDataGrid, Path=SelectedItem}"  />
                             </StackPanel>
                         </Grid>
-                        <DataGrid x:Name="AuthorsDataGrid" Grid.Row="1" ItemsSource="{Binding AuthorsDataGridCollection}" AutoGenerateColumns="False" Style="{StaticResource AzureDataGrid}">
+                        <DataGrid x:Name="AuthorsDataGrid" IsReadOnly="True" Grid.Row="1" ItemsSource="{Binding AuthorsDataGridCollection}" AutoGenerateColumns="False" Style="{StaticResource AzureDataGrid}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID"
                                     Binding="{Binding Id}" />

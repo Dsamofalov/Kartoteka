@@ -64,6 +64,10 @@
       <HintPath>..\packages\MahApps.Metro.1.5.0\lib\net45\MahApps.Metro.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MahApps.Metro.IconPacks.FontAwesome, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.IconPacks.FontAwesome.1.9.0\lib\net45\MahApps.Metro.IconPacks.FontAwesome.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
       <Private>True</Private>
@@ -97,6 +101,10 @@
     <Compile Include="AddAuthorControl.xaml.cs">
       <DependentUpon>AddAuthorControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EditListOfAutorsWin.xaml.cs">
+      <DependentUpon>EditListOfAutorsWin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="KartotekaConstants.cs" />
     <Compile Include="ViewModel\AddAuthorViewModel.cs" />
     <Compile Include="AddBookControl.xaml.cs">
       <DependentUpon>AddBookControl.xaml</DependentUpon>
@@ -123,6 +131,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EditBookControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditListOfAutorsWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

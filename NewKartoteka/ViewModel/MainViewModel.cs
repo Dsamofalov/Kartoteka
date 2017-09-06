@@ -33,8 +33,9 @@ namespace NewKartoteka.ViewModel
         private RelayCommand<Book> _openEditBookWinCommand;
         private RelayCommand<Book> _removeBookWinCommand;
         private RelayCommand _openAddAuthorWinCommand;
+        private RelayCommand _clearAddBookFlyoutCommand;
+        private RelayCommand _clearAddAuthorFlyoutCommand;
         private RelayCommand<Author> _removeAuthorWinCommand;
-        private Messenger _editBookMessenger;
         private IDialogCoordinator dialogCoordinator;
         public ObservableCollection<Book> Books
         {
@@ -109,7 +110,7 @@ namespace NewKartoteka.ViewModel
             {
                 if (_openAddBookWinCommand == null) _openAddBookWinCommand = new RelayCommand(() =>
                  {
-                     IsNewBookOpen = !IsNewBookOpen;
+                     IsNewBookOpen = true;
                  });
 
                 return _openAddBookWinCommand;
@@ -121,20 +122,46 @@ namespace NewKartoteka.ViewModel
             {
                 if (_openAddAuthorWinCommand == null) _openAddAuthorWinCommand = new RelayCommand(() =>
                 {
-                    IsNewAuthorOpen = !IsNewAuthorOpen;
+                    IsNewAuthorOpen = true;
                 });
 
                 return _openAddAuthorWinCommand;
+            }
+        }
+        public ICommand ClearAddAuthorFlyoutCommand
+        {
+            get
+            {
+                if (_clearAddAuthorFlyoutCommand == null) _clearAddAuthorFlyoutCommand = new RelayCommand(() =>
+                {
+                    Messenger.Default.Send(new NotificationMessage("ClearAddAuthorFlyout"));
+                    IsNewAuthorOpen = false;
+                });
+
+                return _clearAddAuthorFlyoutCommand;
+            }
+        }
+        public ICommand ClearAddBookFlyoutCommand
+        {
+            get
+            {
+                if (_clearAddBookFlyoutCommand == null) _clearAddBookFlyoutCommand = new RelayCommand(() =>
+                {
+                    Messenger.Default.Send(new NotificationMessage("ClearAddBookFlyout"));
+                    IsNewBookOpen = false;
+                });
+
+                return _clearAddBookFlyoutCommand;
             }
         }
         public ICommand OpenEditBookWinCommand
         {
             get
             {
-                if (_openEditBookWinCommand == null) _openEditBookWinCommand = new RelayCommand<Book>((Book BookToEdit) =>
+                if (_openEditBookWinCommand == null) _openEditBookWinCommand = new RelayCommand<Book>((Book bookToEdit) =>
                 {
                     IsEditBookOpen = !IsEditBookOpen;
-                    _editBookMessenger.Send<NotificationMessage>(new NotificationMessage(BookToEdit.Id.ToString()));
+                    ViewModelLocator._editBookMessenger.Send<NotificationMessage>(new NotificationMessage(bookToEdit.Id.ToString()));
                 });
                 return _openEditBookWinCommand;
             }
@@ -143,12 +170,12 @@ namespace NewKartoteka.ViewModel
         {
             get
             {
-                if (_removeBookWinCommand == null) _removeBookWinCommand = new RelayCommand<Book>(async (Book BookToRemove) =>
+                if (_removeBookWinCommand == null) _removeBookWinCommand = new RelayCommand<Book>(async (Book bookToRemove) =>
                 {
-                    _service.DeleteBook(BookToRemove.Id);
-                    Books.Remove(BookToRemove);
+                    _service.DeleteBook(bookToRemove.Id);
+                    Books.Remove(bookToRemove);
                     FilterBooksCollection();
-                    await dialogCoordinator.ShowMessageAsync(this, "Книга удалена", String.Concat("ID удаленной книги: ", BookToRemove.Id.ToString()));
+                    await dialogCoordinator.ShowMessageAsync(this, "Книга удалена", String.Concat("ID удаленной книги: ", bookToRemove.Id.ToString()));
                 });
                 return _removeBookWinCommand;
             }
@@ -157,12 +184,12 @@ namespace NewKartoteka.ViewModel
         {
             get
             {
-                if (_removeAuthorWinCommand == null) _removeAuthorWinCommand = new RelayCommand<Author>(async (Author AuthorToRemove) =>
+                if (_removeAuthorWinCommand == null) _removeAuthorWinCommand = new RelayCommand<Author>(async (Author authorToRemove) =>
                 {
-                    _service.DeleteAuthor(AuthorToRemove.Id);
-                    Authors.Remove(AuthorToRemove);
+                    _service.DeleteAuthor(authorToRemove.Id);
+                    Authors.Remove(authorToRemove);
                     FilterAuthorsCollection();
-                    await dialogCoordinator.ShowMessageAsync(this, "Автор удален", String.Concat("ID удаленного автора: ", AuthorToRemove.Id.ToString()));
+                    await dialogCoordinator.ShowMessageAsync(this, "Автор удален", String.Concat("ID удаленного автора: ", authorToRemove.Id.ToString()));
                 });
                 return _removeAuthorWinCommand;
             }
@@ -250,9 +277,8 @@ namespace NewKartoteka.ViewModel
             BooksDataGridCollection.Filter = new Predicate<object>(FilterBooks);
             AuthorsDataGridCollection = CollectionViewSource.GetDefaultView(Authors);
             AuthorsDataGridCollection.Filter = new Predicate<object>(FilterAuthors);
-            _editBookMessenger = new Messenger();
-            SimpleIoc.Default.Register(() => _editBookMessenger,
-              "EditBookMessenger");
+            SimpleIoc.Default.Register(() => ViewModelLocator._editBookMessenger,
+              KartotekaConstants.EditBookMessengerKey);
             MessengerInstance.Register<NotificationMessage>( this, AddAuthorViewModel.Token, message =>
             {
                 Authors.Add(_service.GetAuthorByID(int.Parse(message.Notification)));

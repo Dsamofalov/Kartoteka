@@ -47,7 +47,7 @@ namespace NewKartoteka
                 if (_saveAuthorCommand == null) _saveAuthorCommand = new RelayCommand<object>(async (object parameter) =>
                 {
                     IList selection = (IList)parameter;
-                    List<Book> newbooks = selection.Cast<Book>().ToList();
+                    List<Book> newBooks = selection.Cast<Book>().ToList();
                     Author author = new Author()
                     {
                         FirstName = FirstName,
@@ -55,11 +55,12 @@ namespace NewKartoteka
                         LastName = LastName,
                         books = new ObservableCollection<Book>()
                     };
-                    foreach (Book book in newbooks)
+                    foreach (Book book in newBooks)
                     {
                         author.books.Add(book);
                     }
                     string id = _service.RegisterNewAuthor(author).ToString();
+                    ClearAddAuthorFlyout();
                     await dialogCoordinator.ShowMessageAsync(this, "Автор добавлен", String.Concat("ID добавленного автора: ", id ));
                     MessengerInstance.Send(new NotificationMessage(id),Token);
                 });
@@ -67,6 +68,13 @@ namespace NewKartoteka
                 return _saveAuthorCommand;
             }
         }
+        private void  ClearAddAuthorFlyout()
+        {
+            FirstName = null;
+            SecondName = null;
+            LastName = null;
+        }
+
 
         public string Error
         {
@@ -111,6 +119,13 @@ namespace NewKartoteka
             if (service == null) throw new ArgumentNullException("service", "service is null");
             _service = service;
             this.AllBooks = new ObservableCollection<Book>(_service.GetAllBooks());
+            MessengerInstance.Register<NotificationMessage>(this, message =>
+            {
+                if(message.Notification.ToString() == "ClearAddAuthorFlyout")
+                {
+                    ClearAddAuthorFlyout();
+                }
+            });
         }
     }
 }

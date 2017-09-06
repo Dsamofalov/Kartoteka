@@ -37,4 +37,18 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    <Style x:Key="RemoveAndEditAuthorButtonStyle" TargetType="Button" BasedOn="{StaticResource AccentedSquareButtonStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=SelectedIndex, ElementName=AuthorsDataGrid }" Value="-1">
+                <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="RemoveAndEditBookButtonStyle" TargetType="Button" BasedOn="{StaticResource AccentedSquareButtonStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=SelectedIndex, ElementName=BooksDataGrid }" Value="-1">
+                <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

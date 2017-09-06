@@ -13,28 +13,28 @@ namespace Kartoteka.DAL
     public class EFBooksRepository : IBooksRepository
     {
 
-        public void DeleteBook(int ID)
+        public void DeleteBook(int id)
         {
             using (KartotekaModel db = new KartotekaModel())
             {
-                BookModel book = db.books.Find(ID);
+                BookModel book = db.books.Find(id);
                 if (book != null)
                     db.books.Remove(book);
                 db.SaveChanges();
             }
         }
-        public void EditBook(Book BookToEdit)
+        public void EditBook(Book bookToEdit)
         {
             using (KartotekaModel db = new KartotekaModel())
             {
-                BookModel book = db.books.Find(BookToEdit.Id);
-                book.Description = BookToEdit.Description;
-                book.Name = BookToEdit.Name;
-                book.Year = BookToEdit.Year;
+                BookModel book = db.books.Find(bookToEdit.Id);
+                book.Description = bookToEdit.Description;
+                book.Name = bookToEdit.Name;
+                book.Year = bookToEdit.Year;
                 book.authors.Clear();
-                if (BookToEdit.authors != null)
+                if (bookToEdit.authors != null)
                 {
-                    foreach (Author author in BookToEdit.authors)
+                    foreach (Author author in bookToEdit.authors)
                     {
                         book.authors.Add(db.authors.Find(author.Id));
                     }
@@ -47,33 +47,34 @@ namespace Kartoteka.DAL
         {
             using (KartotekaModel db = new KartotekaModel())
             {
-                List<Book> AllBooks = new List<Book>();
+                List<Book> allBooks = new List<Book>();
                 foreach (BookModel bk in db.books)
                 {
-                    AllBooks.Add(GetBookByID(bk.Id));
+                    Book bookToReturn = Mapper.Map<BookModel, Book>(bk);
+                    allBooks.Add(bookToReturn);
                 }
-                return AllBooks;
+                return allBooks;
             }
         }
 
-        public Book GetBookByID(int ID)
+        public Book GetBookByID(int id)
         {
             using (KartotekaModel db = new KartotekaModel())
             {
-                BookModel book = db.books.Find(ID);
-                Book BookToReturn = Mapper.Map<BookModel, Book>(book);
-                return BookToReturn;
+                BookModel book = db.books.Find(id);
+                Book bookToReturn = Mapper.Map<BookModel, Book>(book);
+                return bookToReturn;
             }
         }
 
-        public int RegisterNewBook(Book NewBook)
+        public int RegisterNewBook(Book newBook)
         {
             using (KartotekaModel db = new KartotekaModel())
             {
-                BookModel bookmodel = Mapper.Map<Book, BookModel>(NewBook);
-                db.books.Add(bookmodel);
+                BookModel bookModel = Mapper.Map<Book, BookModel>(newBook);
+                db.books.Add(bookModel);
                 db.SaveChanges();
-                return bookmodel.Id;
+                return bookModel.Id;
             }
         }
     }

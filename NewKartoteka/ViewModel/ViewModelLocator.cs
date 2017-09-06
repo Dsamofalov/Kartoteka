@@ -24,6 +24,7 @@ namespace NewKartoteka.ViewModel
     public class ViewModelLocator
     {
         static bool IsInit = false;
+        public static Messenger _editBookMessenger;
         static ViewModelLocator()
         {
             if(!IsInit)
@@ -38,6 +39,7 @@ namespace NewKartoteka.ViewModel
                 IsInit = true;
             }
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
+            _editBookMessenger = new Messenger();
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<AddBookViewModel>();
             SimpleIoc.Default.Register<AddAuthorViewModel>();

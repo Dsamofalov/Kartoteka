@@ -47,7 +47,7 @@ namespace NewKartoteka
                 if (_saveBookCommand == null) _saveBookCommand = new RelayCommand<object>(async (object parameter) =>
                 {
                     IList selection = (IList)parameter;
-                    List<Author> newauthors = selection.Cast<Author>().ToList();
+                    List<Author> newAuthors = selection.Cast<Author>().ToList();
                     Book book = new Book()
                     {
                         Name = Name,
@@ -55,7 +55,7 @@ namespace NewKartoteka
                         Description = Description,
                         authors = new ObservableCollection<Author>()
                     };
-                    foreach (Author author in newauthors)
+                    foreach (Author author in newAuthors)
                     {
                         book.authors.Add(author);
                     }
@@ -67,7 +67,12 @@ namespace NewKartoteka
                 return _saveBookCommand;
             }
         }
-
+        private void ClearAddBookFlyout()
+        {
+            Year = 0;
+            Name = null;
+            Description = null;
+        }
         public string Error
         {
             get
@@ -111,6 +116,13 @@ namespace NewKartoteka
             if (service == null) throw new ArgumentNullException("service", "service is null");
             _service = service;
             this.AllAuthors = new ObservableCollection<Author>(_service.GetAllAuthors());
+            MessengerInstance.Register<NotificationMessage>(this, message =>
+            {
+                if (message.Notification.ToString() == "ClearAddBookFlyout")
+                {
+                    ClearAddBookFlyout();
+                }
+            });
         }
     }
 }
