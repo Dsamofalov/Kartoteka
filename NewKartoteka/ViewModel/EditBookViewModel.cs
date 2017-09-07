@@ -80,6 +80,10 @@ namespace NewKartoteka
             {
                 if (_removeAllAuthorsCommand == null) _removeAllAuthorsCommand = new RelayCommand(() =>
                 {
+                    foreach(Author author in SelectedBook.authors)
+                    {
+                        AllAuthors.Add(author);
+                    }
                     SelectedBook.authors.Clear();
                 });
 
@@ -97,6 +101,7 @@ namespace NewKartoteka
                     foreach (Author author in newAuthors)
                     {
                         SelectedBook.authors.Remove(author);
+                        AllAuthors.Add(author);
                     }
                 });
 
@@ -114,6 +119,7 @@ namespace NewKartoteka
                     foreach (Author author in newAuthors)
                     {
                         SelectedBook.authors.Add(author);
+                        AllAuthors.Remove(author);
                     }
                 });
 
@@ -167,7 +173,7 @@ namespace NewKartoteka
                 Id = selectedBook.Id,
                 Name = selectedBook.Name,
                 Description = selectedBook.Description,
-                authors = selectedBook.authors
+                authors = new ObservableCollection<Author>(selectedBook.authors)
             };
             AllAuthors = new ObservableCollection<Author>(_service.GetAllAuthors());
             foreach(Author author in SelectedBook.authors)
