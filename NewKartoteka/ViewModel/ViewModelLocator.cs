@@ -25,6 +25,7 @@ namespace NewKartoteka.ViewModel
     {
         static bool IsInit = false;
         public static Messenger _editBookMessenger;
+        public static Messenger _editAuthorMessenger;
         static ViewModelLocator()
         {
             if(!IsInit)
@@ -40,10 +41,12 @@ namespace NewKartoteka.ViewModel
             }
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             _editBookMessenger = new Messenger();
+            _editAuthorMessenger = new Messenger();
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<AddBookViewModel>();
             SimpleIoc.Default.Register<AddAuthorViewModel>();
             SimpleIoc.Default.Register<EditBookViewModel>();
+            SimpleIoc.Default.Register<EditAuthorViewModel>();
             SimpleIoc.Default.Register<IAuthorsRepository, EFAuthorsRepository>();
             SimpleIoc.Default.Register<IBooksRepository, EFBooksRepository>();
             SimpleIoc.Default.Register<IKartotekaService, EFKartotekaService>();
@@ -75,6 +78,13 @@ namespace NewKartoteka.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<AddAuthorViewModel>();
+            }
+        }
+        public EditAuthorViewModel EditAuthor
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<EditAuthorViewModel>();
             }
         }
         public static void Cleanup()

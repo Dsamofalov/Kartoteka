@@ -9,5 +9,6 @@ namespace NewKartoteka
    public class KartotekaConstants
     {
         public const string EditBookMessengerKey = "EditBookMessenger";
+        public const string EditAuthorMessengerKey = "EditAuthorMessenger";
     }
 }

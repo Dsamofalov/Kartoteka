@@ -61,6 +61,7 @@ namespace NewKartoteka
                     }
                     string id = _service.RegisterNewBook(book).ToString();
                     await dialogCoordinator.ShowMessageAsync(this, "Книга добавлена", String.Concat("ID добавленной книги: ", id));
+                    ClearAddBookFlyout();
                     MessengerInstance.Send(new NotificationMessage(id),Token);
                 });
 

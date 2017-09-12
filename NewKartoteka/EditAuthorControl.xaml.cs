@@ -1,5 +1,4 @@
-﻿using MahApps.Metro.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,12 +16,11 @@ using System.Windows.Shapes;
 namespace NewKartoteka
 {
     /// <summary>
-    /// Логика взаимодействия для AddBookControl.xaml
+    /// Логика взаимодействия для EditAuthorControl.xaml
     /// </summary>
-    public partial class AddBookControl : UserControl
+    public partial class EditAuthorControl : UserControl
     {
-        
-        public AddBookControl()
+        public EditAuthorControl()
         {
             InitializeComponent();
         }

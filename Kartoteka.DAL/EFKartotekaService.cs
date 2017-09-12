@@ -70,6 +70,12 @@ namespace Kartoteka.DAL
             using (KartotekaModel db = new KartotekaModel())
             {
                 AuthorModel authorModel = Mapper.Map<Author, AuthorModel>(newAuthor);
+                ICollection<BookModel> books = new List<BookModel>();
+                foreach( BookModel bookmodel in authorModel.books)
+                {
+                    books.Add(db.books.Find(bookmodel.Id));
+                }
+                authorModel.books = books;
                 db.authors.Add(authorModel);
                 db.SaveChanges();
                 return authorModel.Id;
@@ -134,6 +140,12 @@ namespace Kartoteka.DAL
             using (KartotekaModel db = new KartotekaModel())
             {
                 BookModel bookModel = Mapper.Map<Book, BookModel>(newBook);
+                ICollection<AuthorModel> authors = new List<AuthorModel>();
+                foreach (AuthorModel authormodel in bookModel.authors)
+                {
+                    authors.Add(db.authors.Find(authormodel.Id));
+                }
+                bookModel.authors = authors;
                 db.books.Add(bookModel);
                 db.SaveChanges();
                 return bookModel.Id;

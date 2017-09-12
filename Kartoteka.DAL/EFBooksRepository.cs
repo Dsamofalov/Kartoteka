@@ -72,6 +72,12 @@ namespace Kartoteka.DAL
             using (KartotekaModel db = new KartotekaModel())
             {
                 BookModel bookModel = Mapper.Map<Book, BookModel>(newBook);
+                ICollection<AuthorModel> authors = new List<AuthorModel>();
+                foreach (AuthorModel authormodel in bookModel.authors)
+                {
+                    authors.Add(db.authors.Find(authormodel.Id));
+                }
+                bookModel.authors = authors;
                 db.books.Add(bookModel);
                 db.SaveChanges();
                 return bookModel.Id;

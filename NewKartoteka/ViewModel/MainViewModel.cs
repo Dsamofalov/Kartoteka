@@ -25,6 +25,7 @@ namespace NewKartoteka.ViewModel
         private bool _isNewBookOpen =false;
         private bool _isNewAuthorOpen = false;
         private bool _isEditBookOpen = false;
+        private bool _isEditAuthorOpen = false;
         private ICollectionView _booksDataGridCollection;
         private ICollectionView _authorsDataGridCollection;
         private string _filterBooksString;
@@ -35,6 +36,7 @@ namespace NewKartoteka.ViewModel
         private RelayCommand _openAddAuthorWinCommand;
         private RelayCommand _clearAddBookFlyoutCommand;
         private RelayCommand _clearAddAuthorFlyoutCommand;
+        private RelayCommand<Author> _openEditAuthorWinCommand;
         private RelayCommand<Author> _removeAuthorWinCommand;
         private IDialogCoordinator dialogCoordinator;
         public ObservableCollection<Book> Books
@@ -104,6 +106,19 @@ namespace NewKartoteka.ViewModel
                 RaisePropertyChanged("IsNewAuthorOpen");
             }
         }
+        public bool IsEditAuthorOpen
+        {
+            get
+            {
+                return _isEditAuthorOpen;
+            }
+
+            set
+            {
+                _isEditAuthorOpen = value;
+                RaisePropertyChanged("IsEditAuthorOpen");
+            }
+        }
         public ICommand OpenAddBookWinCommand
         {
             get
@@ -164,6 +179,18 @@ namespace NewKartoteka.ViewModel
                     ViewModelLocator._editBookMessenger.Send<NotificationMessage>(new NotificationMessage(bookToEdit.Id.ToString()));
                 });
                 return _openEditBookWinCommand;
+            }
+        }
+        public ICommand OpenEditAuthorWinCommand
+        {
+            get
+            {
+                if (_openEditAuthorWinCommand == null) _openEditAuthorWinCommand = new RelayCommand<Author>((Author authorToEdit) =>
+                {
+                    IsEditAuthorOpen = !IsEditAuthorOpen;
+                    ViewModelLocator._editAuthorMessenger.Send<NotificationMessage>(new NotificationMessage(authorToEdit.Id.ToString()));
+                });
+                return _openEditAuthorWinCommand;
             }
         }
         public ICommand RemoveBookWinCommand
@@ -279,6 +306,8 @@ namespace NewKartoteka.ViewModel
             AuthorsDataGridCollection.Filter = new Predicate<object>(FilterAuthors);
             SimpleIoc.Default.Register(() => ViewModelLocator._editBookMessenger,
               KartotekaConstants.EditBookMessengerKey);
+            SimpleIoc.Default.Register(() => ViewModelLocator._editAuthorMessenger,
+              KartotekaConstants.EditAuthorMessengerKey);
             MessengerInstance.Register<NotificationMessage>( this, AddAuthorViewModel.Token, message =>
             {
                 Authors.Add(_service.GetAuthorByID(int.Parse(message.Notification)));

@@ -163,7 +163,7 @@ namespace NewKartoteka
                 return string.Empty;
             }
         }
-        public void FillInformationAboutAuthor(NotificationMessage notificationMessage)
+        public void FillInformationAboutBook(NotificationMessage notificationMessage)
         {
             string notification = notificationMessage.Notification;
             Book selectedBook = _service.GetBookByID(int.Parse(notification));
@@ -187,8 +187,7 @@ namespace NewKartoteka
             if (service == null) throw new ArgumentNullException("service", "service is null");
             _service = service;
             var messenger = SimpleIoc.Default.GetInstance<Messenger>(KartotekaConstants.EditBookMessengerKey);
-            messenger.Register<NotificationMessage>(this,FillInformationAboutAuthor );
-            AllAuthors = new ObservableCollection<Author>(_service.GetAllAuthors());
+            messenger.Register<NotificationMessage>(this,FillInformationAboutBook );
         }
     }
 }

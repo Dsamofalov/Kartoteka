@@ -11,18 +11,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace NewKartoteka
 {
     /// <summary>
-    /// Логика взаимодействия для AddBookControl.xaml
+    /// Логика взаимодействия для EditListOfBooksWin.xaml
     /// </summary>
-    public partial class AddBookControl : UserControl
+    public partial class EditListOfBooksWin : MetroWindow
     {
-        
-        public AddBookControl()
+        public EditListOfBooksWin()
         {
             InitializeComponent();
         }

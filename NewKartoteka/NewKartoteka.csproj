@@ -101,6 +101,13 @@
     <Compile Include="AddAuthorControl.xaml.cs">
       <DependentUpon>AddAuthorControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EditAuthorControl.xaml.cs">
+      <DependentUpon>EditAuthorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditListOfBooksWin.xaml.cs">
+      <DependentUpon>EditListOfBooksWin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\EditAuthorViewModel.cs" />
     <Compile Include="EditListOfAutorsWin.xaml.cs">
       <DependentUpon>EditListOfAutorsWin.xaml</DependentUpon>
     </Compile>
@@ -130,11 +137,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="EditAuthorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="EditBookControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EditListOfAutorsWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditListOfBooksWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
