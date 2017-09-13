@@ -19,8 +19,18 @@ namespace NewKartoteka
     {
         private IDialogCoordinator dialogCoordinator;
         private readonly IKartotekaService _service;
-        private Book _selectedBook;
-        public Book SelectedBook { get { return _selectedBook; } set { _selectedBook = value; RaisePropertyChanged("SelectedBook"); } }
+        private int Id;
+        private string _name;
+        public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
+
+        private int _year;
+        public int Year { get { return _year; } set { _year = value; RaisePropertyChanged("Year"); } }
+
+        private string _description;
+        public string Description { get { return _description; } set { _description = value; RaisePropertyChanged("Description"); } }
+
+        private ObservableCollection<Author> _authors;
+        public ObservableCollection<Author> Authors { get { return _authors; } set { _authors = value; RaisePropertyChanged("Authors"); } }
 
 
         private ObservableCollection<Author> _allAuthors;
@@ -39,8 +49,16 @@ namespace NewKartoteka
             {
                 if (_editBookCommand == null) _editBookCommand = new RelayCommand(async () =>
                 {
-                    _service.EditBook(SelectedBook);
-                    await dialogCoordinator.ShowMessageAsync(this, "Книга изменена", String.Concat("ID измененной книги: ", SelectedBook.Id));
+                    Book selectedBook = new Book()
+                    {
+                        Year = Year,
+                        Id = Id,
+                        Name = Name,
+                        Description = Description,
+                        authors = new ObservableCollection<Author>(Authors)
+                    };
+                    _service.EditBook(selectedBook);
+                    await dialogCoordinator.ShowMessageAsync(this, "Книга изменена", String.Concat("ID измененной книги: ", selectedBook.Id));
                 });
 
                 return _editBookCommand;
@@ -80,11 +98,11 @@ namespace NewKartoteka
             {
                 if (_removeAllAuthorsCommand == null) _removeAllAuthorsCommand = new RelayCommand(() =>
                 {
-                    foreach(Author author in SelectedBook.authors)
+                    foreach(Author author in Authors)
                     {
                         AllAuthors.Add(author);
                     }
-                    SelectedBook.authors.Clear();
+                    Authors.Clear();
                 });
 
                 return _removeAllAuthorsCommand;
@@ -100,7 +118,7 @@ namespace NewKartoteka
                     List<Author> newAuthors = selection.Cast<Author>().ToList();
                     foreach (Author author in newAuthors)
                     {
-                        SelectedBook.authors.Remove(author);
+                        Authors.Remove(author);
                         AllAuthors.Add(author);
                     }
                 });
@@ -118,7 +136,7 @@ namespace NewKartoteka
                     List<Author> newAuthors = selection.Cast<Author>().ToList();
                     foreach (Author author in newAuthors)
                     {
-                        SelectedBook.authors.Add(author);
+                        Authors.Add(author);
                         AllAuthors.Remove(author);
                     }
                 });
@@ -142,19 +160,19 @@ namespace NewKartoteka
                 {
                     case "Name":
                         {
-                            if (String.IsNullOrEmpty(SelectedBook.Name))
+                            if (String.IsNullOrEmpty(this.Name))
                                 return "Заполните пустую строку";
                             break;
                         }
                     case "Description":
                         {
-                            if (String.IsNullOrEmpty(SelectedBook.Description))
+                            if (String.IsNullOrEmpty(this.Description))
                                 return "Заполните пустую строку";
                             break;
                         }
                     case "Year":
                         {
-                            if (SelectedBook.Year > DateTime.Now.Year)
+                            if (this.Year > DateTime.Now.Year)
                                 return "Такой год еще не наступил!";
                             break;
                         }
@@ -167,16 +185,14 @@ namespace NewKartoteka
         {
             string notification = notificationMessage.Notification;
             Book selectedBook = _service.GetBookByID(int.Parse(notification));
-            SelectedBook = new Book()
-            {
-                Year = selectedBook.Year,
-                Id = selectedBook.Id,
-                Name = selectedBook.Name,
-                Description = selectedBook.Description,
-                authors = new ObservableCollection<Author>(selectedBook.authors)
-            };
+
+            Year = selectedBook.Year;
+            Id = selectedBook.Id;
+            Name = selectedBook.Name;
+            Description = selectedBook.Description;
+                Authors = new ObservableCollection<Author>(selectedBook.authors);
             AllAuthors = new ObservableCollection<Author>(_service.GetAllAuthors());
-            foreach(Author author in SelectedBook.authors)
+            foreach(Author author in Authors)
             {
                 AllAuthors.Remove(author);
             }

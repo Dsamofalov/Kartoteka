@@ -32,21 +32,21 @@
             </Grid.ColumnDefinitions>
             <TextBlock VerticalAlignment="Center"  FontSize="20" Grid.Row="0" Grid.Column="0" Margin="10,19,13.4,18.4"  > Имя</TextBlock>
             <TextBox x:Name="FirstNameTextBox" Grid.Row="0" Grid.Column="1" Controls:TextBoxHelper.Watermark="Добавьте имя" Controls:TextBoxHelper.ClearTextButton="True"
-                 Text="{Binding SelectedAuthor.FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, Mode=TwoWay}"
+                 Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, Mode=TwoWay}"
                                       Margin="0,17,10,15" FontSize="14" Grid.ColumnSpan="2"  >
             </TextBox>
             <TextBlock VerticalAlignment="Center"   FontSize="20" Grid.Row="1" Grid.Column="0" Margin="10,18.6,13.4,19.6" > Фамилия</TextBlock>
 
             <TextBox x:Name="LastNameTextBox" Controls:TextBoxHelper.Watermark="Добавьте фамилию"  Controls:TextBoxHelper.ClearTextButton="True"
-                         Text="{Binding SelectedAuthor.LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, Mode=TwoWay}"
+                         Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, Mode=TwoWay}"
                  Grid.Row="1" Grid.Column="1" Margin="0,17,10,15" FontSize="14" Grid.ColumnSpan="2" >
             </TextBox>
             <TextBlock VerticalAlignment="Center"  FontSize="20" Grid.Row="2" Grid.Column="0" Margin="10,19,13.4,19"  >Отчество</TextBlock>
             <TextBox x:Name="SecondNameTextBox"  Controls:TextBoxHelper.Watermark="Добавьте отчество" Grid.Row="2" Grid.Column="1"  
-                 Text="{Binding SelectedAuthor.SecondName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, Mode=TwoWay}"
+                 Text="{Binding SecondName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, Mode=TwoWay}"
                  Controls:TextBoxHelper.ClearTextButton="True" Margin="0,17,10,15" FontSize="14" Grid.ColumnSpan="2" >
             </TextBox>
-            <ListBox x:Name="BooksList" Height="370" Margin="0,17,10,15" ItemsSource="{Binding Path=SelectedAuthor.books, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+            <ListBox x:Name="BooksList" Height="370" Margin="0,17,10,15" ItemsSource="{Binding Path=Books, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                      SelectionMode="Multiple"  Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

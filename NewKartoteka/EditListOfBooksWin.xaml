@@ -32,7 +32,7 @@
         </Grid.ColumnDefinitions>
         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Книги данного автора" FontSize="20" Grid.Row="0" Grid.Column="0" Margin="10,19,10,19"  />
         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Остальные книги" FontSize="20" Grid.Row="0" Grid.Column="2" Margin="10,19,10,19"  />
-        <ListBox x:Name="BooksList" Height="280" Margin="0,17,10,15" ItemsSource="{Binding Path=SelectedAuthor.books, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+        <ListBox x:Name="BooksList" Height="280" Margin="0,17,10,15" ItemsSource="{Binding Path=Books, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                      SelectionMode="Multiple"  Grid.Row="1" Grid.Column="0">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -45,8 +45,8 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ListBox x:Name="AllBooksList" Height="280"  Margin="10,17,10,15" ItemsSource="{Binding Path=AllBooks, Mode=TwoWay, 
-            UpdateSourceTrigger=PropertyChanged}"  SelectionMode="Multiple"  Grid.Row="1" Grid.Column="2" >
+        <ListBox x:Name="AllBooksList" Height="280"  Margin="9.6,17.4,9.6,0" ItemsSource="{Binding Path=AllBooks, Mode=TwoWay, 
+            UpdateSourceTrigger=PropertyChanged}"  SelectionMode="Multiple"  Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="5">

@@ -25,8 +25,18 @@ namespace NewKartoteka
     {
         private IDialogCoordinator dialogCoordinator;
         private readonly IKartotekaService _service;
-        private Author _selectedAuthor;
-        public Author SelectedAuthor { get { return _selectedAuthor; } set { _selectedAuthor = value; RaisePropertyChanged("SelectedAuthor"); } }
+        private int Id;
+        private string _firstName;
+        public string FirstName { get { return _firstName; } set { _firstName = value; RaisePropertyChanged("FirstName"); } }
+
+        private string _secondName;
+        public string SecondName { get { return _secondName; } set { _secondName = value; RaisePropertyChanged("SecondName"); } }
+
+        private string _lastName;
+        public string LastName { get { return _lastName; } set { _lastName = value; RaisePropertyChanged("LastName"); } }
+
+        private ObservableCollection<Book> _books;
+        public ObservableCollection<Book> Books { get { return _books; } set { _books = value; RaisePropertyChanged("Books"); } }
 
 
         private ObservableCollection<Book> _allBooks;
@@ -45,8 +55,16 @@ namespace NewKartoteka
             {
                 if (_editAuthorCommand == null) _editAuthorCommand = new RelayCommand(async () =>
                 {
-                    _service.EditAuthor(SelectedAuthor);
-                    await dialogCoordinator.ShowMessageAsync(this, "Автор изменен", String.Concat("ID измененного автора: ", SelectedAuthor.Id));
+                    Author selectedAuthor = new Author
+                    {
+                        FirstName = FirstName,
+                        SecondName = SecondName,
+                        LastName = LastName,
+                        Id = Id,
+                        books = new ObservableCollection<Book>(Books)
+                    };
+                    _service.EditAuthor(selectedAuthor);
+                    await dialogCoordinator.ShowMessageAsync(this, "Автор изменен", String.Concat("ID измененного автора: ", selectedAuthor.Id));
                 });
 
                 return _editAuthorCommand;
@@ -86,11 +104,11 @@ namespace NewKartoteka
             {
                 if (_removeAllBooksCommand == null) _removeAllBooksCommand = new RelayCommand(() =>
                 {
-                    foreach (Book book in SelectedAuthor.books)
+                    foreach (Book book in Books)
                     {
                         AllBooks.Add(book);
                     }
-                    SelectedAuthor.books.Clear();
+                    Books.Clear();
                 });
 
                 return _removeAllBooksCommand;
@@ -106,7 +124,7 @@ namespace NewKartoteka
                     List<Book> newBooks = selection.Cast<Book>().ToList();
                     foreach (Book book in newBooks)
                     {
-                        SelectedAuthor.books.Remove(book);
+                        Books.Remove(book);
                         AllBooks.Add(book);
                     }
                 });
@@ -124,7 +142,7 @@ namespace NewKartoteka
                     List<Book> newBooks = selection.Cast<Book>().ToList();
                     foreach (Book book in newBooks)
                     {
-                        SelectedAuthor.books.Add(book);
+                        Books.Add(book);
                         AllBooks.Remove(book);
                     }
                 });
@@ -148,19 +166,19 @@ namespace NewKartoteka
                 {
                     case "FirstName":
                         {
-                            if (String.IsNullOrEmpty(SelectedAuthor.FirstName))
+                            if (String.IsNullOrEmpty(this.FirstName))
                                 return "Заполните пустую строку";
                             break;
                         }
                     case "SecondName":
                         {
-                            if (String.IsNullOrEmpty(SelectedAuthor.SecondName))
+                            if (String.IsNullOrEmpty(this.SecondName))
                                 return "Заполните пустую строку";
                             break;
                         }
                     case "LastName":
                         {
-                            if (String.IsNullOrEmpty(SelectedAuthor.LastName))
+                            if (String.IsNullOrEmpty(this.LastName))
                                 return "Заполните пустую строку";
                             break;
                         }
@@ -173,16 +191,13 @@ namespace NewKartoteka
         {
             string notification = notificationMessage.Notification;
             Author selectedAuthor = _service.GetAuthorByID(int.Parse(notification));
-            SelectedAuthor = new Author()
-            {
-                FirstName = selectedAuthor.FirstName,
-                Id = selectedAuthor.Id,
-                SecondName = selectedAuthor.SecondName,
-                LastName = selectedAuthor.LastName,
-                books = new ObservableCollection<Book>(selectedAuthor.books)
-            };
+            FirstName = selectedAuthor.FirstName;
+                Id = selectedAuthor.Id;
+                SecondName = selectedAuthor.SecondName;
+                LastName = selectedAuthor.LastName;
+                Books = new ObservableCollection<Book>(selectedAuthor.books);
             AllBooks = new ObservableCollection<Book>(_service.GetAllBooks());
-            foreach (Book book in SelectedAuthor.books)
+            foreach (Book book in Books)
             {
                 AllBooks.Remove(book);
             }
