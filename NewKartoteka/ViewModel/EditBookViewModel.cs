@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Kartoteka.Domain;
 using MahApps.Metro.Controls.Dialogs;
+using NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace NewKartoteka
     {
         private IDialogCoordinator dialogCoordinator;
         private readonly IKartotekaService _service;
+        private Logger _logger = LogManager.GetCurrentClassLogger();
         private int Id;
         private string _name;
         public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
@@ -49,6 +51,7 @@ namespace NewKartoteka
             {
                 if (_editBookCommand == null) _editBookCommand = new RelayCommand(async () =>
                 {
+                    _logger.Info($"EditBookCommand with book id: {Id} ");
                     Book selectedBook = new Book()
                     {
                         Year = Year,
@@ -200,8 +203,17 @@ namespace NewKartoteka
         public EditBookViewModel(IKartotekaService service)
         {
             dialogCoordinator = DialogCoordinator.Instance;
-            if (service == null) throw new ArgumentNullException("service", "service is null");
-            _service = service;
+            try
+            {
+                if (service == null) throw new ArgumentNullException("service", "service is null");
+                _service = service;
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.Error($"EditBookViewModel ctor can't get a service {ex}");
+                MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            }
             var messenger = SimpleIoc.Default.GetInstance<Messenger>(KartotekaConstants.EditBookMessengerKey);
             messenger.Register<NotificationMessage>(this,FillInformationAboutBook );
         }

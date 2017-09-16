@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Kartoteka.DAL;
 using Kartoteka.Domain;
 using MahApps.Metro.Controls.Dialogs;
+using NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace NewKartoteka
         private readonly IKartotekaService _service;
         private IDialogCoordinator dialogCoordinator;
         public static readonly Guid Token = Guid.NewGuid();
+        private Logger _logger = LogManager.GetCurrentClassLogger();
         private string _name;
         public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
 
@@ -46,6 +48,7 @@ namespace NewKartoteka
             {
                 if (_saveBookCommand == null) _saveBookCommand = new RelayCommand<object>(async (object parameter) =>
                 {
+                    _logger.Info($"SaveBookCommand with {Name} {Year} {Description} {parameter}");
                     IList selection = (IList)parameter;
                     List<Author> newAuthors = selection.Cast<Author>().ToList();
                     Book book = new Book()
@@ -114,8 +117,17 @@ namespace NewKartoteka
         public AddBookViewModel(IKartotekaService service)
         {
             dialogCoordinator = DialogCoordinator.Instance;
-            if (service == null) throw new ArgumentNullException("service", "service is null");
-            _service = service;
+            try
+            {
+                if (service == null) throw new ArgumentNullException("service", "service is null");
+                _service = service;
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.Error($"AddBookViewModel ctor can't get a service {ex}");
+                MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            }
             this.AllAuthors = new ObservableCollection<Author>(_service.GetAllAuthors());
             MessengerInstance.Register<NotificationMessage>(this, message =>
             {

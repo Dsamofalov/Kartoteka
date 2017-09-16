@@ -3,27 +3,24 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Kartoteka.Domain;
 using MahApps.Metro.Controls.Dialogs;
+using NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 
 namespace NewKartoteka
 {
-    /// <summary>
-    /// This class contains properties that a View can data bind to.
-    /// <para>
-    /// See http://www.galasoft.ch/mvvm
-    /// </para>
-    /// </summary>
     public class AddAuthorViewModel : ViewModelBase, IDataErrorInfo
     {
         private readonly IKartotekaService _service;
         private IDialogCoordinator dialogCoordinator;
         public static readonly Guid Token = Guid.NewGuid();
+        private Logger _logger = LogManager.GetCurrentClassLogger();
         private string _firstName;
         public string FirstName { get { return _firstName; } set { _firstName = value; RaisePropertyChanged("FirstName"); } }
 
@@ -46,6 +43,7 @@ namespace NewKartoteka
             {
                 if (_saveAuthorCommand == null) _saveAuthorCommand = new RelayCommand<object>(async (object parameter) =>
                 {
+                    _logger.Info($"SaveAuthorCommand with {FirstName} {SecondName} {LastName} {parameter}");
                     IList selection = (IList)parameter;
                     List<Book> newBooks = selection.Cast<Book>().ToList();
                     Author author = new Author()
@@ -116,8 +114,17 @@ namespace NewKartoteka
         public AddAuthorViewModel(IKartotekaService service)
         {
             dialogCoordinator = DialogCoordinator.Instance;
-            if (service == null) throw new ArgumentNullException("service", "service is null");
-            _service = service;
+            try
+            {
+                if (service == null) throw new ArgumentNullException("service", "service is null");
+                _service = service;
+            }
+            catch(ArgumentNullException ex)
+            {
+                _logger.Error($"AddAuthorViewModel ctor can't get a service {ex}");
+                MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                
+            }
             this.AllBooks = new ObservableCollection<Book>(_service.GetAllBooks());
             MessengerInstance.Register<NotificationMessage>(this, message =>
             {

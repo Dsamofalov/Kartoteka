@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Kartoteka.Domain;
 using MahApps.Metro.Controls.Dialogs;
+using NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,16 +16,11 @@ using System.Windows.Input;
 
 namespace NewKartoteka
 {
-    /// <summary>
-    /// This class contains properties that a View can data bind to.
-    /// <para>
-    /// See http://www.galasoft.ch/mvvm
-    /// </para>
-    /// </summary>
     public class EditAuthorViewModel : ViewModelBase, IDataErrorInfo
     {
         private IDialogCoordinator dialogCoordinator;
         private readonly IKartotekaService _service;
+        private Logger _logger = LogManager.GetCurrentClassLogger();
         private int Id;
         private string _firstName;
         public string FirstName { get { return _firstName; } set { _firstName = value; RaisePropertyChanged("FirstName"); } }
@@ -55,6 +51,7 @@ namespace NewKartoteka
             {
                 if (_editAuthorCommand == null) _editAuthorCommand = new RelayCommand(async () =>
                 {
+                    _logger.Info($"EditAuthorCommand with author id: {Id} ");
                     Author selectedAuthor = new Author
                     {
                         FirstName = FirstName,
@@ -205,8 +202,17 @@ namespace NewKartoteka
         public EditAuthorViewModel(IKartotekaService service)
         {
             dialogCoordinator = DialogCoordinator.Instance;
-            if (service == null) throw new ArgumentNullException("service", "service is null");
-            _service = service;
+            try
+            {
+                if (service == null) throw new ArgumentNullException("service", "service is null");
+                _service = service;
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.Error($"EditAuthorViewModel ctor can't get a service {ex}");
+                MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            }
             var messenger = SimpleIoc.Default.GetInstance<Messenger>(KartotekaConstants.EditAuthorMessengerKey);
             messenger.Register<NotificationMessage>(this, FillInformationAboutAuthor);
         }

@@ -14,6 +14,7 @@ using System.Windows.Data;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Ioc;
 using MahApps.Metro.Controls.Dialogs;
+using NLog;
 
 namespace NewKartoteka.ViewModel
 {
@@ -39,6 +40,7 @@ namespace NewKartoteka.ViewModel
         private RelayCommand<Author> _openEditAuthorWinCommand;
         private RelayCommand<Author> _removeAuthorWinCommand;
         private IDialogCoordinator dialogCoordinator;
+        private Logger _logger = LogManager.GetCurrentClassLogger();
         public ObservableCollection<Book> Books
         {
             get
@@ -295,8 +297,17 @@ namespace NewKartoteka.ViewModel
         }
         public MainViewModel(IKartotekaService service)
         {
-            if (service == null) throw new ArgumentNullException("service", "service is null");
-            _service = service;
+            try
+            {
+                if (service == null) throw new ArgumentNullException("service", "service is null");
+                _service = service;
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger.Error($" MainViewModel ctor can't get a service {ex}");
+                MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            }
             dialogCoordinator = DialogCoordinator.Instance;
             Books = new ObservableCollection<Book>(_service.GetAllBooks());
             Authors = new ObservableCollection<Author>(_service.GetAllAuthors());
