@@ -111,6 +111,7 @@
     <Compile Include="EditListOfBooksWin.xaml.cs">
       <DependentUpon>EditListOfBooksWin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\NLog\NLogLoggingService.cs" />
     <Compile Include="ViewModel\EditAuthorViewModel.cs" />
     <Compile Include="EditListOfAutorsWin.xaml.cs">
       <DependentUpon>EditListOfAutorsWin.xaml</DependentUpon>

@@ -10,16 +10,23 @@ namespace Kartoteka.Domain
     {
         private readonly IAuthorsRepository _authorsRep;
         private readonly IBooksRepository _booksRep;
-        public DefaultKartotekaService(IAuthorsRepository authorsRep, IBooksRepository booksRep)
+        private readonly ILoggerService _loggingService;
+
+        public DefaultKartotekaService(IAuthorsRepository authorsRep,
+            IBooksRepository booksRep,
+            ILoggerService loggerService)
         {
             if (authorsRep == null) throw new ArgumentNullException("authorsRep", "authorsRep is null");
             if (booksRep == null) throw new ArgumentNullException("booksRep", "booksRep is null");
+            if (loggerService == null) throw new ArgumentNullException("loggerService", "loggerService is null");
 
             _authorsRep = authorsRep;
             _booksRep = booksRep;
+            _loggingService = loggerService;
         }
         public List<Author> GetAllAuthors()
         {
+            _loggingService.LogInfo("Запрос всех авторов");
             return _authorsRep.GetAllAuthors();
         }
 
@@ -29,7 +36,7 @@ namespace Kartoteka.Domain
         }
         public void DeleteAuthor(int ID)
         {
-            throw new NotImplementedException();
+            _authorsRep.DeleteAuthor(ID);     
         }
 
         public void DeleteBook(int ID)
@@ -66,6 +73,24 @@ namespace Kartoteka.Domain
         public int RegisterNewBook(Book NewBook)
         {
             throw new NotImplementedException();
+        }
+
+        public void ExportData()
+        {
+            var exporter = GetExporter(DataExporterType.CSV);
+            var authors = _authorsRep.GetAllAuthors();
+            exporter.AuthorsExport(authors);
+        }
+
+        public IDataExporter GetExporter(DataExporterType type)
+        {
+            switch(type)
+            {
+                case DataExporterType.CSV:
+                    return new CSVDataExporter();
+                default:
+                    return null;
+            }
         }
     }
 }
