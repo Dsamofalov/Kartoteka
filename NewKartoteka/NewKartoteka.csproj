@@ -125,7 +125,6 @@
       <DependentUpon>EditBookControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\EditBookViewModel.cs" />
-    <Compile Include="TextBoxIsEmptyValidationRule.cs" />
     <Compile Include="ViewModel\AddBookViewModel.cs" />
     <Compile Include="Design\DesignDataService.cs" />
     <Compile Include="Model\DataItem.cs" />
@@ -133,7 +132,6 @@
     <Compile Include="Model\IDataService.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="YearTextBoxValidationRule.cs" />
     <Page Include="AddAuthorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

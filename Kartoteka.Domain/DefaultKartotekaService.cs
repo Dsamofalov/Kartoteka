@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Kartoteka.Domain
 {
@@ -34,45 +35,45 @@ namespace Kartoteka.Domain
         {
             return _booksRep.GetAllBooks();
         }
-        public void DeleteAuthor(int ID)
+        public void DeleteAuthor(int id)
         {
-            _authorsRep.DeleteAuthor(ID);     
+            _authorsRep.DeleteAuthor(id);     
         }
 
-        public void DeleteBook(int ID)
+        public void DeleteBook(int id)
         {
-            throw new NotImplementedException();
+            _booksRep.DeleteBook(id);
         }
 
-        public void EditAuthor(Author AuthorToEdit)
+        public void EditAuthor(Author authorToEdit)
         {
-            throw new NotImplementedException();
+            _authorsRep.EditAuthor(authorToEdit);
         }
 
-        public void EditBook(Book BookToEdit)
+        public void EditBook(Book bookToEdit)
         {
-            throw new NotImplementedException();
+            _booksRep.EditBook(bookToEdit);
         }
 
 
-        public Author GetAuthorByID(int ID)
+        public Author GetAuthorByID(int id)
         {
-            throw new NotImplementedException();
+            return _authorsRep.GetAuthorByID(id);
         }
 
-        public Book GetBookByID(int ID)
+        public Book GetBookByID(int id)
         {
-            throw new NotImplementedException();
+            return _booksRep.GetBookByID(id);
         }
 
-        public int RegisterNewAuthor(Author NewAuthor)
+        public int RegisterNewAuthor(Author newAuthor)
         {
-            throw new NotImplementedException();
+            return _authorsRep.RegisterNewAuthor(newAuthor);
         }
 
-        public int RegisterNewBook(Book NewBook)
+        public int RegisterNewBook(Book newBook)
         {
-            throw new NotImplementedException();
+            return _booksRep.RegisterNewBook(newBook);
         }
 
         public void ExportData()

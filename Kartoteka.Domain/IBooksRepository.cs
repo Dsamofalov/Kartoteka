@@ -9,9 +9,9 @@ namespace Kartoteka.Domain
     public interface IBooksRepository
     {
         List<Book> GetAllBooks();
-        int RegisterNewBook(Book NewBook);
-        void EditBook(Book BookToEdit);
-        void DeleteBook(int ID);
-        Book GetBookByID(int ID);
+        int RegisterNewBook(Book newBook);
+        void EditBook(Book bookToEdit);
+        void DeleteBook(int id);
+        Book GetBookByID(int id);
     }
 }

@@ -10,13 +10,13 @@ namespace Kartoteka.Domain
     {
         List<Author> GetAllAuthors();
         List<Book> GetAllBooks();
-        int RegisterNewAuthor(Author NewAuthor);
-        int RegisterNewBook(Book NewBook);
-        void EditAuthor(Author AuthorToEdit);
-        void EditBook(Book BookToEdit);
-        void DeleteAuthor(int ID);
-        void DeleteBook(int ID);
-        Author GetAuthorByID(int ID);
-        Book GetBookByID(int ID);
+        int RegisterNewAuthor(Author newAuthor);
+        int RegisterNewBook(Book newBook);
+        void EditAuthor(Author authorToEdit);
+        void EditBook(Book bookToEdit);
+        void DeleteAuthor(int id);
+        void DeleteBook(int id);
+        Author GetAuthorByID(int id);
+        Book GetBookByID(int id);
     }
 }

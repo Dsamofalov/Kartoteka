@@ -9,10 +9,10 @@ namespace Kartoteka.Domain
     public interface IAuthorsRepository
     {
         List<Author> GetAllAuthors();
-        int RegisterNewAuthor(Author NewAuthor);
-        void EditAuthor(Author AuthorToEdit);
-        void DeleteAuthor(int ID);
-        Author GetAuthorByID(int ID);
+        int RegisterNewAuthor(Author newAuthor);
+        void EditAuthor(Author authorToEdit);
+        void DeleteAuthor(int id);
+        Author GetAuthorByID(int id);
  
     }
 }

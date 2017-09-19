@@ -74,7 +74,7 @@ namespace NewKartoteka
                 if (_openEditBooksCommand == null) _openEditBooksCommand = new RelayCommand(() =>
                 {
                     EditListOfBooksWin newEditWin = new EditListOfBooksWin();
-                    newEditWin.Show();
+                    newEditWin.ShowDialog();
                 });
 
                 return _openEditBooksCommand;

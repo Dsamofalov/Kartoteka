@@ -74,7 +74,7 @@ namespace NewKartoteka
                 if (_openEditAuthorsCommand == null) _openEditAuthorsCommand = new RelayCommand( () =>
                 {
                     EditListOfAutorsWin newEditWin = new EditListOfAutorsWin();
-                    newEditWin.Show();
+                    newEditWin.ShowDialog();
                 });
 
                 return _openEditAuthorsCommand;
