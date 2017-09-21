@@ -128,13 +128,17 @@ namespace NewKartoteka
                 MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             }
-            this.AllAuthors = new ObservableCollection<Author>(_service.GetAllAuthors());
             MessengerInstance.Register<NotificationMessage>(this, message =>
             {
                 if (message.Notification.ToString() == "ClearAddBookFlyout")
                 {
                     ClearAddBookFlyout();
                 }
+            });
+            var messenger = SimpleIoc.Default.GetInstance<Messenger>(KartotekaConstants.AddBookMessengerKey);
+            messenger.Register<NotificationMessage>(this, action =>
+            {
+                this.AllAuthors = new ObservableCollection<Author>(_service.GetAllAuthors());
             });
         }
     }

@@ -128,6 +128,7 @@ namespace NewKartoteka.ViewModel
                 if (_openAddBookWinCommand == null) _openAddBookWinCommand = new RelayCommand(() =>
                  {
                      IsNewBookOpen = true;
+                     ViewModelLocator._addBookMessenger.Send<NotificationMessage>(new NotificationMessage(""));
                  });
 
                 return _openAddBookWinCommand;
@@ -140,6 +141,7 @@ namespace NewKartoteka.ViewModel
                 if (_openAddAuthorWinCommand == null) _openAddAuthorWinCommand = new RelayCommand(() =>
                 {
                     IsNewAuthorOpen = true;
+                    ViewModelLocator._addAuthorMessenger.Send<NotificationMessage>(new NotificationMessage(""));
                 });
 
                 return _openAddAuthorWinCommand;
@@ -296,7 +298,7 @@ namespace NewKartoteka.ViewModel
             return false;
         }
         public MainViewModel(IKartotekaService service)
-        {
+        { 
             try
             {
                 if (service == null) throw new ArgumentNullException("service", "service is null");
@@ -319,6 +321,10 @@ namespace NewKartoteka.ViewModel
               KartotekaConstants.EditBookMessengerKey);
             SimpleIoc.Default.Register(() => ViewModelLocator._editAuthorMessenger,
               KartotekaConstants.EditAuthorMessengerKey);
+            SimpleIoc.Default.Register(() => ViewModelLocator._addBookMessenger,
+                KartotekaConstants.AddBookMessengerKey);
+            SimpleIoc.Default.Register(() => ViewModelLocator._addAuthorMessenger,
+                KartotekaConstants.AddAuthorMessengerKey);
             MessengerInstance.Register<NotificationMessage>( this, AddAuthorViewModel.Token, message =>
             {
                 Authors.Add(_service.GetAuthorByID(int.Parse(message.Notification)));

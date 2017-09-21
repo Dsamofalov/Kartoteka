@@ -33,46 +33,55 @@ namespace Kartoteka.Domain
 
         public List<Book> GetAllBooks()
         {
+            _loggingService.LogInfo("Запрос всех книг");
             return _booksRep.GetAllBooks();
         }
         public void DeleteAuthor(int id)
         {
+            _loggingService.LogInfo($"Удаление автора с id {id}");
             _authorsRep.DeleteAuthor(id);     
         }
 
         public void DeleteBook(int id)
         {
+            _loggingService.LogInfo($"Удаление книги с id {id}");
             _booksRep.DeleteBook(id);
         }
 
         public void EditAuthor(Author authorToEdit)
         {
+            _loggingService.LogInfo($"Изменение автора с id {authorToEdit.Id}");
             _authorsRep.EditAuthor(authorToEdit);
         }
 
         public void EditBook(Book bookToEdit)
         {
+            _loggingService.LogInfo($"Изменение книги с id {bookToEdit.Id}");
             _booksRep.EditBook(bookToEdit);
         }
 
 
         public Author GetAuthorByID(int id)
         {
+            _loggingService.LogInfo($"Запрос автора с id {id}");
             return _authorsRep.GetAuthorByID(id);
         }
 
         public Book GetBookByID(int id)
         {
+            _loggingService.LogInfo($"Запрос книги с id {id}");
             return _booksRep.GetBookByID(id);
         }
 
         public int RegisterNewAuthor(Author newAuthor)
         {
+            _loggingService.LogInfo($"Регистрация нового автора");
             return _authorsRep.RegisterNewAuthor(newAuthor);
         }
 
         public int RegisterNewBook(Book newBook)
         {
+            _loggingService.LogInfo($"Регистрация новой книги");
             return _booksRep.RegisterNewBook(newBook);
         }
 

@@ -188,17 +188,13 @@ namespace NewKartoteka
         {
             string notification = notificationMessage.Notification;
             Book selectedBook = _service.GetBookByID(int.Parse(notification));
-
             Year = selectedBook.Year;
             Id = selectedBook.Id;
             Name = selectedBook.Name;
             Description = selectedBook.Description;
-                Authors = new ObservableCollection<Author>(selectedBook.authors);
-            AllAuthors = new ObservableCollection<Author>(_service.GetAllAuthors());
-            foreach(Author author in Authors)
-            {
-                AllAuthors.Remove(author);
-            }
+            Authors = new ObservableCollection<Author>(selectedBook.authors);
+             ObservableCollection<Author> TempAuthors = new ObservableCollection<Author>(_service.GetAllAuthors());
+            AllAuthors = new ObservableCollection<Author>( TempAuthors.Where(n => !Authors.Any(t => t.Id == n.Id)));
         }
         public EditBookViewModel(IKartotekaService service)
         {

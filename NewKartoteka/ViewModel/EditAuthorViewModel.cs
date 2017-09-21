@@ -193,11 +193,8 @@ namespace NewKartoteka
                 SecondName = selectedAuthor.SecondName;
                 LastName = selectedAuthor.LastName;
                 Books = new ObservableCollection<Book>(selectedAuthor.books);
-            AllBooks = new ObservableCollection<Book>(_service.GetAllBooks());
-            foreach (Book book in Books)
-            {
-                AllBooks.Remove(book);
-            }
+            ObservableCollection<Book> TempBooks = new ObservableCollection<Book>(_service.GetAllBooks());
+            AllBooks = new ObservableCollection<Book>(TempBooks.Where(n => !Books.Any(t => t.Id == n.Id)));
         }
         public EditAuthorViewModel(IKartotekaService service)
         {

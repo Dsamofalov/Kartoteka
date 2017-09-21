@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Kartoteka.Domain;
 using MahApps.Metro.Controls.Dialogs;
@@ -125,13 +126,17 @@ namespace NewKartoteka
                 MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
                 
             }
-            this.AllBooks = new ObservableCollection<Book>(_service.GetAllBooks());
             MessengerInstance.Register<NotificationMessage>(this, message =>
             {
                 if(message.Notification.ToString() == "ClearAddAuthorFlyout")
                 {
                     ClearAddAuthorFlyout();
                 }
+            });
+            var messenger = SimpleIoc.Default.GetInstance<Messenger>(KartotekaConstants.AddAuthorMessengerKey);
+            messenger.Register<NotificationMessage>(this, action => 
+            {
+                this.AllBooks = new ObservableCollection<Book>(_service.GetAllBooks());
             });
         }
     }

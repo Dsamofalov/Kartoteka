@@ -17,6 +17,8 @@ using Kartoteka.DAL;
 using Kartoteka.Domain;
 using Microsoft.Practices.ServiceLocation;
 using NewKartoteka.Model;
+using NewKartoteka.Model.NLogRealization;
+using NLog;
 using System;
 
 namespace NewKartoteka.ViewModel
@@ -26,6 +28,8 @@ namespace NewKartoteka.ViewModel
         static bool IsInit = false;
         public static Messenger _editBookMessenger;
         public static Messenger _editAuthorMessenger;
+        public static Messenger _addBookMessenger;
+        public static Messenger _addAuthorMessenger;
         static ViewModelLocator()
         {
             if(!IsInit)
@@ -42,6 +46,8 @@ namespace NewKartoteka.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             _editBookMessenger = new Messenger();
             _editAuthorMessenger = new Messenger();
+            _addBookMessenger = new Messenger();
+            _addAuthorMessenger = new Messenger();
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<AddBookViewModel>();
             SimpleIoc.Default.Register<AddAuthorViewModel>();
@@ -49,6 +55,7 @@ namespace NewKartoteka.ViewModel
             SimpleIoc.Default.Register<EditAuthorViewModel>();
             SimpleIoc.Default.Register<IAuthorsRepository, EFAuthorsRepository>();
             SimpleIoc.Default.Register<IBooksRepository, EFBooksRepository>();
+            SimpleIoc.Default.Register<ILoggerService, NLogLoggingService>();
             SimpleIoc.Default.Register<IKartotekaService, DefaultKartotekaService>();
         }
 
