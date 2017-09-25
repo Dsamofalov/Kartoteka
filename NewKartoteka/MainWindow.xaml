@@ -56,6 +56,8 @@
                                  Text="{Binding FilterBooksString, UpdateSourceTrigger=PropertyChanged}"
                                  Controls:TextBoxHelper.Watermark="Поиск" Style="{DynamicResource SearchMetroTextBox}"></TextBox>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button  Content="Сохранить книги в xlsx" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding ExportBooksToXlsxCommand, Mode=OneWay}"
+                  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" FontSize="18" />
                                 <Button  Content="+ Добавить" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding OpenAddBookWinCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" Width="150" FontSize="18" />
                                 <Button  Content="- Удалить" Style="{StaticResource RemoveAndEditBookButtonStyle}" Command="{Binding RemoveBookWinCommand, Mode=OneWay}"
@@ -64,6 +66,7 @@
                                 <Button  Content="Редактировать" Style="{StaticResource RemoveAndEditBookButtonStyle}" Command="{Binding OpenEditBookWinCommand, Mode=OneWay}"
                                  CommandParameter="{Binding ElementName=BooksDataGrid, Path=SelectedItem}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Width="150" FontSize="18" />
+                                
                             </StackPanel>
                         </Grid>
                         <DataGrid x:Name="BooksDataGrid" IsReadOnly="True" SelectionMode="Single" Grid.Row="1" ItemsSource="{Binding BooksDataGridCollection}" AutoGenerateColumns="False" Style="{StaticResource AzureDataGrid}">
@@ -98,6 +101,8 @@
                                  Text="{Binding FilterAuthorsString, UpdateSourceTrigger=PropertyChanged}"
                                  Controls:TextBoxHelper.Watermark="Поиск" Style="{DynamicResource SearchMetroTextBox}"></TextBox>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button  Content="Сохранить авторов в xlsx" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding ExportAuthorsToXlsxCommand, Mode=OneWay}"
+                  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" FontSize="18" />
                                 <Button  Content="+ Добавить" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding OpenAddAuthorWinCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" Width="150" FontSize="18" />
                                 <Button  Content="- Удалить" Style="{StaticResource RemoveAndEditAuthorButtonStyle}" Command="{Binding RemoveAuthorWinCommand, Mode=OneWay}"

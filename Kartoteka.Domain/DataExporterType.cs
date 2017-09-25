@@ -8,7 +8,7 @@ namespace Kartoteka.Domain
 {
     public enum DataExporterType
     {
-        CSV = 1,
+        XLSX = 1,
         XML
     }
 }

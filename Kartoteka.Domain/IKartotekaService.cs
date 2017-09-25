@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Packaging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +19,8 @@ namespace Kartoteka.Domain
         void DeleteBook(int id);
         Author GetAuthorByID(int id);
         Book GetBookByID(int id);
+        ExportData ExportAuthorsData();
+        ExportData ExportBooksData();
+        IDataExporter GetExporter(DataExporterType type);
     }
 }

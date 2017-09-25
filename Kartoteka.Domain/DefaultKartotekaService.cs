@@ -85,19 +85,27 @@ namespace Kartoteka.Domain
             return _booksRep.RegisterNewBook(newBook);
         }
 
-        public void ExportData()
+        public ExportData ExportAuthorsData()
         {
-            var exporter = GetExporter(DataExporterType.CSV);
+            _loggingService.LogInfo($"Экспорт авторов в Excel file");
+            var exporter = GetExporter(DataExporterType.XLSX);
             var authors = _authorsRep.GetAllAuthors();
-            exporter.AuthorsExport(authors);
+            return exporter.AuthorsExport(authors);
+        }
+        public ExportData ExportBooksData()
+        {
+            _loggingService.LogInfo($"Экспорт книг в Excel file");
+            var exporter = GetExporter(DataExporterType.XLSX);
+            var books = _booksRep.GetAllBooks();
+            return exporter.BooksExport(books);
         }
 
         public IDataExporter GetExporter(DataExporterType type)
         {
             switch(type)
             {
-                case DataExporterType.CSV:
-                    return new CSVDataExporter();
+                case DataExporterType.XLSX:
+                    return new XLSXDataExporter();
                 default:
                     return null;
             }

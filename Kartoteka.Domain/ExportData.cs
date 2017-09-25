@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Kartoteka.Domain
 {
-    public interface IDataExporter
+    public class ExportData
     {
-        ExportData AuthorsExport(List<Author> authors);
-        ExportData BooksExport(List<Book> books);
+        public string FileName { get; set; }
+        public byte[] Data { get; set; }
     }
 }

@@ -15,6 +15,9 @@ using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Ioc;
 using MahApps.Metro.Controls.Dialogs;
 using NLog;
+using System.Windows.Forms;
+using DocumentFormat.OpenXml.Packaging;
+using System.IO;
 
 namespace NewKartoteka.ViewModel
 {
@@ -32,10 +35,12 @@ namespace NewKartoteka.ViewModel
         private string _filterBooksString;
         private string _filterAuthorsString;
         private RelayCommand _openAddBookWinCommand;
+        private RelayCommand _clearAddBookFlyoutCommand;
+        private RelayCommand _exportBooksToXlsxCommand;
         private RelayCommand<Book> _openEditBookWinCommand;
         private RelayCommand<Book> _removeBookWinCommand;
         private RelayCommand _openAddAuthorWinCommand;
-        private RelayCommand _clearAddBookFlyoutCommand;
+        private RelayCommand _exportAuthorsToXlsxCommand;
         private RelayCommand _clearAddAuthorFlyoutCommand;
         private RelayCommand<Author> _openEditAuthorWinCommand;
         private RelayCommand<Author> _removeAuthorWinCommand;
@@ -225,6 +230,48 @@ namespace NewKartoteka.ViewModel
                 return _removeAuthorWinCommand;
             }
         }
+        public ICommand ExportBooksToXlsxCommand
+        {
+            get
+            {
+                if (_exportBooksToXlsxCommand == null) _exportBooksToXlsxCommand = new RelayCommand(async () =>
+                {
+                    string filePath = GetPathToExcel();
+                    if (filePath != null)
+                    {
+                        var exportData = new ExportData();
+                        exportData = _service.ExportBooksData();
+                        exportData.FileName = filePath;
+                        File.WriteAllBytes(exportData.FileName, exportData.Data);
+                        await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено", String.Concat("Книги сохранены в файл: ", filePath));
+                        _logger.Info($" Books saved to {filePath}");
+                    }
+                });
+
+                return _exportBooksToXlsxCommand;
+            }
+        }
+        public ICommand ExportAuthorsToXlsxCommand
+        {
+            get
+            {
+                if (_exportAuthorsToXlsxCommand == null) _exportAuthorsToXlsxCommand = new RelayCommand(async () =>
+                {
+                    string filePath = GetPathToExcel();
+                    if (filePath!=null)
+                    {
+                        var exportData = new ExportData();
+                        exportData = _service.ExportAuthorsData();
+                        exportData.FileName = filePath;
+                        File.WriteAllBytes(exportData.FileName, exportData.Data);
+                        await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено", String.Concat("Авторы сохранены в файл: ", filePath));
+                        _logger.Info($" Authors saved to {filePath}");
+                    }
+                });
+
+                return _exportAuthorsToXlsxCommand;
+            }
+        }
 
         public ICollectionView BooksDataGridCollection
         {
@@ -297,6 +344,18 @@ namespace NewKartoteka.ViewModel
             }
             return false;
         }
+        private string GetPathToExcel()
+        {
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Файлы Excel (*.xls; *.xlsx) | *.xls; *.xlsx";
+            openFileDialog.CheckFileExists = true;
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                return openFileDialog.FileName;
+            }
+            return null;
+
+        }
         public MainViewModel(IKartotekaService service)
         { 
             try
@@ -307,7 +366,7 @@ namespace NewKartoteka.ViewModel
             catch (ArgumentNullException ex)
             {
                 _logger.Error($" MainViewModel ctor can't get a service {ex}");
-                MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                System.Windows.MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             }
             dialogCoordinator = DialogCoordinator.Instance;
@@ -335,6 +394,7 @@ namespace NewKartoteka.ViewModel
                 Books.Add(_service.GetBookByID(int.Parse(message.Notification)));
                 FilterBooksCollection();
             });
+            GoogleDrive.Autorisation();
         }
 
     }

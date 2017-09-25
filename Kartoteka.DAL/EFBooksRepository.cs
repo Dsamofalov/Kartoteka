@@ -2,6 +2,7 @@
 using Kartoteka.Domain;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,6 @@ namespace Kartoteka.DAL
 {
     public class EFBooksRepository : IBooksRepository
     {
-
         public void DeleteBook(int id)
         {
             using (KartotekaModel db = new KartotekaModel())
