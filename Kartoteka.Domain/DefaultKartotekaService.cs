@@ -107,7 +107,7 @@ namespace Kartoteka.Domain
                 case DataExporterType.XLSX:
                     return new XLSXDataExporter();
                 default:
-                    return null;
+                    return null;// здесь скорее всего тогда надо Exception кидать типа new Exception("DataExporterType not supported"); 
             }
         }
     }
