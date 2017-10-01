@@ -20,31 +20,39 @@ namespace NewKartoteka.Model.NLogRealization
 
         public void LogTrace(string message)
         {
-            _logger.Trace(message);
+            var sf = new StackFrame(1);
+            var method = sf.GetMethod();
+            _logger.Trace($"{method.DeclaringType.FullName}.{method.Name}: {message}");
         }
         public void LogDebug(string message)
         {
-            _logger.Debug(message);
+            var sf = new StackFrame(1);
+            var method = sf.GetMethod();
+            _logger.Debug($"{method.DeclaringType.FullName}.{method.Name}: {message}");
         }
         public void LogInfo(string message)
         {
             var sf = new StackFrame(1);
             var method = sf.GetMethod();
-
-            //здесь лучше наверное задавать парамет callsite, тогда можно редактировать шаблон сообщений в конфиге nlog-а
             _logger.Info($"{method.DeclaringType.FullName}.{method.Name}: {message}");
         }
         public void LogWarn(string message)
         {
-            _logger.Warn(message);
+            var sf = new StackFrame(1);
+            var method = sf.GetMethod();
+            _logger.Warn($"{method.DeclaringType.FullName}.{method.Name}: {message}");
         }
         public void LogError(string message)
         {
-            _logger.Error(message);
+            var sf = new StackFrame(1);
+            var method = sf.GetMethod();
+            _logger.Error($"{method.DeclaringType.FullName}.{method.Name}: {message}");
         }
         public void LogFatal(string message)
         {
-            _logger.Fatal(message);
+            var sf = new StackFrame(1);
+            var method = sf.GetMethod();
+            _logger.Fatal($"{method.DeclaringType.FullName}.{method.Name}: {message}");
         }
     }
 }

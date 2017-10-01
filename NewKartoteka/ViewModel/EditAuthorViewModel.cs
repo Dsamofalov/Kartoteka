@@ -20,7 +20,7 @@ namespace NewKartoteka
     {
         private IDialogCoordinator dialogCoordinator;
         private readonly IKartotekaService _service;
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ILoggerService _loggingService;
         private int Id;
         private string _firstName;
         public string FirstName { get { return _firstName; } set { _firstName = value; RaisePropertyChanged("FirstName"); } }
@@ -51,7 +51,7 @@ namespace NewKartoteka
             {
                 if (_editAuthorCommand == null) _editAuthorCommand = new RelayCommand(async () =>
                 {
-                    _logger.Info($"EditAuthorCommand with author id: {Id} ");
+                    _loggingService.LogInfo($"EditAuthorCommand with author id: {Id} ");
                     Author selectedAuthor = new Author
                     {
                         FirstName = FirstName,
@@ -196,17 +196,19 @@ namespace NewKartoteka
             ObservableCollection<Book> TempBooks = new ObservableCollection<Book>(_service.GetAllBooks());
             AllBooks = new ObservableCollection<Book>(TempBooks.Where(n => !Books.Any(t => t.Id == n.Id)));
         }
-        public EditAuthorViewModel(IKartotekaService service)
+        public EditAuthorViewModel(IKartotekaService service, ILoggerService loggerService)
         {
             dialogCoordinator = DialogCoordinator.Instance;
             try
             {
                 if (service == null) throw new ArgumentNullException("service", "service is null");
                 _service = service;
+                if (loggerService == null) throw new ArgumentNullException("loggerService", "loggerService is null");
+                _loggingService = loggerService;
             }
             catch (ArgumentNullException ex)
             {
-                _logger.Error($"EditAuthorViewModel ctor can't get a service {ex}");
+                _loggingService.LogError($"EditAuthorViewModel ctor can't get a service {ex}");
                 MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             }

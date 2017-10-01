@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartoteka", "Kartoteka\Kartoteka.csproj", "{50894255-9B0E-4058-8BE6-D61F846C9420}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartoteka.Domain", "Kartoteka.Domain\Kartoteka.Domain.csproj", "{83A729EB-ABBC-41FE-B4E1-6EF94E98B31E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kartoteka.DAL", "Kartoteka.DAL\Kartoteka.DAL.csproj", "{130C11F5-D4FB-4D09-9FDE-D9DBD08F1B11}"
@@ -17,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{50894255-9B0E-4058-8BE6-D61F846C9420}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50894255-9B0E-4058-8BE6-D61F846C9420}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50894255-9B0E-4058-8BE6-D61F846C9420}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50894255-9B0E-4058-8BE6-D61F846C9420}.Release|Any CPU.Build.0 = Release|Any CPU
 		{83A729EB-ABBC-41FE-B4E1-6EF94E98B31E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{83A729EB-ABBC-41FE-B4E1-6EF94E98B31E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83A729EB-ABBC-41FE-B4E1-6EF94E98B31E}.Release|Any CPU.ActiveCfg = Release|Any CPU

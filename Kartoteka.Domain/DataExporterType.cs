@@ -8,7 +8,6 @@ namespace Kartoteka.Domain
 {
     public enum DataExporterType
     {
-        XLSX = 1,
-        XML
+        XLSX = 1
     }
 }

@@ -49,13 +49,15 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="0.5*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0" FontSize="18" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center" Width="300"
                                  Text="{Binding FilterBooksString, UpdateSourceTrigger=PropertyChanged}"
                                  Controls:TextBoxHelper.Watermark="Поиск" Style="{DynamicResource SearchMetroTextBox}"></TextBox>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button  Content="Сохранить в Google Drive" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding ExportFileToGoogleDriveCommand, Mode=OneWay}"
+                  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" FontSize="18" />
                                 <Button  Content="Сохранить книги в xlsx" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding ExportBooksToXlsxCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" FontSize="18" />
                                 <Button  Content="+ Добавить" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding OpenAddBookWinCommand, Mode=OneWay}"
@@ -94,13 +96,15 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="0.5*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0" FontSize="18" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center" Width="300"
                                  Text="{Binding FilterAuthorsString, UpdateSourceTrigger=PropertyChanged}"
                                  Controls:TextBoxHelper.Watermark="Поиск" Style="{DynamicResource SearchMetroTextBox}"></TextBox>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button  Content="Сохранить в Google Drive" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding ExportFileToGoogleDriveCommand, Mode=OneWay}"
+                  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" FontSize="18" />
                                 <Button  Content="Сохранить авторов в xlsx" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding ExportAuthorsToXlsxCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" FontSize="18" />
                                 <Button  Content="+ Добавить" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding OpenAddAuthorWinCommand, Mode=OneWay}"

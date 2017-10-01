@@ -25,7 +25,7 @@ namespace NewKartoteka
         private readonly IKartotekaService _service;
         private IDialogCoordinator dialogCoordinator;
         public static readonly Guid Token = Guid.NewGuid();
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ILoggerService _loggingService;
         private string _name;
         public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
 
@@ -48,7 +48,7 @@ namespace NewKartoteka
             {
                 if (_saveBookCommand == null) _saveBookCommand = new RelayCommand<object>(async (object parameter) =>
                 {
-                    _logger.Info($"SaveBookCommand with {Name} {Year} {Description} {parameter}");
+                    _loggingService.LogInfo($"SaveBookCommand with {Name} {Year} {Description} {parameter}");
                     IList selection = (IList)parameter;
                     List<Author> newAuthors = selection.Cast<Author>().ToList();
                     Book book = new Book()
@@ -114,17 +114,19 @@ namespace NewKartoteka
                 return string.Empty;
             }
         }
-        public AddBookViewModel(IKartotekaService service)
+        public AddBookViewModel(IKartotekaService service, ILoggerService loggerService)
         {
             dialogCoordinator = DialogCoordinator.Instance;
             try
             {
                 if (service == null) throw new ArgumentNullException("service", "service is null");
                 _service = service;
+                if (loggerService == null) throw new ArgumentNullException("loggerService", "loggerService is null");
+                _loggingService = loggerService;
             }
             catch (ArgumentNullException ex)
             {
-                _logger.Error($"AddBookViewModel ctor can't get a service {ex}");
+                _loggingService.LogError($"AddBookViewModel ctor can't get a service {ex}");
                 MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             }

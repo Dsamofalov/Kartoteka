@@ -18,6 +18,9 @@ using NLog;
 using System.Windows.Forms;
 using DocumentFormat.OpenXml.Packaging;
 using System.IO;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Collections.Generic;
 
 namespace NewKartoteka.ViewModel
 {
@@ -44,8 +47,9 @@ namespace NewKartoteka.ViewModel
         private RelayCommand _clearAddAuthorFlyoutCommand;
         private RelayCommand<Author> _openEditAuthorWinCommand;
         private RelayCommand<Author> _removeAuthorWinCommand;
+        private RelayCommand _exportFileToGoogleDriveCommand;
         private IDialogCoordinator dialogCoordinator;
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ILoggerService _loggingService;
         public ObservableCollection<Book> Books
         {
             get
@@ -211,7 +215,9 @@ namespace NewKartoteka.ViewModel
                     _service.DeleteBook(bookToRemove.Id);
                     Books.Remove(bookToRemove);
                     FilterBooksCollection();
+
                     await dialogCoordinator.ShowMessageAsync(this, "Книга удалена", String.Concat("ID удаленной книги: ", bookToRemove.Id.ToString()));
+
                 });
                 return _removeBookWinCommand;
             }
@@ -239,12 +245,17 @@ namespace NewKartoteka.ViewModel
                     string filePath = GetPathToExcel();
                     if (filePath != null)
                     {
-                        var exportData = new ExportData();
-                        exportData = _service.ExportBooksData();
-                        exportData.FileName = filePath;
-                        File.WriteAllBytes(exportData.FileName, exportData.Data);
-                        await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено", String.Concat("Книги сохранены в файл: ", filePath));
-                        _logger.Info($" Books saved to {filePath}");
+                        MessageDialogResult result = await dialogCoordinator.ShowMessageAsync(this, "Подтверждение", "Вы действительно хотите перезаписать данный файл? ",
+                         MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() { AnimateShow = false, ColorScheme = MetroDialogColorScheme.Theme });
+                        if (result == MessageDialogResult.Affirmative)
+                        {
+                            var exportData = new ExportData();
+                            exportData = _service.ExportBooksData();
+                            exportData.FileName = filePath;
+                            File.WriteAllBytes(exportData.FileName, exportData.Data);
+                            await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено", String.Concat("Книги сохранены в файл: ", filePath));
+                            _loggingService.LogInfo($" Books saved to {filePath}");
+                        }
                     }
                 });
 
@@ -260,16 +271,44 @@ namespace NewKartoteka.ViewModel
                     string filePath = GetPathToExcel();
                     if (filePath!=null)
                     {
-                        var exportData = new ExportData();
-                        exportData = _service.ExportAuthorsData();
-                        exportData.FileName = filePath;
-                        File.WriteAllBytes(exportData.FileName, exportData.Data);
-                        await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено", String.Concat("Авторы сохранены в файл: ", filePath));
-                        _logger.Info($" Authors saved to {filePath}");
+                        MessageDialogResult result = await dialogCoordinator.ShowMessageAsync(this, "Подтверждение", "Вы действительно хотите перезаписать данный файл? ",
+                        MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() {  AnimateShow = false, ColorScheme = MetroDialogColorScheme.Theme });
+                        if (result == MessageDialogResult.Affirmative)
+                        {
+                            var exportData = new ExportData();
+                            exportData = _service.ExportAuthorsData();
+                            exportData.FileName = filePath;
+                            File.WriteAllBytes(exportData.FileName, exportData.Data);
+                            await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено", String.Concat("Авторы сохранены в файл: ", filePath));
+                            _loggingService.LogInfo($" Authors saved to {filePath}");
+                        }
                     }
                 });
 
                 return _exportAuthorsToXlsxCommand;
+            }
+        }
+        public ICommand ExportFileToGoogleDriveCommand
+        {
+            get
+            {
+                if (_exportFileToGoogleDriveCommand == null) _exportFileToGoogleDriveCommand = new RelayCommand(async () =>
+                {
+                    string filePath = GetPathToExcel();
+                    if (filePath != null)
+                    {
+                        MessageDialogResult result = await dialogCoordinator.ShowMessageAsync(this, "Подтверждение", "Вы действительно хотите сохранить данный файл в Google Drive? ",
+                        MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() { AnimateShow = false, ColorScheme = MetroDialogColorScheme.Theme });
+                        if (result == MessageDialogResult.Affirmative)
+                        {
+                            _service.ExportToDataDrive(filePath);
+                            await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено",   $"Файл {filePath} сохранен в Google Drive ");
+                            _loggingService.LogInfo($" {filePath} saved to Google Drive");
+                        }
+                    }
+                });
+
+                return _exportFileToGoogleDriveCommand;
             }
         }
 
@@ -356,35 +395,43 @@ namespace NewKartoteka.ViewModel
             return null;
 
         }
-        public MainViewModel(IKartotekaService service)
+        public MainViewModel(IKartotekaService service, ILoggerService loggerService)
         { 
             try
             {
                 if (service == null) throw new ArgumentNullException("service", "service is null");
                 _service = service;
+                if (loggerService == null) throw new ArgumentNullException("loggerService", "loggerService is null");
+                _loggingService = loggerService;
             }
             catch (ArgumentNullException ex)
             {
-                _logger.Error($" MainViewModel ctor can't get a service {ex}");
+                _loggingService.LogError($" MainViewModel ctor can't get a service {ex}");
                 System.Windows.MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             }
+            var splash = new SplashScreen("Leonardo.gif");
+            splash.Show(true);
+            Task <ObservableCollection<Book>> task1 = new Task<ObservableCollection<Book>>(() => 
+            {
+                return new ObservableCollection<Book>(_service.GetAllBooks());
+            } );
+            task1.Start();
+            Task<ObservableCollection<Author>> task2 = new Task<ObservableCollection<Author>>(() =>
+            {
+                return new ObservableCollection<Author>(_service.GetAllAuthors());
+            });
+            task2.Start();
             dialogCoordinator = DialogCoordinator.Instance;
-            Books = new ObservableCollection<Book>(_service.GetAllBooks());
-            Authors = new ObservableCollection<Author>(_service.GetAllAuthors());
-            BooksDataGridCollection = CollectionViewSource.GetDefaultView(Books);
-            BooksDataGridCollection.Filter = new Predicate<object>(FilterBooks);
-            AuthorsDataGridCollection = CollectionViewSource.GetDefaultView(Authors);
-            AuthorsDataGridCollection.Filter = new Predicate<object>(FilterAuthors);
             SimpleIoc.Default.Register(() => ViewModelLocator._editBookMessenger,
-              KartotekaConstants.EditBookMessengerKey);
+  KartotekaConstants.EditBookMessengerKey);
             SimpleIoc.Default.Register(() => ViewModelLocator._editAuthorMessenger,
               KartotekaConstants.EditAuthorMessengerKey);
             SimpleIoc.Default.Register(() => ViewModelLocator._addBookMessenger,
                 KartotekaConstants.AddBookMessengerKey);
             SimpleIoc.Default.Register(() => ViewModelLocator._addAuthorMessenger,
                 KartotekaConstants.AddAuthorMessengerKey);
-            MessengerInstance.Register<NotificationMessage>( this, AddAuthorViewModel.Token, message =>
+            MessengerInstance.Register<NotificationMessage>(this, AddAuthorViewModel.Token, message =>
             {
                 Authors.Add(_service.GetAuthorByID(int.Parse(message.Notification)));
                 FilterAuthorsCollection();
@@ -394,7 +441,13 @@ namespace NewKartoteka.ViewModel
                 Books.Add(_service.GetBookByID(int.Parse(message.Notification)));
                 FilterBooksCollection();
             });
-            GoogleDrive.Autorisation();
+            Books = new ObservableCollection<Book>(task1.Result);
+            Authors = new ObservableCollection<Author>(task2.Result);
+            BooksDataGridCollection = CollectionViewSource.GetDefaultView(Books);
+            BooksDataGridCollection.Filter = new Predicate<object>(FilterBooks);
+            AuthorsDataGridCollection = CollectionViewSource.GetDefaultView(Authors);
+            AuthorsDataGridCollection.Filter = new Predicate<object>(FilterAuthors);
+            splash.Close(TimeSpan.FromSeconds(0.5));
         }
 
     }
