@@ -21,7 +21,9 @@ namespace Kartoteka.Domain
         Book GetBookByID(int id);
         ExportData ExportAuthorsData();
         ExportData ExportBooksData();
-        void ExportToDataDrive(string filePath);
+        Dictionary<string, string> GetFolders();
+        void ExportBooksToDataDrive(string folder);
+        void ExportAuthorsToDataDrive(string folder);
         IDataExporter GetExporter(DataExporterType type);
     }
 }

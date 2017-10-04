@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Google.Apis.Drive.v2;
 using Google.Apis.Drive.v2.Data;
 using System.Windows;
+using System.Linq;
 
 namespace Kartoteka.Domain
 {
@@ -33,28 +34,6 @@ namespace Kartoteka.Domain
             return service;
 
         }
-        public static File CreateDirectory(DriveService _service, string _title, string _description, string _parent)
-        {
-            File NewDirectory = null;
-
-            // Create metaData for a new Directory
-           File body = new File();
-            body.Title = _title;
-            body.Description = _description;
-            body.MimeType = "application/vnd.google-apps.folder";
-            body.Parents = new List<ParentReference> () { new ParentReference() { Id = _parent } };
-            try
-            {
-                FilesResource.InsertRequest request = _service.Files.Insert(body);
-                NewDirectory = request.Execute();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("An error occurred: " + e.Message);
-            }
-
-            return NewDirectory;
-        }
         private static string GetMimeType(string fileName)
         {
             string mimeType = "application/unknown";
@@ -64,23 +43,32 @@ namespace Kartoteka.Domain
                 mimeType = regKey.GetValue("Content Type").ToString();
             return mimeType;
         }
-        public static File UploadFile(DriveService _service, string _uploadFile, string _parent)
+        public static Dictionary<string, string> GetFolders(DriveService _service, Dictionary<string, string> folders)
         {
-
-            if (System.IO.File.Exists(_uploadFile))
+            FilesResource.ListRequest listRequest = _service.Files.List();
+            var files = listRequest.Execute();
+            foreach (File file in files.Items)
             {
+                if (file.MimeType == "application/vnd.google-apps.folder")
+                {
+                    folders.Add(file.Id, file.Title);
+                }
+            }
+            return folders;
+
+        }
+        public static File UploadFile(DriveService _service,string fileName, ExportData _uploadFile, string _parent)
+        {
                 File body = new File();
-                body.Title = System.IO.Path.GetFileName(_uploadFile);
+                body.Title = fileName;
                 body.Description = "File uploaded by Diamto Drive Sample";
-                body.MimeType = GetMimeType(_uploadFile);
+                body.MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 body.Parents = new List<ParentReference>() { new ParentReference() {  Id = _parent } };
 
-                // File's content.
-                byte[] byteArray = System.IO.File.ReadAllBytes(_uploadFile);
-                System.IO.MemoryStream stream = new System.IO.MemoryStream(byteArray);
+                System.IO.MemoryStream stream = new System.IO.MemoryStream(_uploadFile.Data);
                 try
                 {
-                    FilesResource.InsertMediaUpload request = _service.Files.Insert(body, stream, GetMimeType(_uploadFile));
+                    FilesResource.InsertMediaUpload request = _service.Files.Insert(body, stream,body.MimeType);
                     request.Upload();
                     return request.ResponseBody;
                 }
@@ -89,13 +77,6 @@ namespace Kartoteka.Domain
                     MessageBox.Show("An error occurred: " + e.Message);
                     return null;
                 }
-            }
-            else
-            {
-                MessageBox.Show("File does not exist: " + _uploadFile);
-                return null;
-            }
-
         }
 
     }

@@ -11,6 +11,7 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
     </ResourceDictionary.MergedDictionaries>
+    <BooleanToVisibilityConverter x:Key="BoolToVis" />
     <Style x:Key="RegisterBookButtonStyle" TargetType="Button" BasedOn="{StaticResource SquareButtonStyle}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=(Validation.HasError), ElementName=YearTextBox }" Value="True">
@@ -40,6 +41,13 @@
     <Style x:Key="RemoveAndEditAuthorButtonStyle" TargetType="Button" BasedOn="{StaticResource AccentedSquareButtonStyle}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=SelectedIndex, ElementName=AuthorsDataGrid }" Value="-1">
+                <Setter Property="IsEnabled" Value="False" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="ChooseFolderButtonStyle" TargetType="Button" BasedOn="{StaticResource AccentedSquareButtonStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=SelectedIndex, ElementName=FoldersList }" Value="-1">
                 <Setter Property="IsEnabled" Value="False" />
             </DataTrigger>
         </Style.Triggers>

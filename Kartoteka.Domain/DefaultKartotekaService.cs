@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Drive.v2;
+using Google.Apis.Drive.v2.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,13 +110,31 @@ namespace Kartoteka.Domain
             var books = _booksRep.GetAllBooks();
             return exporter.BooksExport(books);
         }
-        public void ExportToDataDrive(string filePath)
+        public void ExportBooksToDataDrive(string folder)
         {
-            _loggingService.LogInfo($"Sending {filePath} to Google Drive");
+            _loggingService.LogInfo($"Sending file to Google Drive");
             var service = GoogleDrive.Authorization();
-            var directory = GoogleDrive.CreateDirectory(service, "new directory", "directory for excel files", "root");
-            GoogleDrive.UploadFile(service, filePath, directory.Id);
-
+            var exporter = GetExporter(DataExporterType.XLSX);
+            var books = _booksRep.GetAllBooks();
+            ExportData uploadFile = exporter.BooksExport(books);
+            GoogleDrive.UploadFile(service, "Books", uploadFile,folder);
+        }
+        public void ExportAuthorsToDataDrive(string folder)
+        {
+            _loggingService.LogInfo($"Sending file to Google Drive");
+            var service = GoogleDrive.Authorization();
+            var exporter = GetExporter(DataExporterType.XLSX);
+            var authors = _authorsRep.GetAllAuthors();
+            ExportData uploadFile = exporter.AuthorsExport(authors);
+            GoogleDrive.UploadFile(service, "Authors", uploadFile, folder);
+        }
+        public Dictionary<string, string> GetFolders()
+        {
+            _loggingService.LogInfo($"Getting folders from Google Drive");
+            var service = GoogleDrive.Authorization();
+            Dictionary<string, string> folders = new Dictionary<string, string>();
+            GoogleDrive.GetFolders(service, folders);
+            return folders;
         }
         public IDataExporter GetExporter(DataExporterType type)
         {

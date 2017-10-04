@@ -6,6 +6,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ignore="http://www.galasoft.ch/ignore"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:local="clr-namespace:NewKartoteka"
         mc:Ignorable="d ignore"
         GlowBrush="{DynamicResource AccentColorBrush}"
@@ -49,14 +50,14 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.5*" />
+                                <ColumnDefinition Width="0.4*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0" FontSize="18" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center" Width="300"
                                  Text="{Binding FilterBooksString, UpdateSourceTrigger=PropertyChanged}"
                                  Controls:TextBoxHelper.Watermark="Поиск" Style="{DynamicResource SearchMetroTextBox}"></TextBox>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button  Content="Сохранить в Google Drive" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding ExportFileToGoogleDriveCommand, Mode=OneWay}"
+                                <Button  Content="Сохранить книги в Google Drive" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding PrepareForExportBooksToDriveCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" FontSize="18" />
                                 <Button  Content="Сохранить книги в xlsx" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding ExportBooksToXlsxCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" FontSize="18" />
@@ -68,10 +69,11 @@
                                 <Button  Content="Редактировать" Style="{StaticResource RemoveAndEditBookButtonStyle}" Command="{Binding OpenEditBookWinCommand, Mode=OneWay}"
                                  CommandParameter="{Binding ElementName=BooksDataGrid, Path=SelectedItem}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Width="150" FontSize="18" />
-                                
+
                             </StackPanel>
                         </Grid>
-                        <DataGrid x:Name="BooksDataGrid" IsReadOnly="True" SelectionMode="Single" Grid.Row="1" ItemsSource="{Binding BooksDataGridCollection}" AutoGenerateColumns="False" Style="{StaticResource AzureDataGrid}">
+                        <Image gif:ImageBehavior.AnimatedSource="Leonardo.gif" Grid.Row="1" Visibility="{Binding IsPreloaderActive, Converter={StaticResource BoolToVis}}"  VerticalAlignment="Center" HorizontalAlignment="Center" Width="250" Height="250" />
+                        <DataGrid  x:Name="BooksDataGrid" IsReadOnly="True" Visibility="{Binding IsDataGridActive, Converter={StaticResource BoolToVis}}" SelectionMode="Single" Grid.Row="1" ItemsSource="{Binding BooksDataGridCollection, IsAsync=True}" AutoGenerateColumns="False" Style="{StaticResource AzureDataGrid}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID"
                                     Binding="{Binding Id}" />
@@ -96,14 +98,14 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.5*" />
+                                <ColumnDefinition Width="0.4*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0" FontSize="18" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center" Width="300"
                                  Text="{Binding FilterAuthorsString, UpdateSourceTrigger=PropertyChanged}"
                                  Controls:TextBoxHelper.Watermark="Поиск" Style="{DynamicResource SearchMetroTextBox}"></TextBox>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button  Content="Сохранить в Google Drive" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding ExportFileToGoogleDriveCommand, Mode=OneWay}"
+                                <Button  Content="Сохранить авторов в Google Drive" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding PrepareForExportAuthorsToDriveCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" FontSize="18" />
                                 <Button  Content="Сохранить авторов в xlsx" Style="{StaticResource AccentedSquareButtonStyle}" Command="{Binding ExportAuthorsToXlsxCommand, Mode=OneWay}"
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" FontSize="18" />
@@ -117,7 +119,7 @@
                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Width="150" FontSize="18" />
                             </StackPanel>
                         </Grid>
-                        <DataGrid x:Name="AuthorsDataGrid" IsReadOnly="True" Grid.Row="1" ItemsSource="{Binding AuthorsDataGridCollection}" AutoGenerateColumns="False" Style="{StaticResource AzureDataGrid}">
+                        <DataGrid x:Name="AuthorsDataGrid" IsReadOnly="True" Grid.Row="1" ItemsSource="{Binding AuthorsDataGridCollection, IsAsync=True}" AutoGenerateColumns="False" Style="{StaticResource AzureDataGrid}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID"
                                     Binding="{Binding Id}" />

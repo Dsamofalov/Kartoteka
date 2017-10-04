@@ -105,6 +105,10 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WpfAnimatedGif, Version=1.4.15.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WpfAnimatedGif.1.4.15\lib\net\WpfAnimatedGif.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -113,6 +117,9 @@
     </ApplicationDefinition>
     <Compile Include="AddAuthorControl.xaml.cs">
       <DependentUpon>AddAuthorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ChooseGoogleDriveDirWin.xaml.cs">
+      <DependentUpon>ChooseGoogleDriveDirWin.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditAuthorControl.xaml.cs">
       <DependentUpon>EditAuthorControl.xaml</DependentUpon>
@@ -146,6 +153,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddBookControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ChooseGoogleDriveDirWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

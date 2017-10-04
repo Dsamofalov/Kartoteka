@@ -21,6 +21,9 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
+using System.Windows.Media.Imaging;
+using System.Collections;
+using System.Linq;
 
 namespace NewKartoteka.ViewModel
 {
@@ -33,6 +36,8 @@ namespace NewKartoteka.ViewModel
         private bool _isNewAuthorOpen = false;
         private bool _isEditBookOpen = false;
         private bool _isEditAuthorOpen = false;
+        private bool _isPreloaderActive = true;
+        private bool _isDataGridActive = false;
         private ICollectionView _booksDataGridCollection;
         private ICollectionView _authorsDataGridCollection;
         private string _filterBooksString;
@@ -47,9 +52,17 @@ namespace NewKartoteka.ViewModel
         private RelayCommand _clearAddAuthorFlyoutCommand;
         private RelayCommand<Author> _openEditAuthorWinCommand;
         private RelayCommand<Author> _removeAuthorWinCommand;
-        private RelayCommand _exportFileToGoogleDriveCommand;
+        private RelayCommand _prepareForExportBooksToDriveCommand;
+        private RelayCommand _prepareForExportAuthorsToDriveCommand;
+        private RelayCommand<object> _exportFileToGoogleDriveCommand;
+        private RelayCommand _exportFileToRootCommand;
+        private List <string> _folders;
         private IDialogCoordinator dialogCoordinator;
         private readonly ILoggerService _loggingService;
+        private ChooseGoogleDriveDirWin ChooseDir;
+        private string TypeOfExportData;
+        private Dictionary<string, string> FoldersAndId;
+
         public ObservableCollection<Book> Books
         {
             get
@@ -130,6 +143,34 @@ namespace NewKartoteka.ViewModel
                 RaisePropertyChanged("IsEditAuthorOpen");
             }
         }
+        public bool IsPreloaderActive
+        {
+            get
+            {
+                return _isPreloaderActive;
+            }
+
+            set
+            {
+                _isPreloaderActive = value;
+                RaisePropertyChanged("IsPreloaderActive");
+            }
+        }
+        public bool IsDataGridActive
+        {
+            get
+            {
+                return _isDataGridActive;
+            }
+
+            set
+            {
+                _isDataGridActive = value;
+                RaisePropertyChanged("IsDataGridActive");
+            }
+        }
+        public List<string> Folders
+        { get {  return _folders;} set {  _folders = value;} }
         public ICommand OpenAddBookWinCommand
         {
             get
@@ -288,22 +329,97 @@ namespace NewKartoteka.ViewModel
                 return _exportAuthorsToXlsxCommand;
             }
         }
+        public ICommand PrepareForExportBooksToDriveCommand
+        {
+            get
+            {
+                if (_prepareForExportBooksToDriveCommand == null) _prepareForExportBooksToDriveCommand = new RelayCommand( () =>
+                {
+                    FoldersAndId = new Dictionary<string, string>(_service.GetFolders());
+                    TypeOfExportData = "Books";
+                    Folders = new List<string>(FoldersAndId.Values);
+                    ChooseDir = new ChooseGoogleDriveDirWin();
+                    ChooseDir.ShowDialog(); 
+                });
+                return _prepareForExportBooksToDriveCommand;
+            }
+        }
+        public ICommand PrepareForExportAuthorsToDriveCommand
+        {
+            get
+            {
+                if (_prepareForExportAuthorsToDriveCommand == null) _prepareForExportAuthorsToDriveCommand = new RelayCommand(() =>
+                {
+                    FoldersAndId = new Dictionary<string, string>(_service.GetFolders());
+                    TypeOfExportData = "Authors";
+                    Folders = new List<string>(FoldersAndId.Values);
+                    ChooseDir = new ChooseGoogleDriveDirWin();
+                    ChooseDir.ShowDialog();
+                });
+                return _prepareForExportAuthorsToDriveCommand;
+            }
+        }
+        public ICommand ExportFileToRootCommand
+        {
+            get
+            {
+                if (_exportFileToRootCommand == null) _exportFileToRootCommand = new RelayCommand(async () =>
+                {
+                    ChooseDir.Close();
+                    MessageDialogResult result = await dialogCoordinator.ShowMessageAsync(this, "Подтверждение", "Вы действительно хотите сохранить данный файл в корневую папку? ",
+                        MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() { AnimateShow = false, ColorScheme = MetroDialogColorScheme.Theme });
+                    if (result == MessageDialogResult.Affirmative)
+                    {
+                            if (TypeOfExportData == "Books")
+                            {
+                                _service.ExportBooksToDataDrive("root");
+                            }
+                            else
+                            {
+                                _service.ExportAuthorsToDataDrive("root");
+                            }
+                            await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено","Данные успешно сохранены в корневую папку");
+                            _loggingService.LogInfo($" File saved to root");
+                    }
+                });
+
+                return _exportFileToRootCommand;
+            }
+        }
         public ICommand ExportFileToGoogleDriveCommand
         {
             get
             {
-                if (_exportFileToGoogleDriveCommand == null) _exportFileToGoogleDriveCommand = new RelayCommand(async () =>
+                if (_exportFileToGoogleDriveCommand == null) _exportFileToGoogleDriveCommand = new RelayCommand<object>(async (object folder) =>
                 {
-                    string filePath = GetPathToExcel();
-                    if (filePath != null)
+                    IList selection = (IList)folder;
+                    List<string> folders = selection.Cast<string>().ToList();
+                    ChooseDir.Close();
+                    string keyId=null;
+                    foreach(KeyValuePair<string,string> keyPair in FoldersAndId)
                     {
-                        MessageDialogResult result = await dialogCoordinator.ShowMessageAsync(this, "Подтверждение", "Вы действительно хотите сохранить данный файл в Google Drive? ",
-                        MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() { AnimateShow = false, ColorScheme = MetroDialogColorScheme.Theme });
-                        if (result == MessageDialogResult.Affirmative)
+                        if (keyPair.Value == folders.First())
                         {
-                            _service.ExportToDataDrive(filePath);
-                            await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено",   $"Файл {filePath} сохранен в Google Drive ");
-                            _loggingService.LogInfo($" {filePath} saved to Google Drive");
+                            keyId = keyPair.Key;
+                            break;
+                        }
+                    }
+                    MessageDialogResult result = await dialogCoordinator.ShowMessageAsync(this, "Подтверждение", "Вы действительно хотите сохранить данный файл? ",
+                        MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() { AnimateShow = false, ColorScheme = MetroDialogColorScheme.Theme });
+                    if (result == MessageDialogResult.Affirmative)
+                    {
+                        if (keyId != null)
+                        {
+                            if (TypeOfExportData == "Books")
+                            {
+                                _service.ExportBooksToDataDrive(keyId);
+                            }
+                            else
+                            {
+                                _service.ExportAuthorsToDataDrive(keyId);
+                            }
+                            await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено", String.Concat("Данные успешно сохранены в папку: ", folders.First()));
+                            _loggingService.LogInfo($" File saved to {folders.First()}");
                         }
                     }
                 });
@@ -311,6 +427,7 @@ namespace NewKartoteka.ViewModel
                 return _exportFileToGoogleDriveCommand;
             }
         }
+
 
         public ICollectionView BooksDataGridCollection
         {
@@ -342,7 +459,6 @@ namespace NewKartoteka.ViewModel
                 FilterAuthorsCollection();
             }
         }
-
         private void FilterBooksCollection()
         {
             if (_booksDataGridCollection != null)
@@ -396,7 +512,7 @@ namespace NewKartoteka.ViewModel
 
         }
         public MainViewModel(IKartotekaService service, ILoggerService loggerService)
-        { 
+        {
             try
             {
                 if (service == null) throw new ArgumentNullException("service", "service is null");
@@ -410,27 +526,24 @@ namespace NewKartoteka.ViewModel
                 System.Windows.MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             }
-            var splash = new SplashScreen("Leonardo.gif");
-            splash.Show(true);
-            Task <ObservableCollection<Book>> task1 = new Task<ObservableCollection<Book>>(() => 
+
+            Task  task1 = new Task(() => 
             {
-                return new ObservableCollection<Book>(_service.GetAllBooks());
+                Books = new ObservableCollection<Book>(_service.GetAllBooks());
+                BooksDataGridCollection = CollectionViewSource.GetDefaultView(Books);
+                BooksDataGridCollection.Filter = new Predicate<object>(FilterBooks);
+                IsPreloaderActive = false;
+                IsDataGridActive = true;
             } );
-            task1.Start();
-            Task<ObservableCollection<Author>> task2 = new Task<ObservableCollection<Author>>(() =>
+            Task task2 = new Task(() =>
             {
-                return new ObservableCollection<Author>(_service.GetAllAuthors());
+                Authors = new ObservableCollection<Author>(_service.GetAllAuthors());
+                AuthorsDataGridCollection = CollectionViewSource.GetDefaultView(Authors);
+                AuthorsDataGridCollection.Filter = new Predicate<object>(FilterAuthors);
             });
+            task1.Start();
             task2.Start();
             dialogCoordinator = DialogCoordinator.Instance;
-            SimpleIoc.Default.Register(() => ViewModelLocator._editBookMessenger,
-  KartotekaConstants.EditBookMessengerKey);
-            SimpleIoc.Default.Register(() => ViewModelLocator._editAuthorMessenger,
-              KartotekaConstants.EditAuthorMessengerKey);
-            SimpleIoc.Default.Register(() => ViewModelLocator._addBookMessenger,
-                KartotekaConstants.AddBookMessengerKey);
-            SimpleIoc.Default.Register(() => ViewModelLocator._addAuthorMessenger,
-                KartotekaConstants.AddAuthorMessengerKey);
             MessengerInstance.Register<NotificationMessage>(this, AddAuthorViewModel.Token, message =>
             {
                 Authors.Add(_service.GetAuthorByID(int.Parse(message.Notification)));
@@ -441,13 +554,6 @@ namespace NewKartoteka.ViewModel
                 Books.Add(_service.GetBookByID(int.Parse(message.Notification)));
                 FilterBooksCollection();
             });
-            Books = new ObservableCollection<Book>(task1.Result);
-            Authors = new ObservableCollection<Author>(task2.Result);
-            BooksDataGridCollection = CollectionViewSource.GetDefaultView(Books);
-            BooksDataGridCollection.Filter = new Predicate<object>(FilterBooks);
-            AuthorsDataGridCollection = CollectionViewSource.GetDefaultView(Authors);
-            AuthorsDataGridCollection.Filter = new Predicate<object>(FilterAuthors);
-            splash.Close(TimeSpan.FromSeconds(0.5));
         }
 
     }

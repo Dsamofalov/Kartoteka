@@ -41,13 +41,15 @@ namespace NewKartoteka.ViewModel
                     cfg.CreateMap<Author, AuthorModel>().MaxDepth(3);
                     cfg.CreateMap<AuthorModel, Author>().MaxDepth(3);
                 });
-                IsInit = true;
-            }
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             _editBookMessenger = new Messenger();
             _editAuthorMessenger = new Messenger();
             _addBookMessenger = new Messenger();
             _addAuthorMessenger = new Messenger();
+            SimpleIoc.Default.Register(() => _editBookMessenger, KartotekaConstants.EditBookMessengerKey);
+            SimpleIoc.Default.Register(() => _editAuthorMessenger, KartotekaConstants.EditAuthorMessengerKey);
+            SimpleIoc.Default.Register(() => _addBookMessenger, KartotekaConstants.AddBookMessengerKey);
+            SimpleIoc.Default.Register(() => _addAuthorMessenger, KartotekaConstants.AddAuthorMessengerKey);
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<AddBookViewModel>();
             SimpleIoc.Default.Register<AddAuthorViewModel>();
@@ -57,6 +59,8 @@ namespace NewKartoteka.ViewModel
             SimpleIoc.Default.Register<IBooksRepository, EFBooksRepository>();
             SimpleIoc.Default.Register<ILoggerService, NLogLoggingService>();
             SimpleIoc.Default.Register<IKartotekaService, DefaultKartotekaService>();
+                IsInit = true;
+            }
         }
 
         public MainViewModel Main
