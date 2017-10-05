@@ -9,7 +9,6 @@ namespace Kartoteka.Domain
     public interface ILoggerService
     {
         void LogTrace(string message);
-
          void LogDebug(string message);
         void LogInfo(string message);
         void LogWarn(string message);

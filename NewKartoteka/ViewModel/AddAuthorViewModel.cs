@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -125,9 +126,12 @@ namespace NewKartoteka
             catch(ArgumentNullException ex)
             {
                 _loggingService.LogError($"AddAuthorViewModel ctor can't get a service {ex}");
-                MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
-                
+                MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);        
             }
+            Task task1 = Task.Run(() =>
+            {
+                this.AllBooks = new ObservableCollection<Book>(_service.GetAllBooks());
+            });
             MessengerInstance.Register<NotificationMessage>(this, message =>
             {
                 if(message.Notification.ToString() == "ClearAddAuthorFlyout")
@@ -137,8 +141,7 @@ namespace NewKartoteka
             });
             var messenger = SimpleIoc.Default.GetInstance<Messenger>(KartotekaConstants.AddAuthorMessengerKey);
             messenger.Register<NotificationMessage>(this, action => 
-            {
-                this.AllBooks = new ObservableCollection<Book>(_service.GetAllBooks());
+            {                
             });
         }
     }

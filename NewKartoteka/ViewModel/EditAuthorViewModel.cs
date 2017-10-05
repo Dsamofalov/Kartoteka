@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -187,14 +188,17 @@ namespace NewKartoteka
         public void FillInformationAboutAuthor(NotificationMessage notificationMessage)
         {
             string notification = notificationMessage.Notification;
-            Author selectedAuthor = _service.GetAuthorByID(int.Parse(notification));
-            FirstName = selectedAuthor.FirstName;
+            Task task1 = Task.Run(() =>
+            {
+                Author selectedAuthor = _service.GetAuthorByID(int.Parse(notification));
+                FirstName = selectedAuthor.FirstName;
                 Id = selectedAuthor.Id;
                 SecondName = selectedAuthor.SecondName;
                 LastName = selectedAuthor.LastName;
                 Books = new ObservableCollection<Book>(selectedAuthor.books);
-            ObservableCollection<Book> TempBooks = new ObservableCollection<Book>(_service.GetAllBooks());
-            AllBooks = new ObservableCollection<Book>(TempBooks.Where(n => !Books.Any(t => t.Id == n.Id)));
+                ObservableCollection<Book> TempBooks = new ObservableCollection<Book>(_service.GetAllBooks());
+                AllBooks = new ObservableCollection<Book>(TempBooks.Where(n => !Books.Any(t => t.Id == n.Id)));
+            });
         }
         public EditAuthorViewModel(IKartotekaService service, ILoggerService loggerService)
         {

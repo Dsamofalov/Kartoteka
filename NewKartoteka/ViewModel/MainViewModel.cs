@@ -38,6 +38,8 @@ namespace NewKartoteka.ViewModel
         private bool _isEditAuthorOpen = false;
         private bool _isPreloaderActive = true;
         private bool _isDataGridActive = false;
+        private bool _isFoldersPreloaderActive = true;
+        private bool _isListOfFoldersActive = false;
         private ICollectionView _booksDataGridCollection;
         private ICollectionView _authorsDataGridCollection;
         private string _filterBooksString;
@@ -65,112 +67,92 @@ namespace NewKartoteka.ViewModel
 
         public ObservableCollection<Book> Books
         {
-            get
-            {
-                return _books;
-            }
-
-            set
-            {
-                _books = value;
-                RaisePropertyChanged("Books");
-            }
+            get { return _books; }
+            set { _books = value; RaisePropertyChanged("Books"); }
         }
+
         public ObservableCollection<Author> Authors
         {
-            get
-            {
-                return _authors;
-            }
-
-            set
-            {
-                _authors = value;
-                RaisePropertyChanged("Authors");
-            }
+            get {  return _authors; }
+            set { _authors = value;  RaisePropertyChanged("Authors"); }
         }
 
         public bool IsNewBookOpen
         {
-            get
-            {
-                return _isNewBookOpen;
-            }
-
-            set
-            {
-                _isNewBookOpen = value;
-                RaisePropertyChanged("IsNewBookOpen");
-            }
+            get {  return _isNewBookOpen; }
+            set {  _isNewBookOpen = value;  RaisePropertyChanged("IsNewBookOpen"); }
         }
 
         public bool IsEditBookOpen
         {
-            get
-            {
-                return _isEditBookOpen;
-            }
-
-            set
-            {
-                _isEditBookOpen = value;
-                RaisePropertyChanged("IsEditBookOpen");
-            }
+            get {  return _isEditBookOpen;  }
+            set {  _isEditBookOpen = value;  RaisePropertyChanged("IsEditBookOpen");  }
         }
         public bool IsNewAuthorOpen
         {
-            get
-            {
-                return _isNewAuthorOpen;
-            }
-
-            set
-            {
-                _isNewAuthorOpen = value;
-                RaisePropertyChanged("IsNewAuthorOpen");
-            }
+            get { return _isNewAuthorOpen; }
+            set { _isNewAuthorOpen = value;  RaisePropertyChanged("IsNewAuthorOpen"); }
         }
         public bool IsEditAuthorOpen
         {
-            get
-            {
-                return _isEditAuthorOpen;
-            }
-
-            set
-            {
-                _isEditAuthorOpen = value;
-                RaisePropertyChanged("IsEditAuthorOpen");
-            }
+            get { return _isEditAuthorOpen; }
+            set { _isEditAuthorOpen = value; RaisePropertyChanged("IsEditAuthorOpen"); }
         }
         public bool IsPreloaderActive
         {
-            get
-            {
-                return _isPreloaderActive;
-            }
-
-            set
-            {
-                _isPreloaderActive = value;
-                RaisePropertyChanged("IsPreloaderActive");
-            }
+            get { return _isPreloaderActive; }
+            set {  _isPreloaderActive = value; RaisePropertyChanged("IsPreloaderActive"); }
         }
         public bool IsDataGridActive
         {
-            get
-            {
-                return _isDataGridActive;
-            }
-
-            set
-            {
-                _isDataGridActive = value;
-                RaisePropertyChanged("IsDataGridActive");
-            }
+            get {  return _isDataGridActive; }
+            set { _isDataGridActive = value; RaisePropertyChanged("IsDataGridActive");}
+        }
+        public bool IsFoldersPreloaderActive
+        {
+            get { return _isFoldersPreloaderActive; }
+            set { _isFoldersPreloaderActive = value; RaisePropertyChanged("IsFoldersPreloaderActive"); }
+        }
+        public bool IsListOfFoldersActive
+        {
+            get { return _isListOfFoldersActive; }
+            set { _isListOfFoldersActive = value; RaisePropertyChanged("IsListOfFoldersActive"); }
         }
         public List<string> Folders
-        { get {  return _folders;} set {  _folders = value;} }
+        {
+            get {  return _folders;}
+            set {  _folders = value; RaisePropertyChanged("Folders"); }
+        }
+        public ICollectionView BooksDataGridCollection
+        {
+            get { return _booksDataGridCollection; }
+            set { _booksDataGridCollection = value; RaisePropertyChanged("BooksDataGridCollection"); }
+        }
+        public ICollectionView AuthorsDataGridCollection
+        {
+            get { return _authorsDataGridCollection; }
+            set { _authorsDataGridCollection = value; RaisePropertyChanged("AuthorsDataGridCollection"); }
+        }
+        public string FilterBooksString
+        {
+            get { return _filterBooksString; }
+            set
+            {
+                _filterBooksString = value;
+                RaisePropertyChanged("FilterBooksString");
+                FilterBooksCollection();
+            }
+        }
+        public string FilterAuthorsString
+        {
+            get { return _filterAuthorsString; }
+            set
+            {
+                _filterAuthorsString = value;
+                RaisePropertyChanged("FilterAuthorsString");
+                FilterAuthorsCollection();
+            }
+        }
         public ICommand OpenAddBookWinCommand
         {
             get
@@ -290,10 +272,13 @@ namespace NewKartoteka.ViewModel
                          MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() { AnimateShow = false, ColorScheme = MetroDialogColorScheme.Theme });
                         if (result == MessageDialogResult.Affirmative)
                         {
-                            var exportData = new ExportData();
-                            exportData = _service.ExportBooksData();
-                            exportData.FileName = filePath;
-                            File.WriteAllBytes(exportData.FileName, exportData.Data);
+                            Task task1 = Task.Run(() =>
+                            {
+                                var exportData = new ExportData();
+                                exportData = _service.ExportBooksData();
+                                exportData.FileName = filePath;
+                                File.WriteAllBytes(exportData.FileName, exportData.Data);
+                            });
                             await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено", String.Concat("Книги сохранены в файл: ", filePath));
                             _loggingService.LogInfo($" Books saved to {filePath}");
                         }
@@ -316,10 +301,13 @@ namespace NewKartoteka.ViewModel
                         MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() {  AnimateShow = false, ColorScheme = MetroDialogColorScheme.Theme });
                         if (result == MessageDialogResult.Affirmative)
                         {
-                            var exportData = new ExportData();
-                            exportData = _service.ExportAuthorsData();
-                            exportData.FileName = filePath;
-                            File.WriteAllBytes(exportData.FileName, exportData.Data);
+                            Task task1 = Task.Run(() =>
+                            {
+                                var exportData = new ExportData();
+                                exportData = _service.ExportAuthorsData();
+                                exportData.FileName = filePath;
+                                File.WriteAllBytes(exportData.FileName, exportData.Data);
+                            });
                             await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено", String.Concat("Авторы сохранены в файл: ", filePath));
                             _loggingService.LogInfo($" Authors saved to {filePath}");
                         }
@@ -335,11 +323,16 @@ namespace NewKartoteka.ViewModel
             {
                 if (_prepareForExportBooksToDriveCommand == null) _prepareForExportBooksToDriveCommand = new RelayCommand( () =>
                 {
-                    FoldersAndId = new Dictionary<string, string>(_service.GetFolders());
+                    Task task1 = Task.Run(() =>
+                    {
+                        FoldersAndId = new Dictionary<string, string>(_service.GetFolders());
+                        Folders = new List<string>(FoldersAndId.Values);
+                        IsFoldersPreloaderActive = false;
+                        IsListOfFoldersActive = true;
+                    });
                     TypeOfExportData = "Books";
-                    Folders = new List<string>(FoldersAndId.Values);
                     ChooseDir = new ChooseGoogleDriveDirWin();
-                    ChooseDir.ShowDialog(); 
+                    ChooseDir.ShowDialog();
                 });
                 return _prepareForExportBooksToDriveCommand;
             }
@@ -350,9 +343,15 @@ namespace NewKartoteka.ViewModel
             {
                 if (_prepareForExportAuthorsToDriveCommand == null) _prepareForExportAuthorsToDriveCommand = new RelayCommand(() =>
                 {
-                    FoldersAndId = new Dictionary<string, string>(_service.GetFolders());
+
+                    Task task1 = Task.Run(() =>
+                    {
+                        FoldersAndId = new Dictionary<string, string>(_service.GetFolders());
+                        Folders = new List<string>(FoldersAndId.Values);
+                        IsFoldersPreloaderActive = false;
+                        IsListOfFoldersActive = true;
+                    });
                     TypeOfExportData = "Authors";
-                    Folders = new List<string>(FoldersAndId.Values);
                     ChooseDir = new ChooseGoogleDriveDirWin();
                     ChooseDir.ShowDialog();
                 });
@@ -370,6 +369,8 @@ namespace NewKartoteka.ViewModel
                         MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() { AnimateShow = false, ColorScheme = MetroDialogColorScheme.Theme });
                     if (result == MessageDialogResult.Affirmative)
                     {
+                        Task task1 = Task.Run(() =>
+                        {
                             if (TypeOfExportData == "Books")
                             {
                                 _service.ExportBooksToDataDrive("root");
@@ -378,6 +379,7 @@ namespace NewKartoteka.ViewModel
                             {
                                 _service.ExportAuthorsToDataDrive("root");
                             }
+                        });
                             await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено","Данные успешно сохранены в корневую папку");
                             _loggingService.LogInfo($" File saved to root");
                     }
@@ -410,14 +412,17 @@ namespace NewKartoteka.ViewModel
                     {
                         if (keyId != null)
                         {
-                            if (TypeOfExportData == "Books")
+                            Task task1 = Task.Run(() =>
                             {
-                                _service.ExportBooksToDataDrive(keyId);
-                            }
-                            else
-                            {
-                                _service.ExportAuthorsToDataDrive(keyId);
-                            }
+                                if (TypeOfExportData == "Books")
+                                {
+                                    _service.ExportBooksToDataDrive(keyId);
+                                }
+                                else
+                                {
+                                    _service.ExportAuthorsToDataDrive(keyId);
+                                }
+                            });
                             await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено", String.Concat("Данные успешно сохранены в папку: ", folders.First()));
                             _loggingService.LogInfo($" File saved to {folders.First()}");
                         }
@@ -425,38 +430,6 @@ namespace NewKartoteka.ViewModel
                 });
 
                 return _exportFileToGoogleDriveCommand;
-            }
-        }
-
-
-        public ICollectionView BooksDataGridCollection
-        {
-            get { return _booksDataGridCollection; }
-            set { _booksDataGridCollection = value; RaisePropertyChanged("BooksDataGridCollection"); }
-        }
-        public ICollectionView AuthorsDataGridCollection
-        {
-            get { return _authorsDataGridCollection; }
-            set { _authorsDataGridCollection = value; RaisePropertyChanged("AuthorsDataGridCollection"); }
-        }
-        public string FilterBooksString
-        {
-            get { return _filterBooksString; }
-            set
-            {
-                _filterBooksString = value;
-                RaisePropertyChanged("FilterBooksString");
-                FilterBooksCollection();
-            }
-        }
-        public string FilterAuthorsString
-        {
-            get { return _filterAuthorsString; }
-            set
-            {
-                _filterAuthorsString = value;
-                RaisePropertyChanged("FilterAuthorsString");
-                FilterAuthorsCollection();
             }
         }
         private void FilterBooksCollection()
@@ -527,22 +500,18 @@ namespace NewKartoteka.ViewModel
 
             }
 
-            Task  task1 = new Task(() => 
+            Task  task1 = Task.Run(() => 
             {
                 Books = new ObservableCollection<Book>(_service.GetAllBooks());
                 BooksDataGridCollection = CollectionViewSource.GetDefaultView(Books);
                 BooksDataGridCollection.Filter = new Predicate<object>(FilterBooks);
-                IsPreloaderActive = false;
-                IsDataGridActive = true;
             } );
-            Task task2 = new Task(() =>
+            Task task2 = Task.Run(() =>
             {
                 Authors = new ObservableCollection<Author>(_service.GetAllAuthors());
                 AuthorsDataGridCollection = CollectionViewSource.GetDefaultView(Authors);
                 AuthorsDataGridCollection.Filter = new Predicate<object>(FilterAuthors);
             });
-            task1.Start();
-            task2.Start();
             dialogCoordinator = DialogCoordinator.Instance;
             MessengerInstance.Register<NotificationMessage>(this, AddAuthorViewModel.Token, message =>
             {
@@ -553,6 +522,11 @@ namespace NewKartoteka.ViewModel
             {
                 Books.Add(_service.GetBookByID(int.Parse(message.Notification)));
                 FilterBooksCollection();
+            });
+            task1.ContinueWith((t) =>
+            {
+                IsPreloaderActive = false;
+                IsDataGridActive = true;
             });
         }
 
