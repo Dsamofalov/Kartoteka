@@ -19,33 +19,33 @@ namespace NewKartoteka
 {
     public class EditAuthorViewModel : ViewModelBase, IDataErrorInfo
     {
-        private IDialogCoordinator dialogCoordinator;
         private readonly IKartotekaService _service;
         private readonly ILoggerService _loggingService;
+
+        private IDialogCoordinator dialogCoordinator;
         private int Id;
         private string _firstName;
-        public string FirstName { get { return _firstName; } set { _firstName = value; RaisePropertyChanged("FirstName"); } }
-
         private string _secondName;
-        public string SecondName { get { return _secondName; } set { _secondName = value; RaisePropertyChanged("SecondName"); } }
-
         private string _lastName;
-        public string LastName { get { return _lastName; } set { _lastName = value; RaisePropertyChanged("LastName"); } }
-
-        private ObservableCollection<Book> _books;
-        public ObservableCollection<Book> Books { get { return _books; } set { _books = value; RaisePropertyChanged("Books"); } }
-
-
         private ObservableCollection<Book> _allBooks;
-        public ObservableCollection<Book> AllBooks { get { return _allBooks; } set { _allBooks = value; RaisePropertyChanged("AllBooks"); } }
-
-
+        private ObservableCollection<Book> _books;
         private RelayCommand _editAuthorCommand;
         private RelayCommand _openEditBooksCommand;
         private RelayCommand<Window> _closeEditBooksCommand;
         private RelayCommand _removeAllBooksCommand;
-        private RelayCommand<object> _removeBooksCommand;
-        private RelayCommand<object> _addBooksCommand;
+        private RelayCommand<IList> _removeBooksCommand;
+        private RelayCommand<IList> _addBooksCommand;
+        public string FirstName { get { return _firstName; } set { _firstName = value; RaisePropertyChanged("FirstName"); } }
+
+        public string SecondName { get { return _secondName; } set { _secondName = value; RaisePropertyChanged("SecondName"); } }
+
+        public string LastName { get { return _lastName; } set { _lastName = value; RaisePropertyChanged("LastName"); } }
+
+        public ObservableCollection<Book> Books { get { return _books; } set { _books = value; RaisePropertyChanged("Books"); } }
+
+
+        public ObservableCollection<Book> AllBooks { get { return _allBooks; } set { _allBooks = value; RaisePropertyChanged("AllBooks"); } }
+
         public ICommand EditAuthorCommand
         {
             get
@@ -116,9 +116,8 @@ namespace NewKartoteka
         {
             get
             {
-                if (_removeBooksCommand == null) _removeBooksCommand = new RelayCommand<object>((object parameter) =>
+                if (_removeBooksCommand == null) _removeBooksCommand = new RelayCommand<IList>((IList selection) =>
                 {
-                    IList selection = (IList)parameter;
                     List<Book> newBooks = selection.Cast<Book>().ToList();
                     foreach (Book book in newBooks)
                     {
@@ -134,9 +133,8 @@ namespace NewKartoteka
         {
             get
             {
-                if (_addBooksCommand == null) _addBooksCommand = new RelayCommand<object>((object parameter) =>
+                if (_addBooksCommand == null) _addBooksCommand = new RelayCommand<IList>((IList selection) =>
                 {
-                    IList selection = (IList)parameter;
                     List<Book> newBooks = selection.Cast<Book>().ToList();
                     foreach (Book book in newBooks)
                     {
@@ -187,10 +185,9 @@ namespace NewKartoteka
         }
         public void FillInformationAboutAuthor(NotificationMessage notificationMessage)
         {
-            string notification = notificationMessage.Notification;
             Task task1 = Task.Run(() =>
             {
-                Author selectedAuthor = _service.GetAuthorByID(int.Parse(notification));
+                Author selectedAuthor = _service.GetAuthorByID(int.Parse(notificationMessage.Notification));
                 FirstName = selectedAuthor.FirstName;
                 Id = selectedAuthor.Id;
                 SecondName = selectedAuthor.SecondName;

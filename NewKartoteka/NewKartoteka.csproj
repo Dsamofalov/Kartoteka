@@ -245,6 +245,10 @@
       <Project>{83A729EB-ABBC-41FE-B4E1-6EF94E98B31E}</Project>
       <Name>Kartoteka.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Kartoteka.GoogleDrive\Kartoteka.GoogleDrive.csproj">
+      <Project>{9955832c-dd2d-4987-9db4-1886a4701ba0}</Project>
+      <Name>Kartoteka.GoogleDrive</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

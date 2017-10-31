@@ -1,27 +1,19 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Kartoteka.Domain;
-using NewKartoteka.Model;
 using System;
 using System.Collections.ObjectModel;
-using MahApps.Metro.Controls;
 using System.Windows;
-using Microsoft.Practices.ServiceLocation;
 using System.Windows.Input;
-using Kartoteka.DAL;
 using System.ComponentModel;
 using System.Windows.Data;
 using GalaSoft.MvvmLight.Messaging;
-using GalaSoft.MvvmLight.Ioc;
 using MahApps.Metro.Controls.Dialogs;
-using NLog;
 using System.Windows.Forms;
-using DocumentFormat.OpenXml.Packaging;
 using System.IO;
 using System.Threading.Tasks;
-using System.Threading;
+using System.Windows.Threading;
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
 using System.Collections;
 using System.Linq;
 
@@ -30,6 +22,8 @@ namespace NewKartoteka.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private readonly IKartotekaService _service;
+        private readonly ILoggerService _loggingService;
+
         private ObservableCollection<Book> _books;
         private ObservableCollection<Author> _authors;
         private bool _isNewBookOpen =false;
@@ -60,10 +54,10 @@ namespace NewKartoteka.ViewModel
         private RelayCommand _exportFileToRootCommand;
         private List <string> _folders;
         private IDialogCoordinator dialogCoordinator;
-        private readonly ILoggerService _loggingService;
         private ChooseGoogleDriveDirWin ChooseDir;
         private string TypeOfExportData;
         private Dictionary<string, string> FoldersAndId;
+        private Dispatcher _dispatcher;
 
         public ObservableCollection<Book> Books
         {
@@ -159,8 +153,8 @@ namespace NewKartoteka.ViewModel
             {
                 if (_openAddBookWinCommand == null) _openAddBookWinCommand = new RelayCommand(() =>
                  {
+                     Messenger.Default.Send(new NotificationMessage(KartotekaConstants.UpdateAddBookFlyoutKey));
                      IsNewBookOpen = true;
-                     ViewModelLocator._addBookMessenger.Send<NotificationMessage>(new NotificationMessage(""));
                  });
 
                 return _openAddBookWinCommand;
@@ -172,8 +166,8 @@ namespace NewKartoteka.ViewModel
             {
                 if (_openAddAuthorWinCommand == null) _openAddAuthorWinCommand = new RelayCommand(() =>
                 {
+                    Messenger.Default.Send(new NotificationMessage(KartotekaConstants.UpdateAddAuthorFlyoutKey));
                     IsNewAuthorOpen = true;
-                    ViewModelLocator._addAuthorMessenger.Send<NotificationMessage>(new NotificationMessage(""));
                 });
 
                 return _openAddAuthorWinCommand;
@@ -185,7 +179,7 @@ namespace NewKartoteka.ViewModel
             {
                 if (_clearAddAuthorFlyoutCommand == null) _clearAddAuthorFlyoutCommand = new RelayCommand(() =>
                 {
-                    Messenger.Default.Send(new NotificationMessage("ClearAddAuthorFlyout"));
+                    Messenger.Default.Send(new NotificationMessage(KartotekaConstants.ClearAddAuthorFlyoutKey));
                     IsNewAuthorOpen = false;
                 });
 
@@ -198,7 +192,7 @@ namespace NewKartoteka.ViewModel
             {
                 if (_clearAddBookFlyoutCommand == null) _clearAddBookFlyoutCommand = new RelayCommand(() =>
                 {
-                    Messenger.Default.Send(new NotificationMessage("ClearAddBookFlyout"));
+                    Messenger.Default.Send(new NotificationMessage(KartotekaConstants.ClearAddBookFlyoutKey));
                     IsNewBookOpen = false;
                 });
 
@@ -212,7 +206,7 @@ namespace NewKartoteka.ViewModel
                 if (_openEditBookWinCommand == null) _openEditBookWinCommand = new RelayCommand<Book>((Book bookToEdit) =>
                 {
                     IsEditBookOpen = !IsEditBookOpen;
-                    ViewModelLocator._editBookMessenger.Send<NotificationMessage>(new NotificationMessage(bookToEdit.Id.ToString()));
+                    ViewModelLocator._editBookMessenger.Send(new NotificationMessage(bookToEdit.Id.ToString()));
                 });
                 return _openEditBookWinCommand;
             }
@@ -224,7 +218,7 @@ namespace NewKartoteka.ViewModel
                 if (_openEditAuthorWinCommand == null) _openEditAuthorWinCommand = new RelayCommand<Author>((Author authorToEdit) =>
                 {
                     IsEditAuthorOpen = !IsEditAuthorOpen;
-                    ViewModelLocator._editAuthorMessenger.Send<NotificationMessage>(new NotificationMessage(authorToEdit.Id.ToString()));
+                    ViewModelLocator._editAuthorMessenger.Send(new NotificationMessage(authorToEdit.Id.ToString()));
                 });
                 return _openEditAuthorWinCommand;
             }
@@ -235,10 +229,9 @@ namespace NewKartoteka.ViewModel
             {
                 if (_removeBookWinCommand == null) _removeBookWinCommand = new RelayCommand<Book>(async (Book bookToRemove) =>
                 {
-                    _service.DeleteBook(bookToRemove.Id);
-                    Books.Remove(bookToRemove);
-                    FilterBooksCollection();
-
+                         _service.DeleteBook(bookToRemove.Id);
+                         Books.Remove(bookToRemove);
+                         FilterBooksCollection();
                     await dialogCoordinator.ShowMessageAsync(this, "Книга удалена", String.Concat("ID удаленной книги: ", bookToRemove.Id.ToString()));
 
                 });
@@ -251,9 +244,11 @@ namespace NewKartoteka.ViewModel
             {
                 if (_removeAuthorWinCommand == null) _removeAuthorWinCommand = new RelayCommand<Author>(async (Author authorToRemove) =>
                 {
-                    _service.DeleteAuthor(authorToRemove.Id);
-                    Authors.Remove(authorToRemove);
+                _service.DeleteAuthor(authorToRemove.Id);
+                Authors.Remove(authorToRemove);
                     FilterAuthorsCollection();
+
+                    
                     await dialogCoordinator.ShowMessageAsync(this, "Автор удален", String.Concat("ID удаленного автора: ", authorToRemove.Id.ToString()));
                 });
                 return _removeAuthorWinCommand;
@@ -272,7 +267,7 @@ namespace NewKartoteka.ViewModel
                          MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() { AnimateShow = false, ColorScheme = MetroDialogColorScheme.Theme });
                         if (result == MessageDialogResult.Affirmative)
                         {
-                            Task task1 = Task.Run(() =>
+                            await Task.Run(() =>
                             {
                                 var exportData = new ExportData();
                                 exportData = _service.ExportBooksData();
@@ -301,13 +296,13 @@ namespace NewKartoteka.ViewModel
                         MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() {  AnimateShow = false, ColorScheme = MetroDialogColorScheme.Theme });
                         if (result == MessageDialogResult.Affirmative)
                         {
-                            Task task1 = Task.Run(() =>
-                            {
-                                var exportData = new ExportData();
-                                exportData = _service.ExportAuthorsData();
-                                exportData.FileName = filePath;
-                                File.WriteAllBytes(exportData.FileName, exportData.Data);
-                            });
+                            await Task.Run(() =>
+                             {
+                                 var exportData = new ExportData();
+                                 exportData = _service.ExportAuthorsData();
+                                 exportData.FileName = filePath;
+                                 File.WriteAllBytes(exportData.FileName, exportData.Data);
+                             });
                             await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено", String.Concat("Авторы сохранены в файл: ", filePath));
                             _loggingService.LogInfo($" Authors saved to {filePath}");
                         }
@@ -323,7 +318,7 @@ namespace NewKartoteka.ViewModel
             {
                 if (_prepareForExportBooksToDriveCommand == null) _prepareForExportBooksToDriveCommand = new RelayCommand( () =>
                 {
-                    Task task1 = Task.Run(() =>
+                    Task.Run(() =>
                     {
                         FoldersAndId = new Dictionary<string, string>(_service.GetFolders());
                         Folders = new List<string>(FoldersAndId.Values);
@@ -344,7 +339,7 @@ namespace NewKartoteka.ViewModel
                 if (_prepareForExportAuthorsToDriveCommand == null) _prepareForExportAuthorsToDriveCommand = new RelayCommand(() =>
                 {
 
-                    Task task1 = Task.Run(() =>
+                    Task.Run(() =>
                     {
                         FoldersAndId = new Dictionary<string, string>(_service.GetFolders());
                         Folders = new List<string>(FoldersAndId.Values);
@@ -369,17 +364,17 @@ namespace NewKartoteka.ViewModel
                         MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() { AnimateShow = false, ColorScheme = MetroDialogColorScheme.Theme });
                     if (result == MessageDialogResult.Affirmative)
                     {
-                        Task task1 = Task.Run(() =>
-                        {
-                            if (TypeOfExportData == "Books")
-                            {
-                                _service.ExportBooksToDataDrive("root");
-                            }
-                            else
-                            {
-                                _service.ExportAuthorsToDataDrive("root");
-                            }
-                        });
+                        await Task.Run(() =>
+                         {
+                             if (TypeOfExportData == "Books")
+                             {
+                                 _service.ExportBooksToDataDrive("root");
+                             }
+                             else
+                             {
+                                 _service.ExportAuthorsToDataDrive("root");
+                             }
+                         });
                             await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено","Данные успешно сохранены в корневую папку");
                             _loggingService.LogInfo($" File saved to root");
                     }
@@ -412,17 +407,17 @@ namespace NewKartoteka.ViewModel
                     {
                         if (keyId != null)
                         {
-                            Task task1 = Task.Run(() =>
-                            {
-                                if (TypeOfExportData == "Books")
-                                {
-                                    _service.ExportBooksToDataDrive(keyId);
-                                }
-                                else
-                                {
-                                    _service.ExportAuthorsToDataDrive(keyId);
-                                }
-                            });
+                             await Task.Run(() =>
+                             {
+                                 if (TypeOfExportData == "Books")
+                                 {
+                                     _service.ExportBooksToDataDrive(keyId);
+                                 }
+                                 else
+                                 {
+                                     _service.ExportAuthorsToDataDrive(keyId);
+                                 }
+                             });
                             await dialogCoordinator.ShowMessageAsync(this, "Успешно сохранено", String.Concat("Данные успешно сохранены в папку: ", folders.First()));
                             _loggingService.LogInfo($" File saved to {folders.First()}");
                         }
@@ -499,34 +494,37 @@ namespace NewKartoteka.ViewModel
                 System.Windows.MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             }
-
-            Task  task1 = Task.Run(() => 
+            _dispatcher = Dispatcher.CurrentDispatcher;
+            Task.Run(() =>
             {
-                Books = new ObservableCollection<Book>(_service.GetAllBooks());
-                BooksDataGridCollection = CollectionViewSource.GetDefaultView(Books);
-                BooksDataGridCollection.Filter = new Predicate<object>(FilterBooks);
-            } );
-            Task task2 = Task.Run(() =>
+                 Books = new ObservableCollection<Book>(_service.GetAllBooks());
+                _dispatcher.Invoke(new Action(() =>
+                {
+                    BooksDataGridCollection = CollectionViewSource.GetDefaultView(Books);
+                    BooksDataGridCollection.Filter = new Predicate<object>(FilterBooks);
+                }));
+                IsDataGridActive = true;
+                IsPreloaderActive = false;
+            });
+            Task.Run(() =>
             {
                 Authors = new ObservableCollection<Author>(_service.GetAllAuthors());
-                AuthorsDataGridCollection = CollectionViewSource.GetDefaultView(Authors);
-                AuthorsDataGridCollection.Filter = new Predicate<object>(FilterAuthors);
+                _dispatcher.Invoke(new Action(() =>
+                {
+                    AuthorsDataGridCollection = CollectionViewSource.GetDefaultView(Authors);
+                    AuthorsDataGridCollection.Filter = new Predicate<object>(FilterAuthors);
+                }));
             });
             dialogCoordinator = DialogCoordinator.Instance;
             MessengerInstance.Register<NotificationMessage>(this, AddAuthorViewModel.Token, message =>
             {
-                Authors.Add(_service.GetAuthorByID(int.Parse(message.Notification)));
-                FilterAuthorsCollection();
+                    Authors.Add(_service.GetAuthorByID(int.Parse(message.Notification)));
+                    FilterAuthorsCollection();
             });
             MessengerInstance.Register<NotificationMessage>(this, AddBookViewModel.Token, message =>
             {
-                Books.Add(_service.GetBookByID(int.Parse(message.Notification)));
-                FilterBooksCollection();
-            });
-            task1.ContinueWith((t) =>
-            {
-                IsPreloaderActive = false;
-                IsDataGridActive = true;
+                    Books.Add(_service.GetBookByID(int.Parse(message.Notification)));
+                    FilterBooksCollection();
             });
         }
 

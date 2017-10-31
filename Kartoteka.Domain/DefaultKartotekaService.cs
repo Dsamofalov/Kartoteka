@@ -14,86 +14,176 @@ namespace Kartoteka.Domain
         private readonly IAuthorsRepository _authorsRep;
         private readonly IBooksRepository _booksRep;
         private readonly ILoggerService _loggingService;
+        private readonly IGoogleDriveService _googleService;
 
         public DefaultKartotekaService(IAuthorsRepository authorsRep,
             IBooksRepository booksRep,
-            ILoggerService loggerService)
+            ILoggerService loggerService, IGoogleDriveService googleService)
         {
             try
             {
                 if (authorsRep == null) throw new ArgumentNullException("authorsRep", "authorsRep is null");
                 if (booksRep == null) throw new ArgumentNullException("booksRep", "booksRep is null");
                 if (loggerService == null) throw new ArgumentNullException("loggerService", "loggerService is null");
+                if (googleService == null) throw new ArgumentNullException("googleService", "googleService is null");
 
                 _authorsRep = authorsRep;
                 _booksRep = booksRep;
                 _loggingService = loggerService;
+                _googleService = googleService;
             }
             catch (ArgumentNullException ex)
             {
                 _loggingService.LogError($" DefaultKartotekaService ctor can't get a service {ex}");
-                System.Windows.MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             }
         }
         public List<Author> GetAllAuthors()
         {
-            _loggingService.LogInfo("Request all authors");
-            return _authorsRep.GetAllAuthors();
+            try
+            {
+                _loggingService.LogInfo("Request all authors");
+                return _authorsRep.GetAllAuthors();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An exception just occurred: " + e.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogError($"Exception in GetAllAuthors() { e.Message}");
+                return null;
+            }
         }
 
         public List<Book> GetAllBooks()
         {
-            _loggingService.LogInfo("Request all books");
-            return _booksRep.GetAllBooks();
+            try
+            {
+                _loggingService.LogInfo("Request all books");
+                return _booksRep.GetAllBooks();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An exception just occurred: " + e.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogError($"Exception in GetAllBooks() { e.Message}");
+                return null;
+            }
         }
         public void DeleteAuthor(int id)
         {
-            _loggingService.LogInfo($"Remove the author with id {id}");
-            _authorsRep.DeleteAuthor(id);     
+            try
+            {
+                _loggingService.LogInfo($"Remove the author with id {id}");
+                _authorsRep.DeleteAuthor(id);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An exception just occurred: " + e.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogError($"Exception in DeleteAuthor(id {id}) { e.Message}");
+            }     
         }
 
         public void DeleteBook(int id)
         {
-            _loggingService.LogInfo($"Remove the book with id {id}");
-            _booksRep.DeleteBook(id);
+            try
+            {
+                _loggingService.LogInfo($"Remove the book with id {id}");
+                _booksRep.DeleteBook(id);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An exception just occurred: " + e.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogError($"Exception in DeleteBook(id {id}) { e.Message}");
+            }
         }
 
         public void EditAuthor(Author authorToEdit)
         {
-            _loggingService.LogInfo($"Edit the author with id {authorToEdit.Id}");
-            _authorsRep.EditAuthor(authorToEdit);
+            try
+            {
+                _loggingService.LogInfo($"Edit the author with id {authorToEdit.Id}");
+                _authorsRep.EditAuthor(authorToEdit);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An exception just occurred: " + e.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogError($"Exception in EditAuthor(id {authorToEdit.Id}) { e.Message}");
+            }
+
         }
 
         public void EditBook(Book bookToEdit)
         {
-            _loggingService.LogInfo($"Edit the book with id {bookToEdit.Id}");
-            _booksRep.EditBook(bookToEdit);
+            try
+            {
+                _loggingService.LogInfo($"Edit the book with id {bookToEdit.Id}");
+                _booksRep.EditBook(bookToEdit);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An exception just occurred: " + e.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogError($"Exception in EditAuthor(id {bookToEdit.Id}) { e.Message}");
+            }
         }
 
 
         public Author GetAuthorByID(int id)
         {
-            _loggingService.LogInfo($"Request the author with id {id}");
-            return _authorsRep.GetAuthorByID(id);
+            try
+            {
+                _loggingService.LogInfo($"Request the author with id {id}");
+                return _authorsRep.GetAuthorByID(id);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An exception just occurred: " + e.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogError($"Exception in GetAuthorByID(id {id}) { e.Message}");
+                return null;
+            }
         }
 
         public Book GetBookByID(int id)
         {
-            _loggingService.LogInfo($"Request the book with id {id}");
-            return _booksRep.GetBookByID(id);
+            try
+            {
+                _loggingService.LogInfo($"Request the book with id {id}");
+                return _booksRep.GetBookByID(id);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An exception just occurred: " + e.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogError($"Exception in GetBookByID(id {id}) { e.Message}");
+                return null;
+            }
         }
 
         public int RegisterNewAuthor(Author newAuthor)
         {
-            _loggingService.LogInfo($"Register new author");
-            return _authorsRep.RegisterNewAuthor(newAuthor);
+            try
+            {
+                _loggingService.LogInfo($"Register new author");
+                return _authorsRep.RegisterNewAuthor(newAuthor);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An exception just occurred: " + e.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogError($"Exception in RegisterNewAuthor { e.Message}");
+                return -1;
+            }
         }
 
         public int RegisterNewBook(Book newBook)
         {
-            _loggingService.LogInfo($"Register new book");
-            return _booksRep.RegisterNewBook(newBook);
+            try
+            {
+                _loggingService.LogInfo($"Register new book");
+                return _booksRep.RegisterNewBook(newBook);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An exception just occurred: " + e.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogError($"Exception in RegisterNewBook { e.Message}");
+                return -1;
+            }
         }
 
         public ExportData ExportAuthorsData()
@@ -113,27 +203,31 @@ namespace Kartoteka.Domain
         public void ExportBooksToDataDrive(string folder)
         {
             _loggingService.LogInfo($"Sending file to Google Drive");
-            var service = GoogleDrive.Authorization();
+            var service = _googleService.Authorization();
             var exporter = GetExporter(DataExporterType.XLSX);
             var books = _booksRep.GetAllBooks();
             ExportData uploadFile = exporter.BooksExport(books);
-            GoogleDrive.UploadFile(service, "Books", uploadFile,folder);
+            uploadFile.FileName = "Books";
+            uploadFile.Folder = folder;
+            _googleService.UploadFile(service, uploadFile);
         }
         public void ExportAuthorsToDataDrive(string folder)
         {
             _loggingService.LogInfo($"Sending file to Google Drive");
-            var service = GoogleDrive.Authorization();
+            var service = _googleService.Authorization();
             var exporter = GetExporter(DataExporterType.XLSX);
             var authors = _authorsRep.GetAllAuthors();
             ExportData uploadFile = exporter.AuthorsExport(authors);
-            GoogleDrive.UploadFile(service, "Authors", uploadFile, folder);
+            uploadFile.FileName = "Authors";
+            uploadFile.Folder = folder;
+            _googleService.UploadFile(service, uploadFile);
         }
         public Dictionary<string, string> GetFolders()
         {
             _loggingService.LogInfo($"Getting folders from Google Drive");
-            var service = GoogleDrive.Authorization();
+            var service = _googleService.Authorization();
             Dictionary<string, string> folders = new Dictionary<string, string>();
-            GoogleDrive.GetFolders(service, folders);
+            _googleService.GetFolders(service, folders);
             return folders;
         }
         public IDataExporter GetExporter(DataExporterType type)

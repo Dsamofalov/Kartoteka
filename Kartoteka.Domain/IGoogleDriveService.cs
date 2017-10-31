@@ -1,0 +1,17 @@
+﻿using Google.Apis.Drive.v2;
+using Google.Apis.Drive.v2.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Kartoteka.Domain
+{
+    public interface IGoogleDriveService
+    {
+        DriveService Authorization();
+        Dictionary<string, string> GetFolders(DriveService _service, Dictionary<string, string> folders);
+        File UploadFile(DriveService _service, ExportData _uploadFile);
+    }
+}

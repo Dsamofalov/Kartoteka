@@ -15,6 +15,7 @@ using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Kartoteka.DAL;
 using Kartoteka.Domain;
+using Kartoteka.GoogleDrive;
 using Microsoft.Practices.ServiceLocation;
 using NewKartoteka.Model;
 using NewKartoteka.Model.NLogRealization;
@@ -28,8 +29,6 @@ namespace NewKartoteka.ViewModel
         static bool IsInit = false;
         public static Messenger _editBookMessenger;
         public static Messenger _editAuthorMessenger;
-        public static Messenger _addBookMessenger;
-        public static Messenger _addAuthorMessenger;
         static ViewModelLocator()
         {
             if(!IsInit)
@@ -44,12 +43,8 @@ namespace NewKartoteka.ViewModel
                 ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
                 _editBookMessenger = new Messenger();
                 _editAuthorMessenger = new Messenger();
-                _addBookMessenger = new Messenger();
-                _addAuthorMessenger = new Messenger();
                 SimpleIoc.Default.Register(() => _editBookMessenger, KartotekaConstants.EditBookMessengerKey);
                 SimpleIoc.Default.Register(() => _editAuthorMessenger, KartotekaConstants.EditAuthorMessengerKey);
-                SimpleIoc.Default.Register(() => _addBookMessenger, KartotekaConstants.AddBookMessengerKey);
-                SimpleIoc.Default.Register(() => _addAuthorMessenger, KartotekaConstants.AddAuthorMessengerKey);
                 SimpleIoc.Default.Register<MainViewModel>();
                 SimpleIoc.Default.Register<AddBookViewModel>();
                 SimpleIoc.Default.Register<AddAuthorViewModel>();
@@ -58,6 +53,7 @@ namespace NewKartoteka.ViewModel
                 SimpleIoc.Default.Register<IAuthorsRepository, EFAuthorsRepository>();
                 SimpleIoc.Default.Register<IBooksRepository, EFBooksRepository>();
                 SimpleIoc.Default.Register<ILoggerService, NLogLoggingService>();
+                SimpleIoc.Default.Register<IGoogleDriveService, DefaultGoogleDriveService>();
                 SimpleIoc.Default.Register<IKartotekaService, DefaultKartotekaService>();
                 }
 

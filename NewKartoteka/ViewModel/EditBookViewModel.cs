@@ -19,33 +19,33 @@ namespace NewKartoteka
 {
     public class EditBookViewModel : ViewModelBase, IDataErrorInfo
     {
-        private IDialogCoordinator dialogCoordinator;
         private readonly IKartotekaService _service;
         private readonly ILoggerService _loggingService;
+
+        private IDialogCoordinator dialogCoordinator;
         private int Id;
         private string _name;
-        public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
-
         private int _year;
-        public int Year { get { return _year; } set { _year = value; RaisePropertyChanged("Year"); } }
-
         private string _description;
-        public string Description { get { return _description; } set { _description = value; RaisePropertyChanged("Description"); } }
-
         private ObservableCollection<Author> _authors;
-        public ObservableCollection<Author> Authors { get { return _authors; } set { _authors = value; RaisePropertyChanged("Authors"); } }
-
-
         private ObservableCollection<Author> _allAuthors;
-        public ObservableCollection<Author> AllAuthors { get { return _allAuthors; } set { _allAuthors = value; RaisePropertyChanged("AllAuthors"); } }
-
-        
         private RelayCommand _editBookCommand;
         private RelayCommand _openEditAuthorsCommand;
         private RelayCommand<Window> _closeEditAuthorsCommand;
         private RelayCommand _removeAllAuthorsCommand;
-        private RelayCommand<object> _removeAuthorsCommand;
-        private RelayCommand<object> _addAuthorsCommand;
+        private RelayCommand<IList> _removeAuthorsCommand;
+        private RelayCommand<IList> _addAuthorsCommand;
+        public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
+
+        public int Year { get { return _year; } set { _year = value; RaisePropertyChanged("Year"); } }
+
+        public string Description { get { return _description; } set { _description = value; RaisePropertyChanged("Description"); } }
+
+        public ObservableCollection<Author> Authors { get { return _authors; } set { _authors = value; RaisePropertyChanged("Authors"); } }
+
+
+        public ObservableCollection<Author> AllAuthors { get { return _allAuthors; } set { _allAuthors = value; RaisePropertyChanged("AllAuthors"); } }
+
         public ICommand EditBookCommand
         {
             get
@@ -116,9 +116,8 @@ namespace NewKartoteka
         {
             get
             {
-                if (_removeAuthorsCommand == null) _removeAuthorsCommand = new RelayCommand<object>( (object parameter) =>
+                if (_removeAuthorsCommand == null) _removeAuthorsCommand = new RelayCommand<IList>( (IList selection) =>
                 {
-                    IList selection = (IList)parameter;
                     List<Author> newAuthors = selection.Cast<Author>().ToList();
                     foreach (Author author in newAuthors)
                     {
@@ -134,9 +133,8 @@ namespace NewKartoteka
         {
             get
             {
-                if (_addAuthorsCommand == null) _addAuthorsCommand = new RelayCommand<object>((object parameter) =>
+                if (_addAuthorsCommand == null) _addAuthorsCommand = new RelayCommand<IList>((IList selection) =>
                 {
-                    IList selection = (IList)parameter;
                     List<Author> newAuthors = selection.Cast<Author>().ToList();
                     foreach (Author author in newAuthors)
                     {
@@ -187,10 +185,9 @@ namespace NewKartoteka
         }
         public void FillInformationAboutBook(NotificationMessage notificationMessage)
         {
-            string notification = notificationMessage.Notification;
             Task task1 = Task.Run(() =>
             {
-                Book selectedBook = _service.GetBookByID(int.Parse(notification));
+                Book selectedBook = _service.GetBookByID(int.Parse(notificationMessage.Notification));
                 Year = selectedBook.Year;
                 Id = selectedBook.Id;
                 Name = selectedBook.Name;

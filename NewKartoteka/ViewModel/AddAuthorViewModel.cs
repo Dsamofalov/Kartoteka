@@ -19,35 +19,34 @@ namespace NewKartoteka
 {
     public class AddAuthorViewModel : ViewModelBase, IDataErrorInfo
     {
-        private readonly IKartotekaService _service;
-        private IDialogCoordinator dialogCoordinator;
-        public static readonly Guid Token = Guid.NewGuid();
-        private readonly ILoggerService _loggingService;
-        private string _firstName;
-        public string FirstName { get { return _firstName; } set { _firstName = value; RaisePropertyChanged("FirstName"); } }
+        public  const string Token = "f7a99adf-591d-4809-9477-0fe49fc51511";
 
+        private readonly IKartotekaService _service;
+        private readonly ILoggerService _loggingService;
+
+        private IDialogCoordinator dialogCoordinator;
+        private string _firstName;
         private string _secondName;
+        private string _lastName;
+        private ObservableCollection<Book> _books;
+        private ObservableCollection<Book> _allBooks;
+        private RelayCommand<IList> _saveAuthorCommand;
+        public string FirstName { get { return _firstName; } set { _firstName = value; RaisePropertyChanged("FirstName"); } }
         public string SecondName { get { return _secondName; } set { _secondName = value; RaisePropertyChanged("SecondName"); } }
 
-        private string _lastName;
         public string LastName { get { return _lastName; } set { _lastName = value; RaisePropertyChanged("LastName"); } }
 
-        private ObservableCollection<Book> _books;
         public ObservableCollection<Book> Books { get { return _books; } set { _books = value; RaisePropertyChanged("Books"); } }
 
-        private ObservableCollection<Book> _allBooks;
         public ObservableCollection<Book> AllBooks { get { return _allBooks; } set { _allBooks = value; RaisePropertyChanged("AllBooks"); } }
 
-        private RelayCommand<object> _saveAuthorCommand;
         public ICommand SaveAuthorCommand
         {
             get
             {
-                if (_saveAuthorCommand == null) _saveAuthorCommand = new RelayCommand<object>(async (object parameter) =>
+                if (_saveAuthorCommand == null) _saveAuthorCommand = new RelayCommand<IList>(async (IList selection) =>
                 {
-                    _loggingService.LogInfo($"SaveAuthorCommand with {FirstName} {SecondName} {LastName} {parameter}");
-                    IList selection = (IList)parameter;
-                    List<Book> newBooks = selection.Cast<Book>().ToList();
+                    _loggingService.LogInfo($"SaveAuthorCommand with {FirstName} {SecondName} {LastName}");
                     Author author = new Author()
                     {
                         FirstName = FirstName,
@@ -55,7 +54,7 @@ namespace NewKartoteka
                         LastName = LastName,
                         books = new ObservableCollection<Book>()
                     };
-                    foreach (Book book in newBooks)
+                    foreach (Book book in selection)
                     {
                         author.books.Add(book);
                     }
@@ -128,20 +127,23 @@ namespace NewKartoteka
                 _loggingService.LogError($"AddAuthorViewModel ctor can't get a service {ex}");
                 MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);        
             }
-            Task task1 = Task.Run(() =>
-            {
-                this.AllBooks = new ObservableCollection<Book>(_service.GetAllBooks());
-            });
+
             MessengerInstance.Register<NotificationMessage>(this, message =>
             {
-                if(message.Notification.ToString() == "ClearAddAuthorFlyout")
+                if(message.Notification == KartotekaConstants.ClearAddAuthorFlyoutKey)
                 {
                     ClearAddAuthorFlyout();
                 }
             });
-            var messenger = SimpleIoc.Default.GetInstance<Messenger>(KartotekaConstants.AddAuthorMessengerKey);
-            messenger.Register<NotificationMessage>(this, action => 
-            {                
+            MessengerInstance.Register<NotificationMessage>(this, message =>
+            {
+                if (message.Notification == KartotekaConstants.UpdateAddAuthorFlyoutKey)
+                {
+                    Task.Run(() =>
+                    {
+                        this.AllBooks = new ObservableCollection<Book>(_service.GetAllBooks());
+                    });
+                }
             });
         }
     }

@@ -10,7 +10,9 @@ namespace NewKartoteka
     {
         public const string EditBookMessengerKey = "EditBookMessenger";
         public const string EditAuthorMessengerKey = "EditAuthorMessenger";
-        public const string AddBookMessengerKey = "AddBookMessenger";
-        public const string AddAuthorMessengerKey = "AddAuthorMessenger";
+        public const string ClearAddBookFlyoutKey = "ClearAddBookFlyout";
+        public const string ClearAddAuthorFlyoutKey = "ClearAddAuthorFlyout";
+        public const string UpdateAddAuthorFlyoutKey = "UpdateAddAuthorFlyout";
+        public const string UpdateAddBookFlyoutKey = "UpdateAddBookFlyout";
     }
 }

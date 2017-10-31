@@ -22,35 +22,35 @@ namespace NewKartoteka
 {
     public class AddBookViewModel:ViewModelBase, IDataErrorInfo
     {
+        public const string Token = "bffac408-3e7a-49e0-8fd0-5f20706457fc";
+
         private readonly IKartotekaService _service;
-        private IDialogCoordinator dialogCoordinator;
-        public static readonly Guid Token = Guid.NewGuid();
         private readonly ILoggerService _loggingService;
+
+        private IDialogCoordinator dialogCoordinator;
         private string _name;
+        private int _year;
+        private string _description;
+        private ObservableCollection<Author> _authors;
+        private ObservableCollection<Author> _allauthors;
+        private RelayCommand<IList> _saveBookCommand;
         public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
 
-        private int _year;
         public int Year { get { return _year; } set { _year = value; RaisePropertyChanged("Year"); } }
 
-        private string _description;
         public string Description { get { return _description; } set { _description = value; RaisePropertyChanged("Description"); } }
 
-        private ObservableCollection<Author> _authors;
         public ObservableCollection<Author> Authors { get { return _authors; } set { _authors = value; RaisePropertyChanged("Authors"); } }
 
-        private ObservableCollection<Author> _allauthors;
         public ObservableCollection<Author> AllAuthors { get { return _allauthors; } set { _allauthors = value; RaisePropertyChanged("AllAuthors"); } }
 
-        private RelayCommand<object> _saveBookCommand;
         public ICommand SaveBookCommand
         {
             get
             {
-                if (_saveBookCommand == null) _saveBookCommand = new RelayCommand<object>(async (object parameter) =>
+                if (_saveBookCommand == null) _saveBookCommand = new RelayCommand<IList>(async (IList selection) =>
                 {
-                    _loggingService.LogInfo($"SaveBookCommand with {Name} {Year} {Description} {parameter}");
-                    IList selection = (IList)parameter;
-                    List<Author> newAuthors = selection.Cast<Author>().ToList();
+                    _loggingService.LogInfo($"SaveBookCommand with {Name} {Year} {Description} ");
                     Book book = new Book()
                     {
                         Name = Name,
@@ -58,7 +58,7 @@ namespace NewKartoteka
                         Description = Description,
                         authors = new ObservableCollection<Author>()
                     };
-                    foreach (Author author in newAuthors)
+                    foreach (Author author in selection)
                     {
                         book.authors.Add(author);
                     }
@@ -130,20 +130,22 @@ namespace NewKartoteka
                 MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             }
-            Task task1 = Task.Run(() =>
-            {
-                this.AllAuthors = new ObservableCollection<Author>(_service.GetAllAuthors());
-            });
             MessengerInstance.Register<NotificationMessage>(this, message =>
             {
-                if (message.Notification.ToString() == "ClearAddBookFlyout")
+                if (message.Notification == KartotekaConstants.ClearAddBookFlyoutKey)
                 {
                     ClearAddBookFlyout();
                 }
             });
-            var messenger = SimpleIoc.Default.GetInstance<Messenger>(KartotekaConstants.AddBookMessengerKey);
-            messenger.Register<NotificationMessage>(this, action =>
+            MessengerInstance.Register<NotificationMessage>(this, message =>
             {
+                if (message.Notification == KartotekaConstants.UpdateAddBookFlyoutKey)
+                {
+                    Task.Run(() =>
+                    {
+                        this.AllAuthors = new ObservableCollection<Author>(_service.GetAllAuthors());
+                    });
+                }
             });
         }
     }

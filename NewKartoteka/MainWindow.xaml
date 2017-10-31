@@ -74,7 +74,8 @@
                         </Grid>
                         <Image gif:ImageBehavior.AnimatedSource="Leonardo.gif" Grid.Row="1" Visibility="{Binding IsPreloaderActive, Converter={StaticResource BoolToVis}}"  
                                VerticalAlignment="Center" HorizontalAlignment="Center" Width="250" Height="250" />
-                        <DataGrid  x:Name="BooksDataGrid" IsReadOnly="True" Visibility="{Binding IsDataGridActive, Converter={StaticResource BoolToVis}}" SelectionMode="Single" Grid.Row="1" ItemsSource="{Binding BooksDataGridCollection, IsAsync=True}" AutoGenerateColumns="False" Style="{StaticResource AzureDataGrid}">
+                        <DataGrid  x:Name="BooksDataGrid" IsReadOnly="True" Visibility="{Binding IsDataGridActive, Converter={StaticResource BoolToVis}}" 
+                                   SelectionMode="Single" Grid.Row="1" ItemsSource="{Binding BooksDataGridCollection, IsAsync=True}" AutoGenerateColumns="False" Style="{StaticResource AzureDataGrid}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID"
                                     Binding="{Binding Id}" />

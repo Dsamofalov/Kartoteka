@@ -9,6 +9,7 @@ namespace Kartoteka.Domain
     public class ExportData
     {
         public string FileName { get; set; }
+        public string Folder { get; set; }
         public byte[] Data { get; set; }
     }
 }
