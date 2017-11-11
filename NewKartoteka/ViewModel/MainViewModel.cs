@@ -147,6 +147,8 @@ namespace NewKartoteka.ViewModel
                 FilterAuthorsCollection();
             }
         }
+
+        //REVIEW: Ну, вот опять с командами куча одинакового кода.
         public ICommand OpenAddBookWinCommand
         {
             get
@@ -446,6 +448,7 @@ namespace NewKartoteka.ViewModel
             var data = obj as Book;
             if (data != null)
             {
+                //REVIEW: А если "    "? 
                 if (!string.IsNullOrEmpty(_filterBooksString))
                 {
                     return data.Name.Contains(_filterBooksString) || data.Description.Contains(_filterBooksString) || data.Year.ToString().Contains(_filterBooksString) || data.Id.ToString().Contains(_filterBooksString);
@@ -459,6 +462,7 @@ namespace NewKartoteka.ViewModel
             var data = obj as Author;
             if (data != null)
             {
+                //REVIEW: А если "    "?
                 if (!string.IsNullOrEmpty(_filterAuthorsString))
                 {
                     return data.FirstName.Contains(_filterAuthorsString) || data.SecondName.Contains(_filterAuthorsString) || data.LastName.Contains(_filterAuthorsString) || data.Id.ToString().Contains(_filterAuthorsString);
@@ -470,6 +474,7 @@ namespace NewKartoteka.ViewModel
         private string GetPathToExcel()
         {
             var openFileDialog = new OpenFileDialog();
+            //REVIEW: Скобку в конце не забыл?
             openFileDialog.Filter = "Файлы Excel (*.xls; *.xlsx) | *.xls; *.xlsx";
             openFileDialog.CheckFileExists = true;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -498,6 +503,8 @@ namespace NewKartoteka.ViewModel
             Task.Run(() =>
             {
                  Books = new ObservableCollection<Book>(_service.GetAllBooks());
+                //REVIEW: А смысл делать это в таске? Таск нужен для отдельного от UI потока,
+                //а тут Вы в него возвращаетесь.
                 _dispatcher.Invoke(new Action(() =>
                 {
                     BooksDataGridCollection = CollectionViewSource.GetDefaultView(Books);
@@ -509,6 +516,8 @@ namespace NewKartoteka.ViewModel
             Task.Run(() =>
             {
                 Authors = new ObservableCollection<Author>(_service.GetAllAuthors());
+                //REVIEW: А смысл делать это в таске? Таск нужен для отдельного от UI потока,
+                //а тут Вы в него возвращаетесь.
                 _dispatcher.Invoke(new Action(() =>
                 {
                     AuthorsDataGridCollection = CollectionViewSource.GetDefaultView(Authors);

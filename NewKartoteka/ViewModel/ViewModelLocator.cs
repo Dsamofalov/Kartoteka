@@ -43,6 +43,8 @@ namespace NewKartoteka.ViewModel
                 ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
                 _editBookMessenger = new Messenger();
                 _editAuthorMessenger = new Messenger();
+                //REVIEW: Негибко. Захочу изменить эти мессенджеры - придётся код перекомпилить.
+                //Предлагаю KartotekaConstants - вынести в настройки.
                 SimpleIoc.Default.Register(() => _editBookMessenger, KartotekaConstants.EditBookMessengerKey);
                 SimpleIoc.Default.Register(() => _editAuthorMessenger, KartotekaConstants.EditAuthorMessengerKey);
                 SimpleIoc.Default.Register<MainViewModel>();

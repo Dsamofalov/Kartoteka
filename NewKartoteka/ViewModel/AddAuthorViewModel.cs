@@ -40,6 +40,7 @@ namespace NewKartoteka
 
         public ObservableCollection<Book> AllBooks { get { return _allBooks; } set { _allBooks = value; RaisePropertyChanged("AllBooks"); } }
 
+        //REVIEW: Здесь одна команда, но если инкапсулировать другие - здесь тоже переделать
         public ICommand SaveAuthorCommand
         {
             get
@@ -87,6 +88,7 @@ namespace NewKartoteka
         {
             get
             {
+                //REVIEW: Инкапсуляция switch
                 switch (columnName)
                 {
                     case "FirstName":

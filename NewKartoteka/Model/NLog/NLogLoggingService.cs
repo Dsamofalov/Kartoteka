@@ -18,6 +18,10 @@ namespace NewKartoteka.Model.NLogRealization
              _logger = LogManager.GetLogger("NLog");
         }
 
+        //REVIEW: Вот тут - overhead. С одной стороны - всё по SOLID-у, разделение интерфейсов.
+        //С другой - проще обойтись одним методом Log(method, message), где method - это enum.
+        //Также в логгере было бы неплохо логировать exception.
+        //Докапываться не буду, т.к. с академической т.з. всё верно. Но, в реальном проде так лучше не делать.
         public void LogTrace(string message)
         {
             var sf = new StackFrame(1);

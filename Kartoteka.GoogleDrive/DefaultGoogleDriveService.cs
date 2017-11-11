@@ -20,6 +20,7 @@ namespace Kartoteka.GoogleDrive
         {
             string[] scopes = new string[] { DriveService.Scope.Drive,
                                  DriveService.Scope.DriveFile};
+            //REVIEW: Это прямо просится в настройки. 
             var clientId = "808494698501-464qd8j0t0gcg9ci5vh1feedbi78me5a.apps.googleusercontent.com";
             var clientSecret = "eJjHJnJKXc6fsdTXpwbGb-C8";
             var credential = GoogleWebAuthorizationBroker.AuthorizeAsync(new ClientSecrets

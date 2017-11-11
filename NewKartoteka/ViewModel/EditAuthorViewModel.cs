@@ -46,6 +46,7 @@ namespace NewKartoteka
 
         public ObservableCollection<Book> AllBooks { get { return _allBooks; } set { _allBooks = value; RaisePropertyChanged("AllBooks"); } }
 
+        //REVIEW: Инкапсулировать команды.
         public ICommand EditAuthorCommand
         {
             get
@@ -158,6 +159,8 @@ namespace NewKartoteka
         {
             get
             {
+                //REVIEW: А если 25 столбцов и 20 вьюмоделей - будем свичи городить в каждой?
+                //Надо подумать над инкапсуляцией
                 switch (columnName)
                 {
                     case "FirstName":
