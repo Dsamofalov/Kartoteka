@@ -13,11 +13,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Configuration;
 using System.Windows.Input;
+using System.ComponentModel.DataAnnotations;
 
 namespace NewKartoteka
 {
-    public class EditBookViewModel : ViewModelBase, IDataErrorInfo
+    public class EditBookViewModel : CustomViewModelBase
     {
         private readonly IKartotekaService _service;
         private readonly ILoggerService _loggingService;
@@ -35,10 +37,12 @@ namespace NewKartoteka
         private RelayCommand _removeAllAuthorsCommand;
         private RelayCommand<IList> _removeAuthorsCommand;
         private RelayCommand<IList> _addAuthorsCommand;
+        [Required(ErrorMessage = "Введите название")]
         public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
-
+        [Required(ErrorMessage = "Введите год")]
+        [ValidCurrentYear(ErrorMessage = "Такой год еще не наступил!")]
         public int Year { get { return _year; } set { _year = value; RaisePropertyChanged("Year"); } }
-
+        [Required(ErrorMessage = "Введите описание")]
         public string Description { get { return _description; } set { _description = value; RaisePropertyChanged("Description"); } }
 
         public ObservableCollection<Author> Authors { get { return _authors; } set { _authors = value; RaisePropertyChanged("Authors"); } }
@@ -50,137 +54,94 @@ namespace NewKartoteka
         {
             get
             {
-                if (_editBookCommand == null) _editBookCommand = new RelayCommand(async () =>
-                {
-                    _loggingService.LogInfo($"EditBookCommand with book id: {Id} ");
-                    Book selectedBook = new Book()
-                    {
-                        Year = Year,
-                        Id = Id,
-                        Name = Name,
-                        Description = Description,
-                        authors = new ObservableCollection<Author>(Authors)
-                    };
-                    _service.EditBook(selectedBook);
-                    await dialogCoordinator.ShowMessageAsync(this, "Книга изменена", String.Concat("ID измененной книги: ", selectedBook.Id));
-                });
-
                 return _editBookCommand;
             }
+        }
+        async private void EditBook()
+        {
+            _loggingService.LogInfo($"EditBookCommand with book id: {Id} ");
+            Book selectedBook = new Book()
+            {
+                Year = Year,
+                Id = Id,
+                Name = Name,
+                Description = Description,
+                authors = new ObservableCollection<Author>(Authors)
+            };
+            _service.EditBook(selectedBook);
+            await dialogCoordinator.ShowMessageAsync(this, "Книга изменена", String.Concat("ID измененной книги: ", selectedBook.Id));
         }
         public ICommand OpenEditAuthorsCommand
         {
             get
             {
-                if (_openEditAuthorsCommand == null) _openEditAuthorsCommand = new RelayCommand( () =>
-                {
-                    EditListOfAutorsWin newEditWin = new EditListOfAutorsWin();
-                    newEditWin.ShowDialog();
-                });
-
                 return _openEditAuthorsCommand;
             }
+        }
+        private void OpenEditAuthors()
+        {
+            EditListOfAutorsWin newEditWin = new EditListOfAutorsWin();
+            newEditWin.ShowDialog();
         }
         public ICommand CloseEditAuthorsCommand
         {
             get
             {
-                if (_closeEditAuthorsCommand == null) _closeEditAuthorsCommand = new RelayCommand<Window>((Window window) =>
-                {
-                    if (window != null)
-                    {
-                        window.Close();
-                    }
-                });
-
                 return _closeEditAuthorsCommand;
+            }
+        }
+        private void CloseEditAuthors(Window window)
+        {
+            if (window != null)
+            {
+                window.Close();
             }
         }
         public ICommand RemoveAllAuthorsCommand
         {
             get
             {
-                if (_removeAllAuthorsCommand == null) _removeAllAuthorsCommand = new RelayCommand(() =>
-                {
-                    foreach(Author author in Authors)
-                    {
-                        AllAuthors.Add(author);
-                    }
-                    Authors.Clear();
-                });
-
                 return _removeAllAuthorsCommand;
             }
+        }
+        private void RemoveAllAuthors()
+        {
+            foreach (Author author in Authors)
+            {
+                AllAuthors.Add(author);
+            }
+            Authors.Clear();
         }
         public ICommand RemoveAuthorsCommand
         {
             get
             {
-                if (_removeAuthorsCommand == null) _removeAuthorsCommand = new RelayCommand<IList>( (IList selection) =>
-                {
-                    List<Author> newAuthors = selection.Cast<Author>().ToList();
-                    foreach (Author author in newAuthors)
-                    {
-                        Authors.Remove(author);
-                        AllAuthors.Add(author);
-                    }
-                });
-
                 return _removeAuthorsCommand;
+            }
+        }
+        private void RemoveAuthors(IList selection)
+        {
+            List<Author> newAuthors = selection.Cast<Author>().ToList();
+            foreach (Author author in newAuthors)
+            {
+                Authors.Remove(author);
+                AllAuthors.Add(author);
             }
         }
         public ICommand AddAuthorsCommand
         {
             get
             {
-                if (_addAuthorsCommand == null) _addAuthorsCommand = new RelayCommand<IList>((IList selection) =>
-                {
-                    List<Author> newAuthors = selection.Cast<Author>().ToList();
-                    foreach (Author author in newAuthors)
-                    {
-                        Authors.Add(author);
-                        AllAuthors.Remove(author);
-                    }
-                });
-
                 return _addAuthorsCommand;
             }
         }
-        public string Error
+        private void AddAuthors(IList selection)
         {
-            get
+            List<Author> newAuthors = selection.Cast<Author>().ToList();
+            foreach (Author author in newAuthors)
             {
-                return string.Empty;
-            }
-        }
-
-        public string this[string columnName]
-        {
-            get
-            {
-                switch (columnName)
-                {
-                    case "Name":
-                        {
-                            if (String.IsNullOrEmpty(this.Name))
-                                return "Заполните пустую строку";
-                            break;
-                        }
-                    case "Description":
-                        {
-                            if (String.IsNullOrEmpty(this.Description))
-                                return "Заполните пустую строку";
-                            break;
-                        }
-                    case "Year":
-                        {
-                            if (this.Year > DateTime.Now.Year)
-                                return "Такой год еще не наступил!";
-                            break;
-                        }
-                }
-
-                return string.Empty;
+                Authors.Add(author);
+                AllAuthors.Remove(author);
             }
         }
         public void FillInformationAboutBook(NotificationMessage notificationMessage)
@@ -213,8 +174,14 @@ namespace NewKartoteka
                 MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             }
-            var messenger = SimpleIoc.Default.GetInstance<Messenger>(KartotekaConstants.EditBookMessengerKey);
-            messenger.Register<NotificationMessage>(this,FillInformationAboutBook );
+            _editBookCommand = new RelayCommand(EditBook);
+            _openEditAuthorsCommand = new RelayCommand(OpenEditAuthors);
+            _closeEditAuthorsCommand = new RelayCommand<Window>(CloseEditAuthors);
+            _removeAllAuthorsCommand = new RelayCommand(RemoveAllAuthors);
+            _removeAuthorsCommand = new RelayCommand<IList>(RemoveAuthors);
+            _addAuthorsCommand = new RelayCommand<IList>(AddAuthors);
+            var messenger = SimpleIoc.Default.GetInstance<Messenger>(ConfigurationManager.AppSettings["EditBookMessengerKey"]);
+            messenger.Register<NotificationMessage>(this, FillInformationAboutBook);
         }
     }
 }

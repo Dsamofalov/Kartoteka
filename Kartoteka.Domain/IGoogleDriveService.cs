@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 namespace Kartoteka.Domain
 {
     public interface IGoogleDriveService
+    /// интерфейс, связывающий реализацию на уровне DAL (проект GoogleDrive, загрузка файла-отчёта с авторами или книгами в GoogleDrive) 
+    /// и уровень бизнес-логики (Domain) через внедрение зависимости этого интерфейса от конкретной реализации
     {
         DriveService Authorization();
         Dictionary<string, string> GetFolders(DriveService _service, Dictionary<string, string> folders);

@@ -86,6 +86,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
@@ -121,6 +122,8 @@
     <Compile Include="ChooseGoogleDriveDirWin.xaml.cs">
       <DependentUpon>ChooseGoogleDriveDirWin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValidationAttributes\ValidCurrentYear.cs" />
+    <Compile Include="ViewModel\CustomViewModelBase.cs" />
     <Compile Include="EditAuthorControl.xaml.cs">
       <DependentUpon>EditAuthorControl.xaml</DependentUpon>
     </Compile>
@@ -132,7 +135,6 @@
     <Compile Include="EditListOfAutorsWin.xaml.cs">
       <DependentUpon>EditListOfAutorsWin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="KartotekaConstants.cs" />
     <Compile Include="ViewModel\AddAuthorViewModel.cs" />
     <Compile Include="AddBookControl.xaml.cs">
       <DependentUpon>AddBookControl.xaml</DependentUpon>
@@ -142,10 +144,6 @@
     </Compile>
     <Compile Include="ViewModel\EditBookViewModel.cs" />
     <Compile Include="ViewModel\AddBookViewModel.cs" />
-    <Compile Include="Design\DesignDataService.cs" />
-    <Compile Include="Model\DataItem.cs" />
-    <Compile Include="Model\DataService.cs" />
-    <Compile Include="Model\IDataService.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="AddAuthorControl.xaml">
@@ -191,10 +189,6 @@
     <Page Include="Resourses.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Skins\MainSkin.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

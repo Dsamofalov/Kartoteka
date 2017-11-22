@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace Kartoteka.DAL
 {
     public class AuthorModel
+    /// DTO для передачи экземпляров класса Author в базу данных и обратно
     {
         [Required]
         public int Id { get; set; }

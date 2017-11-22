@@ -11,6 +11,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -20,7 +22,7 @@ using System.Windows.Input;
 
 namespace NewKartoteka 
 {
-    public class AddBookViewModel:ViewModelBase, IDataErrorInfo
+    public class AddBookViewModel:CustomViewModelBase
     {
         public const string Token = "bffac408-3e7a-49e0-8fd0-5f20706457fc";
 
@@ -34,10 +36,12 @@ namespace NewKartoteka
         private ObservableCollection<Author> _authors;
         private ObservableCollection<Author> _allauthors;
         private RelayCommand<IList> _saveBookCommand;
+        [Required(ErrorMessage = "Введите название")]
         public string Name { get { return _name; } set { _name = value; RaisePropertyChanged("Name"); } }
-
+        [Required(ErrorMessage = "Введите год")]
+        [ValidCurrentYear(ErrorMessage ="Такой год еще не наступил!")]
         public int Year { get { return _year; } set { _year = value; RaisePropertyChanged("Year"); } }
-
+        [Required(ErrorMessage = "Введите описание")]
         public string Description { get { return _description; } set { _description = value; RaisePropertyChanged("Description"); } }
 
         public ObservableCollection<Author> Authors { get { return _authors; } set { _authors = value; RaisePropertyChanged("Authors"); } }
@@ -48,28 +52,27 @@ namespace NewKartoteka
         {
             get
             {
-                if (_saveBookCommand == null) _saveBookCommand = new RelayCommand<IList>(async (IList selection) =>
-                {
-                    _loggingService.LogInfo($"SaveBookCommand with {Name} {Year} {Description} ");
-                    Book book = new Book()
-                    {
-                        Name = Name,
-                        Year = Year,
-                        Description = Description,
-                        authors = new ObservableCollection<Author>()
-                    };
-                    foreach (Author author in selection)
-                    {
-                        book.authors.Add(author);
-                    }
-                    string id = _service.RegisterNewBook(book).ToString();
-                    await dialogCoordinator.ShowMessageAsync(this, "Книга добавлена", String.Concat("ID добавленной книги: ", id));
-                    ClearAddBookFlyout();
-                    MessengerInstance.Send(new NotificationMessage(id),Token);
-                });
-
                 return _saveBookCommand;
             }
+        }
+        async private void SaveBook(IList selection)
+        {
+            _loggingService.LogInfo($"SaveBookCommand with {Name} {Year} {Description} ");
+            Book book = new Book()
+            {
+                Name = Name,
+                Year = Year,
+                Description = Description,
+                authors = new ObservableCollection<Author>()
+            };
+            foreach (Author author in selection)
+            {
+                book.authors.Add(author);
+            }
+            string id = _service.RegisterNewBook(book).ToString();
+            await dialogCoordinator.ShowMessageAsync(this, "Книга добавлена", String.Concat("ID добавленной книги: ", id));
+            ClearAddBookFlyout();
+            MessengerInstance.Send(new NotificationMessage(id), Token);
         }
         private void ClearAddBookFlyout()
         {
@@ -77,43 +80,7 @@ namespace NewKartoteka
             Name = null;
             Description = null;
         }
-        public string Error
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
 
-        public string this[string columnName]
-        {
-            get
-            {
-                switch(columnName)
-                {
-                    case "Name":
-                        {
-                            if (String.IsNullOrEmpty(this.Name))
-                                return "Заполните пустую строку";
-                            break;
-                        }
-                    case "Description":
-                        {
-                            if (String.IsNullOrEmpty(this.Description))
-                                return "Заполните пустую строку";
-                            break;
-                        }
-                    case "Year":
-                        {
-                            if (Year>DateTime.Now.Year)
-                                return "Такой год еще не наступил!";
-                            break;
-                        }
-                }
-
-                return string.Empty;
-            }
-        }
         public AddBookViewModel(IKartotekaService service, ILoggerService loggerService)
         {
             dialogCoordinator = DialogCoordinator.Instance;
@@ -130,16 +97,17 @@ namespace NewKartoteka
                 MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             }
+            _saveBookCommand = new RelayCommand<IList>(SaveBook);
             MessengerInstance.Register<NotificationMessage>(this, message =>
             {
-                if (message.Notification == KartotekaConstants.ClearAddBookFlyoutKey)
+                if (message.Notification == ConfigurationManager.AppSettings["ClearAddBookFlyoutKey"])
                 {
                     ClearAddBookFlyout();
                 }
             });
             MessengerInstance.Register<NotificationMessage>(this, message =>
             {
-                if (message.Notification == KartotekaConstants.UpdateAddBookFlyoutKey)
+                if (message.Notification == ConfigurationManager.AppSettings["UpdateAddBookFlyoutKey"])
                 {
                     Task.Run(() =>
                     {

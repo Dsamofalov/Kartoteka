@@ -10,6 +10,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,7 +19,7 @@ using System.Windows.Input;
 
 namespace NewKartoteka
 {
-    public class AddAuthorViewModel : ViewModelBase, IDataErrorInfo
+    public class AddAuthorViewModel : CustomViewModelBase
     {
         public  const string Token = "f7a99adf-591d-4809-9477-0fe49fc51511";
 
@@ -31,9 +33,11 @@ namespace NewKartoteka
         private ObservableCollection<Book> _books;
         private ObservableCollection<Book> _allBooks;
         private RelayCommand<IList> _saveAuthorCommand;
+        [Required(ErrorMessage = "Введите имя")]
         public string FirstName { get { return _firstName; } set { _firstName = value; RaisePropertyChanged("FirstName"); } }
+        [Required(ErrorMessage = "Введите отчество")]
         public string SecondName { get { return _secondName; } set { _secondName = value; RaisePropertyChanged("SecondName"); } }
-
+        [Required(ErrorMessage = "Введите фамилию")]
         public string LastName { get { return _lastName; } set { _lastName = value; RaisePropertyChanged("LastName"); } }
 
         public ObservableCollection<Book> Books { get { return _books; } set { _books = value; RaisePropertyChanged("Books"); } }
@@ -44,28 +48,27 @@ namespace NewKartoteka
         {
             get
             {
-                if (_saveAuthorCommand == null) _saveAuthorCommand = new RelayCommand<IList>(async (IList selection) =>
-                {
-                    _loggingService.LogInfo($"SaveAuthorCommand with {FirstName} {SecondName} {LastName}");
-                    Author author = new Author()
-                    {
-                        FirstName = FirstName,
-                        SecondName = SecondName,
-                        LastName = LastName,
-                        books = new ObservableCollection<Book>()
-                    };
-                    foreach (Book book in selection)
-                    {
-                        author.books.Add(book);
-                    }
-                    string id = _service.RegisterNewAuthor(author).ToString();
-                    ClearAddAuthorFlyout();
-                    await dialogCoordinator.ShowMessageAsync(this, "Автор добавлен", String.Concat("ID добавленного автора: ", id ));
-                    MessengerInstance.Send(new NotificationMessage(id),Token);
-                });
-
                 return _saveAuthorCommand;
             }
+        }
+        async private void SaveAuthor(IList selection)
+        {
+            _loggingService.LogInfo($"SaveAuthorCommand with {FirstName} {SecondName} {LastName}");
+            Author author = new Author()
+            {
+                FirstName = FirstName,
+                SecondName = SecondName,
+                LastName = LastName,
+                books = new ObservableCollection<Book>()
+            };
+            foreach (Book book in selection)
+            {
+                author.books.Add(book);
+            }
+            string id = _service.RegisterNewAuthor(author).ToString();
+            ClearAddAuthorFlyout();
+            await dialogCoordinator.ShowMessageAsync(this, "Автор добавлен", String.Concat("ID добавленного автора: ", id));
+            MessengerInstance.Send(new NotificationMessage(id), Token);
         }
         private void  ClearAddAuthorFlyout()
         {
@@ -74,44 +77,6 @@ namespace NewKartoteka
             LastName = null;
         }
 
-
-        public string Error
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
-
-        public string this[string columnName]
-        {
-            get
-            {
-                switch (columnName)
-                {
-                    case "FirstName":
-                        {
-                            if (String.IsNullOrEmpty(this.FirstName))
-                                return "Заполните пустую строку";
-                            break;
-                        }
-                    case "SecondName":
-                        {
-                            if (String.IsNullOrEmpty(this.SecondName))
-                                return "Заполните пустую строку";
-                            break;
-                        }
-                    case "LastName":
-                        {
-                            if (String.IsNullOrEmpty(this.LastName))
-                                return "Заполните пустую строку";
-                            break;
-                        }
-                }
-
-                return string.Empty;
-            }
-        }
         public AddAuthorViewModel(IKartotekaService service, ILoggerService loggerService)
         {
             dialogCoordinator = DialogCoordinator.Instance;
@@ -127,17 +92,17 @@ namespace NewKartoteka
                 _loggingService.LogError($"AddAuthorViewModel ctor can't get a service {ex}");
                 MessageBox.Show("An exception just occurred: " + ex.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);        
             }
-
+            _saveAuthorCommand = new RelayCommand<IList>(SaveAuthor);
             MessengerInstance.Register<NotificationMessage>(this, message =>
             {
-                if(message.Notification == KartotekaConstants.ClearAddAuthorFlyoutKey)
+                if(message.Notification == ConfigurationManager.AppSettings["ClearAddAuthorFlyoutKey"])
                 {
                     ClearAddAuthorFlyout();
                 }
             });
             MessengerInstance.Register<NotificationMessage>(this, message =>
             {
-                if (message.Notification == KartotekaConstants.UpdateAddAuthorFlyoutKey)
+                if (message.Notification == ConfigurationManager.AppSettings["UpdateAddAuthorFlyoutKey"])
                 {
                     Task.Run(() =>
                     {

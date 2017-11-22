@@ -93,7 +93,6 @@
     <Compile Include="ExportData.cs" />
     <Compile Include="IGoogleDriveService.cs" />
     <Compile Include="XLSXDataExporter.cs" />
-    <Compile Include="DataExporterType.cs" />
     <Compile Include="DefaultKartotekaService.cs" />
     <Compile Include="IAuthorsRepository.cs" />
     <Compile Include="IBooksRepository.cs" />

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace Kartoteka.Domain
 {
     public interface IBooksRepository
+    /// интерфейс, связывающий реализацию на уровне DAL ( методы взаимодействия класса Book с базой данных)
+    /// и уровень бизнес-логики (Domain) через внедрение зависимости этого интерфейса от конкретной реализации
     {
         List<Book> GetAllBooks();
         int RegisterNewBook(Book newBook);

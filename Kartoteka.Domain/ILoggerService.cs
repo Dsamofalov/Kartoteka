@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Kartoteka.Domain
 {
     public interface ILoggerService
+    // интерфейс, связывающий реализацию и использование через внедрение зависимости этого интерфейса от конкретной реализации.
     {
         void LogTrace(string message);
          void LogDebug(string message);

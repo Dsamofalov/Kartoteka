@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 namespace Kartoteka.Domain
 {
     public interface IKartotekaService
+    /// интерфейс, связывающий уровень бизнес-логики(Domain) и использование на уровне пользовательского интерфейса
+    /// через внедрение зависимости этого интерфейса от конкретной реализации
+
     {
         List<Author> GetAllAuthors();
         List<Book> GetAllBooks();
@@ -24,6 +27,5 @@ namespace Kartoteka.Domain
         Dictionary<string, string> GetFolders();
         void ExportBooksToDataDrive(string folder);
         void ExportAuthorsToDataDrive(string folder);
-        IDataExporter GetExporter(DataExporterType type);
     }
 }

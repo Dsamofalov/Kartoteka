@@ -15,6 +15,7 @@ namespace Kartoteka.Domain
         private readonly IBooksRepository _booksRep;
         private readonly ILoggerService _loggingService;
         private readonly IGoogleDriveService _googleService;
+        private XLSXDataExporter _exporter;
 
         public DefaultKartotekaService(IAuthorsRepository authorsRep,
             IBooksRepository booksRep,
@@ -31,6 +32,7 @@ namespace Kartoteka.Domain
                 _booksRep = booksRep;
                 _loggingService = loggerService;
                 _googleService = googleService;
+                _exporter = new XLSXDataExporter(); 
             }
             catch (ArgumentNullException ex)
             {
@@ -189,24 +191,21 @@ namespace Kartoteka.Domain
         public ExportData ExportAuthorsData()
         {
             _loggingService.LogInfo($"Export authors to Excel file");
-            var exporter = GetExporter(DataExporterType.XLSX);
             var authors = _authorsRep.GetAllAuthors();
-            return exporter.AuthorsExport(authors);
+            return _exporter.AuthorsExport(authors);
         }
         public ExportData ExportBooksData()
         {
             _loggingService.LogInfo($"Export books to Excel file");
-            var exporter = GetExporter(DataExporterType.XLSX);
             var books = _booksRep.GetAllBooks();
-            return exporter.BooksExport(books);
+            return _exporter.BooksExport(books);
         }
         public void ExportBooksToDataDrive(string folder)
         {
             _loggingService.LogInfo($"Sending file to Google Drive");
             var service = _googleService.Authorization();
-            var exporter = GetExporter(DataExporterType.XLSX);
             var books = _booksRep.GetAllBooks();
-            ExportData uploadFile = exporter.BooksExport(books);
+            ExportData uploadFile = _exporter.BooksExport(books);
             uploadFile.FileName = "Books";
             uploadFile.Folder = folder;
             _googleService.UploadFile(service, uploadFile);
@@ -215,9 +214,8 @@ namespace Kartoteka.Domain
         {
             _loggingService.LogInfo($"Sending file to Google Drive");
             var service = _googleService.Authorization();
-            var exporter = GetExporter(DataExporterType.XLSX);
             var authors = _authorsRep.GetAllAuthors();
-            ExportData uploadFile = exporter.AuthorsExport(authors);
+            ExportData uploadFile = _exporter.AuthorsExport(authors);
             uploadFile.FileName = "Authors";
             uploadFile.Folder = folder;
             _googleService.UploadFile(service, uploadFile);
@@ -229,16 +227,6 @@ namespace Kartoteka.Domain
             Dictionary<string, string> folders = new Dictionary<string, string>();
             _googleService.GetFolders(service, folders);
             return folders;
-        }
-        public IDataExporter GetExporter(DataExporterType type)
-        {
-            switch (type)
-            {
-                case DataExporterType.XLSX:
-                    return new XLSXDataExporter();
-                default:
-                    throw new Exception("DataExporterType not supported");
-            }
         }
     }
 }
